@@ -1,0 +1,56 @@
+server {
+    listen       80;
+
+    server_name  {{ vhost_domain }};
+
+    charset      utf-8;
+
+    access_log   /var/log/nginx/{{ vhost_domain }}_access.log main;
+    error_log    /var/log/nginx/{{ vhost_domain }}_error.log warn;
+
+    set $skip_cache 0;
+
+    # POST requests and urls with a query string should always go to PHP
+    if ($request_method = POST) {
+            set $skip_cache 1;
+    }
+    if ($query_string != "") {
+            set $skip_cache 1;
+    }
+    if ($http_cookie ~ "CONCRETE5") {
+            set $skip_cache 1;
+    }
+
+    root         {{ vhost_docroot }}{{ vhost_domain }};
+
+    include      /etc/nginx/default.d/deny_spambot.conf;
+
+    location / {
+    	index  index.php;
+        if (!-e $request_filename) {
+        rewrite ^ /index.php last;
+        }
+    }
+
+    location ~ \.php($|/) {
+        include       /etc/nginx/fastcgi_params;
+
+        fastcgi_pass  unix:/var/run/php-fpm/www.sock;
+        fastcgi_index index.php;
+        fastcgi_param URI $uri;
+        fastcgi_param SERVER_NAME $host;
+        fastcgi_param REQUEST_METHOD $request_method;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_read_timeout 60;
+
+        fastcgi_cache_bypass $skip_cache;
+        fastcgi_no_cache     $skip_cache;
+        fastcgi_cache        fastcgi_cache;
+        fastcgi_cache_valid  any 1m;
+    }
+
+    # Don't output hidden files
+    location ~ /\. {
+        return 404;
+    }
+}

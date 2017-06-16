@@ -1,0 +1,25 @@
+Timeout 60
+KeepAlive On
+
+MaxKeepAliveRequests 100
+
+KeepAliveTimeout 120
+
+<IfModule prefork.c>
+StartServers          5
+MinSpareServers       3
+MaxSpareServers       5
+ServerLimit         256
+MaxClients          256
+MaxRequestsPerChild  10
+</IfModule>
+
+<Files ~ "^\.git">
+    Order allow,deny
+    Deny from all
+</Files>
+
+<Directorymatch "^/.*/\.git/">
+    Order deny,allow
+    Deny from all
+</Directorymatch>

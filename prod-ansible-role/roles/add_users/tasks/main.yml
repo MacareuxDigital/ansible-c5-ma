@@ -1,0 +1,12 @@
+- name: Add users
+  user: name={{ item }} state=present
+  with_items: "{{ add_users }}"
+- name: Enable sudo
+  template: src=sudoer.j2 dest=/etc/sudoers.d/{{ item }}
+  with_items: "{{ add_users }}"
+- name: Create .ssh Dir
+  file: path=/home/{{item}}/.ssh state=directory mode=700 owner={{ item }} group={{ item }}
+  with_items: "{{ add_users }}"
+- name: Add SSH-Keyfiles
+  copy: src={{ item }}.pem.pub dest=/home/{{item}}/.ssh/authorized_keys mode=600 owner={{ item }} group={{ item }}
+  with_items: "{{ add_users }}"

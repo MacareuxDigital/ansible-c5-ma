@@ -1,0 +1,4 @@
+- name: Change Directory Parmission
+  file: path="/var/www/html" state=directory recurse=yes owner={{c5dir_user}} group={{c5dir_group}}
+- name: Add Dummy index.html to default server
+  copy: src=index.html dest=/var/www/html mode=644 owner={{c5dir_user}} group={{c5dir_group}}

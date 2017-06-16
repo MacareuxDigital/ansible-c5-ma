@@ -1,0 +1,18 @@
+server {
+    listen       80 default_server;
+
+    server_name  dummy;
+
+    charset      utf-8;
+
+    access_log   /var/log/nginx/dummy_access.log main;
+    error_log    /var/log/nginx/dummy_error.log warn;
+
+    root         /var/www/html;
+
+    include      /etc/nginx/default.d/deny_spambot.conf;
+
+    location / {
+    	index  index.html;
+    }
+}

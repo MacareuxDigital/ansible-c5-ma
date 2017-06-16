@@ -1,0 +1,46 @@
+- name: Set PHP-FPM User
+  replace: >
+    dest=/etc/php-fpm.d/www.conf
+    regexp="user = apache"
+    replace="user = {{c5dir_user}}"
+  notify: Restart php-fpm
+- name: Set PHP-FPM Group
+  replace: >
+    dest=/etc/php-fpm.d/www.conf
+    regexp="group = apache"
+    replace="group = {{c5dir_group}}"
+  notify: Restart php-fpm
+- name: Change PHP-FPM UnixSocket
+  replace: >
+    dest=/etc/php-fpm.d/www.conf
+    regexp="listen = 127\.0\.0\.1:9000"
+    replace="listen = {{ unixsocket_path }}"
+  notify: Restart php-fpm
+- name: Set PHP-FPM listen.owner
+  replace: >
+    dest=/etc/php-fpm.d/www.conf
+    regexp="^;listen\.owner = nobody"
+    replace="listen.owner = {{c5dir_user}}"
+  notify: Restart php-fpm
+- name: Set PHP-FPM listen.group
+  replace: >
+    dest=/etc/php-fpm.d/www.conf
+    regexp="^;listen\.group = nobody"
+    replace="listen.group = {{c5dir_group}}"
+  notify: Restart php-fpm
+- name: Set PHP-FPM listen.acl_users
+  replace: >
+    dest=/etc/php-fpm.d/www.conf
+    regexp="^listen.acl_users = apache,nginx"
+    replace=";listen.acl_users = apache,nginx,{{c5dir_user}}"
+  notify: Restart php-fpm
+- name: Set PHP-FPM listen.mode
+  replace: >
+    dest=/etc/php-fpm.d/www.conf
+    regexp="^;listen\.mode = 0666"
+    replace="listen.mode = 0660"
+  notify: Restart php-fpm
+- name: Change Permission session_dir
+  file: path=/var/lib/php/7.0/session owner=root group=nginx
+- name: Change Permission wsdlcache_dir
+  file: path=/var/lib/php/7.0/wsdlcache owner=root group=nginx

@@ -1,0 +1,24 @@
+- name: Set PHP TimeZone
+  replace: >
+    dest=/etc/php.ini
+    regexp="^;date\.timezone ="
+    replace="date.timezone = Asia/Tokyo"
+  notify: Restart php-fpm
+- name: Enable PHP short_open_tag
+  replace: >
+    dest=/etc/php.ini
+    regexp="short_open_tag = Off"
+    replace="short_open_tag = On"
+  notify: Restart php-fpm
+- name: Disabled PHP expose_php
+  replace: >
+    dest=/etc/php.ini
+    regexp="expose_php = On"
+    replace="expose_php = Off"
+  notify: Restart php-fpm
+- name: Change PHP upload_max_filesize
+  replace: >
+    dest=/etc/php.ini
+    regexp="upload_max_filesize = 2M"
+    replace="upload_max_filesize = 16M"
+  notify: Restart php-fpm

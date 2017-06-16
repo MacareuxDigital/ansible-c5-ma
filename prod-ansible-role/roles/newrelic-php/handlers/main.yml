@@ -1,0 +1,6 @@
+  - name: Restart newrelic-daemon
+    service: name=newrelic-daemon state=restarted
+  - name: Restart Apache
+    service: name=httpd state=restarted
+  - name: Restart php-fpm
+    service: name=php-fpm state=restarted

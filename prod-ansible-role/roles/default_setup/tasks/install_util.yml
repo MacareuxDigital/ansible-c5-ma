@@ -1,0 +1,20 @@
+- name: install util
+  yum: name={{item}} state=latest
+  with_items:
+  - "python-devel"
+  - "telnet"
+  - "wget"
+  - "tcpdump"
+  - "sysstat"
+  - "nmap"
+  - "gcc"
+  - "make"
+  - "git"
+  - "subversion"
+  - "openssl-devel"
+  - "vim-enhanced"
+  - "python-devel"
+  - "python-setuptools"
+  - "curl"
+  - "curl-devel"
+  - "mail"

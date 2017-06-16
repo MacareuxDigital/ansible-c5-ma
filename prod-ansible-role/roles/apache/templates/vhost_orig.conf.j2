@@ -1,0 +1,17 @@
+<VirtualHost *:80>
+  ServerName {{ vhost_domain }}
+
+  DirectoryIndex index.php index.html
+
+  CustomLog /var/log/httpd/{{ vhost_domain }}-access_log combined
+  ErrorLog  /var/log/httpd/{{ vhost_domain }}-error_log
+
+  DocumentRoot {{ vhost_docroot }}{{ vhost_domain }}
+
+  <Directory "{{ vhost_docroot }}{{ vhost_domain }}">
+    AllowOverride All
+    Options FollowSymLinks
+    Options -Indexes
+    Require all granted
+  </Directory>
+</VirtualHost>

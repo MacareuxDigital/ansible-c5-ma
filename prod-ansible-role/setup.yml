@@ -1,0 +1,108 @@
+- hosts: all
+  become: yes
+
+  vars:
+# Instance Type (t2micro / t2small)
+  - aws_instance_type:      "t2small"
+
+# SSH Users
+## Create SSH user? (yes / no)
+  - if_add_users:           "yes"
+## Befrore run this command
+## "ssh-keygen -f roles/add_users/files/"USERNAME".pem -C "USERNAME"@localhost"
+  - add_users:
+    - "c5juser"
+## Directory & WebServer Owner Settings
+  - c5dir_user:             "c5juser"
+  - c5dir_group:            "apache"
+
+# WebServer Setting
+## Use Webserver Apache or Nginx (apache / nginx)
+  - webserver_handle:       "apache"
+
+## Virtualhost Setting
+  - vhost_domain:           "www.hogehoge.com"
+  - vhost_docroot:          "/var/www/vhosts/"
+
+## Basic Auth (yes / no)
+### Please make sure to create roles/basic_auth/files/.htpasswd
+### You can generate at http://www.htaccesstools.com/htpasswd-generator/
+  - use_basic_auth:         "yes"
+
+# DB environment(mariadb / mariadb-client / mysql / mysql-client / none )
+#    - mariadb: Install MariaDB Server & Client
+#    - mariadb-client: Install MariaDB Client
+#    - mysql: Install MySQL Server & Client
+#    - mysql-client: Install only MySQL Client
+#    - none: do nothing
+  - db_environment:         "mariadb"
+
+## MySQL or MariaDB Setting
+## MySQL root
+  - mysql_rootpass:         "mysql_root_pass"
+## MySQL host
+  - mysql_loginhost:        "127.0.0.1"
+## MySQL login Infomation
+  - mysql_loginuser:        "root"
+  - mysql_loginpass:        "mysql_root_pass"
+## MySQL ApplicationDB
+  - mysql_dbname:           "dev-c5db"
+  - mysql_username:         "dev-c5dbuser"
+  - mysql_userpass:         "db-password"
+### Add your EC2 instance's private IP to mysql_userpermitedhost when connecting to RDS
+  - mysql_userpermitedhost:
+    - "127.0.0.1"
+    - "localhost"
+    #- "10.0.1.100" # Your EC Instance's Private IP If
+
+# concrete5 Settings
+## Site Name
+  - c5_sitename:            "hogehoge.com"
+## Install Theme
+## "elemental_blank" or "elemental_full"
+  - c5_starting_point:      "elemental_blank"
+  - c5_admin_email:         "info@example.com"
+  - c5_admin_pass:          "site_password"
+  - c5_locale:              "ja_JP"
+  - c5_from_email:          "info@example.com"
+  - c5_from_name:           "From Email Name"
+  - c5_load_balancer:       "no" # (yes / no)
+
+# NewRelic Setting
+## Use NewRelic(yes / no)
+  - use_newrelic:           "no"
+## Use NewRelic-PHP(yes / no)
+  - use_newrelicphp:        "no"
+## NewRelic License
+  - newrelic_licensekey:    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+## NewRelic AppName
+  - newrelic_appname:       "PHP Application_name"
+
+# Running roles
+  roles:
+  - role: default_setup
+  - role: add_users
+    when: if_add_users=="yes"
+  - role: apache
+    when: webserver_handle=="apache"
+  - role: nginx
+    when: webserver_handle=="nginx"
+  - role: web_dummy
+  - role: mysql_client
+    when: db_environment in ['mysql', 'mysql-client', 'mariadb-client']
+  - role: mysql_server
+    when: db_environment=="mysql"
+  - role: mariadb_repo
+    when: db_environment in ['mariadb', 'mariadb-client']
+#  - role: mariadb_client
+#    when: db_environment in ['mariadb', 'mariadb-client']
+  - role: mariadb_server
+    when: db_environment=="mariadb"
+  - role: mysql_appdb
+  - role: concrete5
+  - role: basic_auth
+    when: use_basic_auth=="yes"
+  - role: newrelic
+    when: use_newrelic=="yes"
+  - role: newrelic-php
+    when: use_newrelicphp=="yes"

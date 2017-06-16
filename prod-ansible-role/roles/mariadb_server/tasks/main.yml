@@ -1,0 +1,12 @@
+- name: Install MariaDB Server
+  yum: name={{item}} state=installed
+  with_items:
+    - MariaDB-server
+    - MariaDB-client
+  register: result
+- name: Install python mysqlmodule
+  pip: name=mysql state=latest
+- name: Start mysqld
+  service: name=mysqld state=started enabled=yes
+
+- include: set_mysqlroot.yml

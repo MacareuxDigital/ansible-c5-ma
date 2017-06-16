@@ -1,0 +1,17 @@
+<VirtualHost *:80>
+  ServerName dummy
+
+  DirectoryIndex index.php index.html
+
+  CustomLog /var/log/httpd/dummy-access_log combined
+  ErrorLog  /var/log/httpd/dummy-error_log
+
+  DocumentRoot /var/www/html
+
+  <Directory "/var/www/html">
+    AllowOverride All
+    Options FollowSymLinks
+    Options -Indexes
+    Require all granted
+  </Directory>
+</VirtualHost>

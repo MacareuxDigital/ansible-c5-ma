@@ -1,0 +1,18 @@
+- name: CreateDB
+  mysql_db:
+    name={{ mysql_dbname }}
+    state=present
+    login_user={{ mysql_loginuser }}
+    login_password={{ mysql_loginpass }}
+    login_host={{ mysql_loginhost }}
+- name: CreateUser
+  mysql_user:
+    name={{ mysql_username }}
+    state=present
+    host={{ item }}
+    password={{ mysql_userpass }}
+    priv={{mysql_dbname}}.*:ALL,GRANT
+    login_user={{ mysql_loginuser }}
+    login_password={{ mysql_loginpass }}
+    login_host={{ mysql_loginhost }}
+  with_items: "{{ mysql_userpermitedhost }}"

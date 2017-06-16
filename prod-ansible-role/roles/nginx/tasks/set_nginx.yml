@@ -1,0 +1,9 @@
+- name: Create Nginx CacheDir
+  file: path=/var/cache/nginx/fastcgi_cache state=directory
+  notify: Restart Nginx
+- name: Replace Nginx config
+  template: src=nginx.conf.{{aws_instance_type}}.j2 dest=/etc/nginx/nginx.conf
+  notify: Restart Nginx
+- name: Adding Spam & Port Scanner Block
+  template: src=deny_spambot.j2 dest=/etc/nginx/default.d/deny_spambot.conf
+  notify: Restart Nginx

@@ -1,0 +1,35 @@
+<?php
+$remoteIp = $_SERVER['REMOTE_ADDR'];
+
+return [
+    'security' => [
+        'trusted_proxies' => [
+            'ips' => [$remoteIp]
+        ],
+        'session' => [
+            'invalidate_on_ip_mismatch' => false
+        ],
+    ],
+    'email'             => [
+        'enabled' => true,
+        'default' => [
+            'address' => '{{ c5_from_email }}',
+            'name'    => '{{ c5_from_name }}'
+        ],
+        'form_block' => [
+            'address' => '{{ c5_from_email }}',
+            'name'    => '{{ c5_from_name }}'
+        ],
+        'forgot_password' => [
+            'address' => '{{ c5_from_email }}',
+            'name'    => '{{ c5_from_name }}'
+        ],
+        'validate_registration' => [
+            'address' => '{{ c5_from_email }}',
+            'name'    => '{{ c5_from_name }}'
+        ]
+    ],
+    'misc'              => [
+        'app_version_display_in_header' => false,
+    ],
+];

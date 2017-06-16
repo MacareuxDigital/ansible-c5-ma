@@ -1,0 +1,32 @@
+- name: Install Apache&PHP
+  yum: name={{item}} state=latest
+  with_items:
+  - "httpd24"
+  - "php70"
+  - "php70-devel"
+  - "php70-cli"
+  - "php70-gd"
+  - "php70-mbstring"
+  - "php70-pecl-memcached"
+  - "php70-mysqlnd"
+  - "php70-xml"
+  - "php70-opcache"
+  - "php70-mcrypt"
+  - "php70-zip"
+  - "jq"
+
+- name: Start httpd
+  service: name=httpd enabled=yes
+
+- name: Add User to Apache-group
+  user: name={{ item }} groups=apache state=present
+  with_items: "{{ add_users }}"
+
+- name: Add Apache to User-group
+  user: name=apache groups={{ item }} state=present
+  with_items: "{{ add_users }}"
+
+- include: set_php.yml
+- include: set_apache.yml
+- include: set_apache-vhosts.yml
+- include: set_htaccess.yml

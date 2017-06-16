@@ -1,0 +1,12 @@
+- name: Install newrelic repo
+  yum: name="http://yum.newrelic.com/pub/newrelic/el5/x86_64/newrelic-repo-5-3.noarch.rpm" state=present
+  ignore_errors: True
+- name: Install newrelic-sysmond
+  yum: name="newrelic-sysmond" state=latest
+  register: result
+- name: sysmond Add License
+  shell: nrsysmond-config --set license_key={{ newrelic_licensekey }}
+  notify: Restart newrelic-sysmond
+  when: result.changed == True
+- name: Chkconfig on newrelic-sysmond
+  service: name=newrelic-sysmond enabled=yes

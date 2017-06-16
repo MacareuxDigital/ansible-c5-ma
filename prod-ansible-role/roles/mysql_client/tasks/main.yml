@@ -1,0 +1,10 @@
+- name: Install mysql
+  yum: name={{item}} state=latest
+  with_items:
+  - "mysql56"
+  - mysql56-common
+  - mysql56-devel
+  - mysql56-libs
+  register: result
+- name: Install python mysqlmodule
+  pip: name=mysql state=latest

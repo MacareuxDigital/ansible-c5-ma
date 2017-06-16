@@ -1,0 +1,28 @@
+- name: set hostname
+  hostname: name={{server_name}}
+- name: set locale to /etc/cloud/cloud.cfg
+  lineinfile: 'dest=/etc/cloud/cloud.cfg line="locale: {{locale}}"'
+- name: set repo_upgrade to /etc/cloud/cloud.cfg
+  lineinfile: 'dest=/etc/cloud/cloud.cfg regexp="repo_upgrade\:" line="repo_upgrade: {{repo_upgrade}}"'
+- name: set locale to /etc/sysconfig/i18n
+  replace: >
+    dest=/etc/sysconfig/i18n
+    regexp='^LANG=en_US\.UTF-8'
+    replace='LANG={{locale}}'
+- name: set zone to /etc/sysconfig/clock
+  replace: >
+    dest=/etc/sysconfig/clock
+    regexp='^ZONE=\"UTC\"'
+    replace='ZONE="{{zone}}"'
+- name: set localtime
+  file: >
+    src={{zoneinfo_path}}
+    dest=/etc/localtime
+    state=link
+    force=yes
+- name: Apply All Updates
+  yum: name=* state=latest
+
+- include: install_util.yml
+- include: install_extra.yml
+- include: initialize_etckeeper.yml

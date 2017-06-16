@@ -1,0 +1,22 @@
+AuthType Basic
+AuthName "Input your ID and Password."
+AuthUserFile {{ vhost_docroot }}{{ vhost_domain }}/.htpasswd
+require valid-user
+
+# AccessControl UserAgent
+SetEnvIfNoCase User-Agent "OpenVAS" ua_key=on
+SetEnvIfNoCase User-Agent "Nessus" ua_key=on
+SetEnvIfNoCase User-Agent "Nikto" ua_key=on
+
+order allow,deny
+allow from all
+deny from env=ua_key
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteBase /
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME}/index.html !-f
+	RewriteCond %{REQUEST_FILENAME}/index.php !-f
+	RewriteRule . index.php [L]
+</IfModule>

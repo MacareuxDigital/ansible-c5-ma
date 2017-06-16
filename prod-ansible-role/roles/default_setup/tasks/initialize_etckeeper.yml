@@ -1,0 +1,9 @@
+- name: Checke Initialize
+  stat: path=/etc/.git
+  register: result
+- name: Initialize etckeeper
+  command: etckeeper init
+  when: result.stat.exists == False
+- name: FirstCommit etckeeper
+  command: etckeeper commit "First commit"
+  when: result.stat.exists == False

@@ -1,0 +1,38 @@
+- name: Set DefaultCharset
+  lineinfile: >
+    dest=/etc/httpd/conf/httpd.conf
+    state=present
+    regexp="^AddDefaultCharset"
+    line="AddDefaultCharset Off"
+  notify: Restart Apache
+- name: Set Apache User
+  lineinfile: >
+    dest=/etc/httpd/conf/httpd.conf
+    state=present
+    regexp="^User"
+    line="User {{c5dir_user}}"
+  notify: Restart Apache
+- name: Set ServerSignature
+  lineinfile: >
+    dest=/etc/httpd/conf/httpd.conf
+    state=present
+    regexp="^ServerSignature"
+    line="ServerSignature Off"
+  notify: Restart Apache
+- name: Set ServerTokens
+  lineinfile: >
+    dest=/etc/httpd/conf/httpd.conf
+    state=present
+    regexp="^ServerTokens"
+    line="ServerTokens Prod"
+  notify: Restart Apache
+- name: Set HostnameLookups
+  lineinfile: >
+    dest=/etc/httpd/conf/httpd.conf
+    state=present
+    regexp="^HostnameLookups"
+    line="HostnameLookups Off"
+  notify: Restart Apache
+- name: Add Additional config
+  template: src=additional-setting.conf.{{aws_instance_type}}.j2 dest=/etc/httpd/conf.d/additional-setting.conf
+  notify: Restart Apache

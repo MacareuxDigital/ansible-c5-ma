@@ -1,0 +1,6 @@
+- name: Add htaccess with Basic Auth
+  template: src=htaccess_basicauth.j2 dest={{ vhost_docroot }}{{ vhost_domain }}/.htaccess
+  when: use_basic_auth=="yes"
+- name: Add htaccess
+  template: src=htaccess.j2 dest={{ vhost_docroot }}{{ vhost_domain }}/.htaccess
+  when: use_basic_auth!="yes"

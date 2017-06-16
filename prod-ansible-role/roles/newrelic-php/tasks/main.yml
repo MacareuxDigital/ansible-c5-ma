@@ -1,0 +1,45 @@
+- name: Install newrelic-php
+  yum: name="newrelic-php5" state=latest
+
+- name: newrelic-php5 Add Licensekey
+  lineinfile: >
+    dest=/etc/php.d/newrelic.ini
+    state=present
+    regexp="^newrelic.license ="
+    line="newrelic.license = {{ newrelic_licensekey }}"
+  notify: Restart Apache
+  when: webserver_handle=="apache"
+- name: newrelic-php5 Add AppName
+  lineinfile: >
+    dest=/etc/php.d/newrelic.ini
+    state=present
+    regexp="^newrelic.appname ="
+    line="newrelic.appname = {{ newrelic_appname }}"
+  notify: Restart Apache
+  when: webserver_handle=="apache"
+
+- name: newrelic-php5 Add Licensekey
+  lineinfile: >
+    dest=/etc/php.d/newrelic.ini
+    state=present
+    regexp="^newrelic.license ="
+    line="newrelic.license = {{ newrelic_licensekey }}"
+  notify: Restart php-fpm
+  when: webserver_handle=="nginx"
+- name: newrelic-php5 Add AppName
+  lineinfile: >
+    dest=/etc/php.d/newrelic.ini
+    state=present
+    regexp="^newrelic.appname ="
+    line="newrelic.appname = {{ newrelic_appname }}"
+  notify: Restart php-fpm
+  when: webserver_handle=="nginx"
+
+- name: check newrelic-daemon Installed
+  stat: path=/etc/newrelic/newrelic.cfg
+  register: result
+
+- name: newrelic-daemon config copy
+  shell: cp /etc/newrelic/newrelic.cfg.template /etc/newrelic/newrelic.cfg
+  notify: Restart newrelic-daemon
+  when: result.stat.exists == False

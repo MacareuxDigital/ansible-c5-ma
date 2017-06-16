@@ -1,0 +1,35 @@
+- name: Install Nginx&PHP
+  yum: name={{ item }} state=latest
+  with_items:
+  - "nginx"
+  - "php70"
+  - "php70-devel"
+  - "php70-cli"
+  - "php70-gd"
+  - "php70-mbstring"
+  - "php70-pecl-memcached"
+  - "php70-mysqlnd"
+  - "php70-xml"
+  - "php70-opcache"
+  - "php70-mcrypt"
+  - "php70-fpm"
+  - "php70-zip"
+  - "jq"
+
+- name: Start Nginx
+  service: name=nginx state=started enabled=yes
+- name: Start php-fpm
+  service: name=php-fpm state=started enabled=yes
+
+- name: Add User to Nginx-group
+  user: name={{ item }} groups=nginx state=present
+  with_items: "{{ add_users }}"
+
+- name: Add Nginx to User-group
+  user: name=nginx groups={{ item }} state=present
+  with_items: "{{ add_users }}"
+
+- include: set_php-fpm.yml
+- include: set_php.yml
+- include: set_nginx.yml
+- include: set_nginx-vhost.yml

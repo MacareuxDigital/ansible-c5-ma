@@ -1,0 +1,9 @@
+- name: Install mysql
+  yum: name={{item}} state=latest
+  with_items:
+  - mysql56-server
+  register: result
+- name: Start mysqld
+  service: name=mysqld state=started enabled=yes
+
+- include: set_mysqlroot.yml
