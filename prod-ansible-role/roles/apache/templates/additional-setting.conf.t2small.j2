@@ -14,12 +14,4 @@ MaxClients          512
 MaxRequestsPerChild  10
 </IfModule>
 
-<Files ~ "^\.git">
-    Order allow,deny
-    Deny from all
-</Files>
-
-<Directorymatch "^/.*/\.git/">
-    Order deny,allow
-    Deny from all
-</Directorymatch>
+RedirectMatch 404 /\..*$
