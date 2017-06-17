@@ -1,0 +1,5 @@
+- name: Create symbolic link from user home directory to vhost's www
+  file:
+    src: "{{ vhost_docroot }}{{ vhost_domain }}"
+    dest: "/home/{{ c5dir_user }}/{{ vhost_domain }}"
+    state: link

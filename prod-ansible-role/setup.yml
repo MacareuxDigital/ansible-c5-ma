@@ -118,3 +118,4 @@
     when: use_newrelic=="yes"
   - role: newrelic-php
     when: use_newrelicphp=="yes"
+  - role: create_symlink_www
