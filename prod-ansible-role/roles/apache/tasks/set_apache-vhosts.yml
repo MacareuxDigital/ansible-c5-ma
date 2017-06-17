@@ -4,7 +4,7 @@
   template: src=vhost_default.conf.j2 dest=/etc/httpd/conf.d/00_vhost_{{server_name}}.conf
   notify: Restart Apache
 - name: Create VirtualHost Dir
-  file: path={{vhost_docroot}}{{vhost_domain}} state=directory
+  file: path={{vhost_docroot}}{{vhost_domain}} state=directory owner={{c5dir_user}} group={{c5dir_group}}
 - name: Create VirtualHost Config
   template: src=vhost_orig.conf.j2 dest=/etc/httpd/conf.d/10_vhost_{{vhost_domain}}.conf
   notify: Restart Apache

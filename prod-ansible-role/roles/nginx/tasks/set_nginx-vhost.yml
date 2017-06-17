@@ -4,7 +4,7 @@
   template: src=vhost_default.conf.j2 dest=/etc/nginx/conf.d/00_vhost_{{server_name}}.conf
   notify: Restart Nginx
 - name: Create VirtualHost Dir
-  file: path={{ vhost_docroot }}{{ vhost_domain }} state=directory
+  file: path={{ vhost_docroot }}{{ vhost_domain }} state=directory owner={{c5dir_user}} group={{c5dir_group}}
 - name: Create VirtualHost Config with Basic Auth
   template: src=vhost_orig_basicauth.conf.j2 dest=/etc/nginx/conf.d/10_vhost_{{ vhost_domain }}.conf
   when: use_basic_auth=="yes"
@@ -13,3 +13,4 @@
   template: src=vhost_orig.conf.j2 dest=/etc/nginx/conf.d/10_vhost_{{ vhost_domain }}.conf
   when: use_basic_auth!="yes"
   notify: Restart Nginx
+
