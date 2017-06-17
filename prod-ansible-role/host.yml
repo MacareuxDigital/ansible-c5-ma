@@ -1,5 +1,6 @@
 [servers]
-192.168.0.1 server_name="hoge01.hogehoge.com"
+192.168.0.1 server_name="ex1.example.com"
 [all:vars]
 ansible_ssh_user=ec2-user
 ansible_ssh_private_key_file=/PATH/TO/ec2-usr-key.pem
+# ansible_ssh_pass="PASSWORD"
