@@ -16,11 +16,6 @@
   - "php70-zip"
   - "jq"
 
-- name: Start Nginx
-  service: name=nginx state=started enabled=yes
-- name: Start php-fpm
-  service: name=php-fpm state=started enabled=yes
-
 - name: Add User to Nginx-group
   user: name={{ item }} groups=nginx state=present
   with_items: "{{ add_users }}"
@@ -33,3 +28,9 @@
 - include: set_php.yml
 - include: set_nginx.yml
 - include: set_nginx-vhost.yml
+
+- name: Start Nginx
+  service: name=nginx state=started enabled=yes
+- name: Start php-fpm
+  service: name=php-fpm state=started enabled=yes
+

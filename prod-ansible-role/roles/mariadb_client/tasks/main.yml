@@ -1,7 +1,11 @@
 - name: Install MariaDB Client
   yum: name={{item}} state=installed
   with_items:
+    - MariaDB-devel
     - MariaDB-client
   register: result
+- name: Install pip
+  when: aws_awslinux=="no"
+  yum: name=python-pip state=latest
 - name: Install python mysqlmodule
   pip: name=mysql state=latest

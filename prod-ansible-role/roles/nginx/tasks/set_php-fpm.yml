@@ -40,7 +40,19 @@
     regexp="^;listen\.mode = 0666"
     replace="listen.mode = 0660"
   notify: Restart php-fpm
+
+# Amazon Linux with PHP 7.0
 - name: Change Permission session_dir
-  file: path=/var/lib/php/7.0/session owner=root group=nginx
+  file: path=/var/lib/php/7.0/session owner=root group={{c5dir_group}}
+  when: aws_awslinux=="yes"
 - name: Change Permission wsdlcache_dir
-  file: path=/var/lib/php/7.0/wsdlcache owner=root group=nginx
+  file: path=/var/lib/php/7.0/wsdlcache owner=root group={{c5dir_group}}
+  when: aws_awslinux=="yes"
+# CentOS7 with webtactics repo
+- name: Change Permission session_dir
+  file: path=/var/lib/php/session owner=root group={{c5dir_group}}
+  when: aws_awslinux=="no"
+- name: Change Permission wsdlcache_dir
+  file: path=/var/lib/php/wsdlcache owner=root group={{c5dir_group}}
+  when: aws_awslinux=="no"
+

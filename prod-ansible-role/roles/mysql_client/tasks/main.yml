@@ -6,5 +6,8 @@
   - mysql56-devel
   - mysql56-libs
   register: result
+- name: Install pip
+  when: aws_awslinux=="no"
+  yum: name=python-pip state=latest
 - name: Install python mysqlmodule
   pip: name=mysql state=latest
