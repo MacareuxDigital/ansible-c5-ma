@@ -1,4 +1,4 @@
-- name: Checke Initialize
+- name: Check if etckeeper is already in initialized
   stat: path=/etc/.git
   register: result
 - name: Initialize etckeeper
