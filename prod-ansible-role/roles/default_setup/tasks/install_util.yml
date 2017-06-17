@@ -1,4 +1,4 @@
-- name: install util
+- name: Install utilities
   yum: name={{item}} state=latest
   with_items:
   - "python-devel"
@@ -17,4 +17,13 @@
   - "python-setuptools"
   - "curl"
   - "curl-devel"
+- name: Install mail
+  yum: name={{item}} state=latest
+  when: centos_version=="6"
+  with_items:
   - "mail"
+- name: Install mailx
+  yum: name={{item}} state=latest
+  when: centos_version=="7"
+  with_items:
+  - "mailx"

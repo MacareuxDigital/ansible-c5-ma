@@ -1,28 +1,26 @@
-- name: set hostname
+- name: Set hostname to {{server_name}}
   hostname: name={{server_name}}
-- name: set locale to /etc/cloud/cloud.cfg
-  lineinfile: 'dest=/etc/cloud/cloud.cfg line="locale: {{locale}}"'
-- name: set repo_upgrade to /etc/cloud/cloud.cfg
-  lineinfile: 'dest=/etc/cloud/cloud.cfg regexp="repo_upgrade\:" line="repo_upgrade: {{repo_upgrade}}"'
-- name: set locale to /etc/sysconfig/i18n
+- include: initialize_amazonlinux.yml
+  when: aws_awslinux=="yes"
+- name: Set locale to /etc/sysconfig/i18n
+  when: centos_version=="6"
   replace: >
     dest=/etc/sysconfig/i18n
     regexp='^LANG=en_US\.UTF-8'
     replace='LANG={{locale}}'
-- name: set zone to /etc/sysconfig/clock
-  replace: >
-    dest=/etc/sysconfig/clock
-    regexp='^ZONE=\"UTC\"'
-    replace='ZONE="{{zone}}"'
-- name: set localtime
-  file: >
-    src={{zoneinfo_path}}
-    dest=/etc/localtime
-    state=link
-    force=yes
+- name: set locale to {{locale}}
+  when: centos_version=="7"
+  shell: localectl set-locale LANG={{locale}} 
+  register: set_locale
+  changed_when: false
+- name: Set timezone to {{zone}}
+  changed_when: false
+  timezone:
+    name: "{{zone}}"
+- include: install_repo_centos7.yml
+  when: centos_version=="7" and aws_awslinux == "no"
 - name: Apply All Updates
   yum: name=* state=latest
-
 - include: install_util.yml
 - include: install_extra.yml
 - include: initialize_etckeeper.yml
