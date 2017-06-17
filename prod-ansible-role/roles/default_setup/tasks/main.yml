@@ -24,3 +24,5 @@
 - include: install_util.yml
 - include: install_extra.yml
 - include: initialize_etckeeper.yml
+- include: initialize_fiewwall_centos7.yml
+  when: centos_version=="7" and aws_awslinux == "no"

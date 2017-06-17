@@ -1,0 +1,6 @@
+- name: Open http port
+  shell: firewall-cmd --add-service=http --zone=public --permanent
+- name: Open https port
+  shell: firewall-cmd --add-service=https --zone=public --permanent
+- name: Restart firewall
+  shell: firewall-cmd --reload
