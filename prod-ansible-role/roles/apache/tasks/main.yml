@@ -26,6 +26,7 @@
   user: name=apache groups={{ item }} state=present
   with_items: "{{ add_users }}"
 
+- include: set_php-fpm.yml
 - include: set_php.yml
 - include: set_apache.yml
 - include: set_apache-vhosts.yml
