@@ -2,6 +2,18 @@
   become: yes
 
   vars:
+
+# Server Locale (en_US.UTF8)
+  - locale: "ja_JP.UTF-8"
+  - zone: "Asia/Tokyo"
+
+# Is this AmazonLinux? (yes / no)
+  - aws_awslinux:           "yes"
+  - aws_repo_upgrade: "none"
+
+# Is this CentOS? (6 / 7)
+  - centos_version: "7"
+
 # Instance Type (t2micro / t2small)
   - aws_instance_type:      "t2small"
 
@@ -14,14 +26,14 @@
     - "c5juser"
 ## Directory & WebServer Owner Settings
   - c5dir_user:             "c5juser"
-  - c5dir_group:            "apache"
+  - c5dir_group:            "apache" # (apache/nginx)
 
 # WebServer Setting
 ## Use Webserver Apache or Nginx (apache / nginx)
   - webserver_handle:       "apache"
 
 ## Virtualhost Setting
-  - vhost_domain:           "www.hogehoge.com"
+  - vhost_domain:           "www.example.com"
   - vhost_docroot:          "/var/www/vhosts/"
 
 ## Basic Auth (yes / no)
@@ -89,13 +101,13 @@
     when: webserver_handle=="nginx"
   - role: web_dummy
   - role: mysql_client
-    when: db_environment in ['mysql', 'mysql-client', 'mariadb-client']
+    when: db_environment in ['mysql', 'mysql-client']
   - role: mysql_server
     when: db_environment=="mysql"
   - role: mariadb_repo
     when: db_environment in ['mariadb', 'mariadb-client']
-#  - role: mariadb_client
-#    when: db_environment in ['mariadb', 'mariadb-client']
+  - role: mariadb_client
+    when: db_environment in ['mariadb', 'mariadb-client']
   - role: mariadb_server
     when: db_environment=="mariadb"
   - role: mysql_appdb
