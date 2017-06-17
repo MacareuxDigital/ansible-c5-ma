@@ -1,5 +1,6 @@
 <VirtualHost *:80>
   ServerName {{ vhost_domain }}
+  ServerAlias www.{{ vhost_domain }}
 
   DirectoryIndex index.php index.html
 
