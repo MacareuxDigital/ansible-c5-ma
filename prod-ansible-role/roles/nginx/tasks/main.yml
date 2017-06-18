@@ -1,4 +1,5 @@
-- name: Install Nginx&PHP
+- name: Install Nginx and PHP for Amazon Linux
+  when: aws_awslinux=="yes"
   yum: name={{ item }} state=latest
   with_items:
   - "nginx"
@@ -14,6 +15,29 @@
   - "php70-mcrypt"
   - "php70-fpm"
   - "php70-zip"
+  - "jq"
+
+- name: Install Nginx and PHP for CentOS
+  when: aws_awslinux!="yes"
+  yum: name={{ item }} state=latest
+  with_items:
+  - "nginx"
+  - "php71w"
+  - "php71w-common"
+  - "php71w-cli"
+  - "php71w-devel"
+  - "php71w-fpm"
+  - "php71w-gd"
+  - "php71w-intl"
+  - "php71w-pecl-imagick"
+  - "php71w-pdo"
+  - "php71w-pecl-memcached"
+  - "php71w-mbstring"
+  - "php71w-mcrypt"
+  - "php71w-mysqlnd"
+  - "php71w-opcache"
+  - "php71w-soap"
+  - "php71w-xml"
   - "jq"
 
 - name: Add User to Nginx-group
