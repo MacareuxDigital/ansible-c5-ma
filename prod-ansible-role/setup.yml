@@ -99,6 +99,12 @@
 ## NewRelic AppName
   - newrelic_appname:       "PHP Application_name"
 
+# You may get the following error and not getting the proper responce from New Relic PHP
+# warning: daemon connect(fd=XX uds=/tmp/.newrelic.sock) returned -1 errno=ENOENT. Failed to connect to the newrelic-daemon. Please make sure that there is a properly configured newrelic-daemon running. For additional assistance, please see: https://newrelic.com/docs/php/newrelic-daemon-startup-modes
+# Try the following
+# $ sudo systemctl stop newrelic-daemon
+# $ sudo rm /etc/newrelic/newrelic.cfg
+
 # Mackerel Setting
 ## Use Mackerel (yes / no)
   - use_mackerel:           "no"
