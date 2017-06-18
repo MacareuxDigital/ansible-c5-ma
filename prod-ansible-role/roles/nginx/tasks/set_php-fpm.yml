@@ -51,8 +51,8 @@
 # CentOS7 with webtactics repo
 - name: Change Permission session_dir
   file: path=/var/lib/php/session owner=root group={{c5dir_group}}
-  when: aws_awslinux=="no"
+  when: aws_awslinux!="yes"
 - name: Change Permission wsdlcache_dir
   file: path=/var/lib/php/wsdlcache owner=root group={{c5dir_group}}
-  when: aws_awslinux=="no"
+  when: aws_awslinux!="yes"
 

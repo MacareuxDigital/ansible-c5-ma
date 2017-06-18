@@ -18,11 +18,11 @@
   timezone:
     name: "{{zone}}"
 - include: install_repo_centos7.yml
-  when: centos_version=="7" and aws_awslinux != "yes"
+  when: centos_version=="7" and aws_awslinux!="yes"
 - name: Apply All Updates
   yum: name=* state=latest
 - include: install_util.yml
 - include: install_extra.yml
 - include: initialize_etckeeper.yml
 - include: initialize_firewall_centos7.yml
-  when: centos_version=="7" and aws_awslinux != "yes"
+  when: centos_version=="7" and aws_awslinux!="yes"

@@ -5,7 +5,7 @@
     - MariaDB-client
   register: result
 - name: Install pip
-  when: aws_awslinux=="no"
+  when: aws_awslinux!="yes"
   yum: name=python-pip state=latest
 - name: Install python mysqlmodule
   pip: name=mysql state=latest
