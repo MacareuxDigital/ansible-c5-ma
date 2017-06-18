@@ -1,0 +1,15 @@
+<?php
+
+return array(
+    'default-connection' => 'concrete',
+    'connections' => array(
+        'concrete' => array(
+            'driver' => 'c5_pdo_mysql',
+            'server' => '{{ mysql_loginhost }}',
+            'database' => '{{ mysql_dbname }}',
+            'username' => '{{ mysql_username }}',
+            'password' => '{{ mysql_userpass }}',
+            'charset' => 'utf8',
+        ),
+    ),
+);

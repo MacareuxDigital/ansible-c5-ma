@@ -18,3 +18,7 @@ error_log
 # ignore SSH key pair except sample file
 /prod-ansible-role/roles/add_users/files/
 !/prod-ansible-role/roles/add_users/files/SAMPLE*
+
+# ignore backup file except sample file
+/prod-ansible-role/roles/concrete5_migration/files/*
+!/prod-ansible-role/roles/concrete5_migration/files/SAMPLE*

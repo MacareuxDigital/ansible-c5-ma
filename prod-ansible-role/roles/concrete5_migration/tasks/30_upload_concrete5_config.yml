@@ -1,0 +1,3 @@
+- name: Add concrete5 new database config file
+  template: src=config_concrete_database.php.j2 dest={{ vhost_docroot }}{{ vhost_domain }}/application/config/database.php owner={{c5dir_user}} group={{c5dir_group}}
+  when: concrete5copy.stat.exists == True

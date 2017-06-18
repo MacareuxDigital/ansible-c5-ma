@@ -1,0 +1,6 @@
+- name: Delete backup zip file
+  file: path="{{vhost_docroot}}{{vhost_domain}}/{{c5_backup_zip_filename}}.zip" state=absent
+  when: concrete5copy.stat.exists == True
+- name: Delete backup SQL file
+  file: path="{{vhost_docroot}}{{vhost_domain}}/{{c5_backup_zip_filename}}.sql" state=absent
+  when: concrete5copy.stat.exists == True

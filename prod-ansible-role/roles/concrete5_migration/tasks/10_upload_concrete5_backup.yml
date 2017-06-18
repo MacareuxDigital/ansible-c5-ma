@@ -1,0 +1,22 @@
+- name: Upload and unzip concrete5 Backup file
+  unarchive: src="{{c5_backup_zip_filename}}.zip" dest="{{vhost_docroot}}{{vhost_domain}}"
+  when: result.stat.exists == False
+- name: Check concrete5 Installed
+  stat: path={{vhost_docroot}}{{vhost_domain}}/application/config/database.php
+  register: concrete5copy
+- name: Chenge Directory Permission (packeges)
+  file: path="{{vhost_docroot}}{{vhost_domain}}/packages/" state=directory recurse=yes mode=0775
+  when: concrete5copy.stat.exists == True
+- name: Chenge Directory Permission (files)
+  file: path="{{vhost_docroot}}{{vhost_domain}}/application/files/" state=directory recurse=yes mode=0775
+  when: concrete5copy.stat.exists == True
+- name: Chenge Directory Permission (config)
+  file: path="{{vhost_docroot}}{{vhost_domain}}/application/config/" state=directory recurse=yes mode=0775
+  when: concrete5copy.stat.exists == True
+- name: Chenge sitemap.xml permission
+  file: path="{{vhost_docroot}}{{vhost_domain}}/sitemap.xml" mode=0775
+  when: concrete5copy.stat.exists == True
+  ignore_errors: yes
+- name: Chenge concrete5 CLI permission
+  file: path="{{vhost_docroot}}{{vhost_domain}}/concrete/bin/concrete5" mode=0775
+  when: concrete5copy.stat.exists == True

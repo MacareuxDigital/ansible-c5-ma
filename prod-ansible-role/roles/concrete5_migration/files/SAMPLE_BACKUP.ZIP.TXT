@@ -1,0 +1,4 @@
+Sample backup file
+
+Read and prepare the backup file using ALL option of the following.
+https://github.com/katzueno/concrete5-backup-shell/
