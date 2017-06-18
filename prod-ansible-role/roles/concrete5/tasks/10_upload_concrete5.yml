@@ -1,9 +1,6 @@
 - name: Upload and unzip concrete5.zip
   unarchive: src=concrete.zip dest="{{vhost_docroot}}{{vhost_domain}}"
   when: result.stat.exists == False
-- name: Change Directory Parmission (All)
-  file: path="{{vhost_docroot}}{{vhost_domain}}" state=directory recurse=yes owner={{c5dir_user}} group={{c5dir_group}}
-  when: result.stat.exists == False
 - name: Chenge Directory Permission (packeges)
   file: path="{{vhost_docroot}}{{vhost_domain}}/packages/" state=directory recurse=yes mode=0775
   when: result.stat.exists == False
@@ -12,4 +9,7 @@
   when: result.stat.exists == False
 - name: Chenge Directory Permission (config)
   file: path="{{vhost_docroot}}{{vhost_domain}}/application/config/" state=directory recurse=yes mode=0775
+  when: result.stat.exists == False
+- name: Change concrete5 CLI permission
+  file: path="{{vhost_docroot}}{{vhost_domain}}/concrete/bin/concrete5" mode=0775
   when: result.stat.exists == False
