@@ -20,7 +20,7 @@
   when: aws_awslinux!="yes"
   yum: name={{item}} state=latest
   with_items:
-  - "httpd24"
+  - "httpd"
   - "php71w"
   - "php71w-common"
   - "php71w-cli"
@@ -41,7 +41,9 @@
 
 
 - name: Start httpd
-  service: name=httpd enabled=yes
+  service: name=httpd state=started enabled=yes
+- name: Start php-fpm
+  service: name=php-fpm state=started enabled=yes
 
 - name: Add User to Apache-group
   user: name={{ item }} groups=apache state=present
