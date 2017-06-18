@@ -1,5 +1,5 @@
-- name: Install concrete5
-  shell: sh mysql -h "{{ mysql_loginhost }}" -u "{{ mysql_userpass }}" --password="{{ mysql_userpass }}" "{{ mysql_dbname }}" < {{vhost_docroot}}{{vhost_domain}}/{{c5_backup_zip_filename}}.sql
+- name: Import concrete5 Database
+  shell: mysql -h "{{ mysql_loginhost }}" -u "{{ mysql_username }}" --password="{{ mysql_userpass }}" "{{ mysql_dbname }}" < {{vhost_docroot}}{{vhost_domain}}/{{c5_backup_zip_filename}}.sql
   when: concrete5copy.stat.exists == True
 - name: Chenge Directory Permission(files)
   file: path="{{vhost_docroot}}{{vhost_domain}}/application/files/" state=directory recurse=yes owner={{c5dir_user}} group={{c5dir_group}} mode=0775

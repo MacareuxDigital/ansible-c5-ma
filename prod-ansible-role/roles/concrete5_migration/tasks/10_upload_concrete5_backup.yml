@@ -1,7 +1,7 @@
 - name: Upload and unzip concrete5 Backup file
   unarchive: src="{{c5_backup_zip_filename}}.zip" dest="{{vhost_docroot}}{{vhost_domain}}"
   when: result.stat.exists == False
-- name: Check concrete5 Installed
+- name: Check if concrete5 files exist
   stat: path={{vhost_docroot}}{{vhost_domain}}/application/config/database.php
   register: concrete5copy
 - name: Chenge Directory Permission (packeges)

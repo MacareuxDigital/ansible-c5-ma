@@ -1,4 +1,4 @@
-- name: Check if concrete5 Installed
+- name: Check if concrete5 files exist
   stat: path={{vhost_docroot}}{{vhost_domain}}/application/config/database.php
   register: result
 
