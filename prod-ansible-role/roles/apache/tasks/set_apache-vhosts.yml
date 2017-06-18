@@ -1,5 +1,5 @@
-- name: Create DefaultVirtualHost Dir
-  file: path={{vhost_docroot}}{{server_name}} state=directory
+#- name: Create DefaultVirtualHost Dir
+#  file: path={{vhost_docroot}}{{server_name}} state=directory
 - name: Create DefaultVirtualHost Config
   template: src=vhost_default.conf.j2 dest=/etc/httpd/conf.d/00_vhost_{{server_name}}.conf
   notify: Restart Apache
