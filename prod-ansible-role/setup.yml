@@ -4,15 +4,15 @@
   vars:
 
 # Server Locale (en_US.UTF8)
-  - locale: "ja_JP.UTF-8"
-  - zone: "Asia/Tokyo"
+  - locale:                 "ja_JP.UTF-8"
+  - zone:                   "Asia/Tokyo"
 
 # Is this AmazonLinux? (yes / no)
   - aws_awslinux:           "yes"
-  - aws_repo_upgrade: "none"
+  - aws_repo_upgrade:       "none"
 
 # Is this CentOS? (6 / 7)
-  - centos_version: "7"
+  - centos_version:         "7"
 
 # Instance Type (t2micro / t2small)
   - aws_instance_type:      "t2small"
@@ -67,7 +67,16 @@
     - "localhost"
     #- "10.0.1.100" # Your EC Instance's Private IP If
 
+# concrete5 Migration (yes / No ) + filename (without extension)
+## Please prepare the concrete5 backup file using ALL option of https://github.com/katzueno/concrete5-backup-shell/
+  - c5_migration:           "no"
+  - c5_backup_zip_filename: "backup_202000000000" # filename without extension. Use Katz's concrete5 backup shell
+  # make sure to place a backup file under roles/concrete5_migratioin/files
+
+
 # concrete5 Settings
+## concrete5 Installation (yes / No)
+  - c5_installation:        "no"
 ## Site Name
   - c5_sitename:            "hogehoge.com"
 ## Install Theme
@@ -81,14 +90,20 @@
   - c5_load_balancer:       "no" # (yes / no)
 
 # NewRelic Setting
-## Use NewRelic(yes / no)
+## Use NewRelic (yes / no)
   - use_newrelic:           "no"
-## Use NewRelic-PHP(yes / no)
-  - use_newrelicphp:        "no"
+## Use NewRelic-PHP (yes / no)
+  - use_newrelic_php:       "no"
 ## NewRelic License
   - newrelic_licensekey:    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ## NewRelic AppName
   - newrelic_appname:       "PHP Application_name"
+
+# Mackerel Setting
+## Use Mackerel (yes / no)
+  - use_mackerel:           "no"
+## Mackerel License
+  - mackerel_apikey:        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # Running roles
   roles:
@@ -112,10 +127,17 @@
     when: db_environment=="mariadb"
   - role: mysql_appdb
   - role: concrete5
+    when: c5_installation=="yes"
+  - role: concrete5_migration
+    when: c5_migration=="yes"
   - role: basic_auth
     when: use_basic_auth=="yes"
+  - role: newrelic_repo
+    when: use_newrelic=="yes" or use_newrelic_php=="yes"
   - role: newrelic
     when: use_newrelic=="yes"
-  - role: newrelic-php
-    when: use_newrelicphp=="yes"
+  - role: newrelic_php
+    when: use_newrelic_php=="yes"
+  - role: mackerel
+    when: use_mackerel=="yes"
   - role: create_symlink_www
