@@ -1,8 +1,8 @@
-# concrete5 Ansible to setup Apache/Nginx/MySQL/MariaDB on an AWS EC2 Amazon Linux or CentOS7
+# concrete5 Ansible to setup Apache/Nginx/PHP-FPM/MySQL/MariaDB on Amazon Linux or CentOS
 
 **Work-in-Progress**: Your input is greatly appreciated.
 
-This was originally a simple Ansible script to setup Apache or nginx, MariaDB or MySQL and Basic Auth into an EC2 instance.
+This was originally a simple Ansible script to setup Apache or nginx, MariaDB or MySQL and Basic Auth into an Amazon Linux or CentOS instance.
 
 You need to install Ansible in your PC to run.
 

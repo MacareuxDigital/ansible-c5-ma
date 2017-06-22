@@ -1,7 +1,7 @@
 # Ansibleの使い方
 
 -----
-別途 ec2-simple CloudFormation スクリプトなどで立ち上げた AWS EC2 インスタンスに、Mac から SSH 接続をし、Apache/nginx, MySQL などの設定を自動的に実行してくれるプログラムです。
+Amazon Linux や CentOS 7 に、 SSH 接続をし、Apache/Nginx, PHP-FPM, MariaDB, MySQL などの設定を自動的に実行してくれるプログラムです。
 
 ## 準備
 
