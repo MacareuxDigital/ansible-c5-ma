@@ -40,7 +40,16 @@
     regexp="^;listen\.mode = 0666"
     replace="listen.mode = 0660"
   notify: Restart php-fpm
+- name: Enable PHP-FPM status check
+  replace: >
+    dest=/etc/php-fpm.d/www.conf
+    regexp="^;pm.status_path = /status"
+    replace="pm.status_path = /status"
+  notify: Restart php-fpm
 - name: Change Permission session_dir
   file: path=/var/lib/php/session owner=root group={{c5dir_group}}
 - name: Change Permission wsdlcache_dir
   file: path=/var/lib/php/wsdlcache owner=root group={{c5dir_group}}
+- name: Disable Apache php setting
+  command: mv /etc/httpd/conf.d/php.conf /etc/httpd/conf.d/php.conf.bak
+  notify: Restart Apache

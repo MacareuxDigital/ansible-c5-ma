@@ -9,6 +9,10 @@
 
   DocumentRoot {{ vhost_docroot }}{{ vhost_domain }}
 
+  <FilesMatch \.php$>
+    SetHandler "proxy:unix:/var/run/php-fpm/www.sock|fcgi://localhost/"
+  </FilesMatch>
+
   <Directory "{{ vhost_docroot }}{{ vhost_domain }}">
     AllowOverride All
     Options FollowSymLinks

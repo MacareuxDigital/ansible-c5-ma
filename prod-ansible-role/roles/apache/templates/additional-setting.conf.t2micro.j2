@@ -5,13 +5,13 @@ MaxKeepAliveRequests 100
 
 KeepAliveTimeout 120
 
-<IfModule prefork.c>
-StartServers          5
-MinSpareServers       3
-MaxSpareServers       5
-ServerLimit         256
-MaxClients          256
-MaxRequestsPerChild  10
+<IfModule mpm_event_module>
+StartServers         5
+MinSpareThreads      75
+MaxSpareThreads      250
+ThreadsPerChild      25
+MaxRequestWorkers    400
+MaxConnectionsPerChild 0
 </IfModule>
 
 RedirectMatch 404 /\..*$

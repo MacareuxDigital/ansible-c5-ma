@@ -36,3 +36,17 @@
 - name: Add Additional config
   template: src=additional-setting.conf.{{aws_instance_type}}.j2 dest=/etc/httpd/conf.d/additional-setting.conf
   notify: Restart Apache
+- name: Change Apache from prefork to event
+  lineinfile: >-
+    dest='/etc/httpd/conf.modules.d/00-mpm.conf'
+    state=present
+    backrefs=yes
+    regexp='{{ item.regexp }}'
+    line='{{ item.line }}'
+  with_items:
+  - regexp: '^#?\s*LoadModule mpm_prefork_module modules/mod_mpm_prefork.so'
+    line: '# LoadModule mpm_prefork_module modules/mod_mpm_prefork.so'
+  - regexp: '^#?\s*LoadModule mpm_event_module modules/mod_mpm_event.so'
+    line: 'LoadModule mpm_event_module modules/mod_mpm_event.so'
+  notify: Restart Apache
+

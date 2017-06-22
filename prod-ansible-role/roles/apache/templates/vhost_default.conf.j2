@@ -1,3 +1,4 @@
+ExtendedStatus On
 <VirtualHost *:80>
   ServerName dummy
 
@@ -7,6 +8,20 @@
   ErrorLog  /var/log/httpd/dummy-error_log
 
   DocumentRoot /var/www/html
+
+  <Location /server-status>
+    SetHandler server-status
+    Order deny,allow
+    Deny from all
+    Allow from localhost
+  </Location>
+
+  <Location /status>
+    SetHandler "proxy:unix:/var/run/php-fpm/www.sock|fcgi://localhost/"
+    Order deny,allow
+    Deny from all
+    Allow from localhost
+  </Location>
 
   <Directory "/var/www/html">
     AllowOverride All
