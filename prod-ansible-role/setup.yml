@@ -11,8 +11,8 @@
   - aws_awslinux:           "yes"
   - aws_repo_upgrade:       "none"
 
-# Is this CentOS? (6 / 7)
-  - centos_version:         "7"
+# CentOS Version? (6 / 7)
+  - centos_version:         "6"
 
 # Instance Type (t2micro / t2small)
   - aws_instance_type:      "t2small"
@@ -33,7 +33,7 @@
   - webserver_handle:       "apache"
 
 ## Virtualhost Setting
-  - vhost_domain:           "www.example.com"
+  - vhost_domain:           "example.com"
   - vhost_docroot:          "/var/www/vhosts/"
 
 ## Basic Auth (yes / no)
@@ -65,7 +65,7 @@
   - mysql_userpermitedhost:
     - "127.0.0.1"
     - "localhost"
-    #- "10.0.1.100" # Your EC Instance's Private IP If
+    #- "10.0.1.100" # Your EC Instance's Private IP If any
 
 # concrete5 Migration (yes / No ) + filename (without extension)
 ## Please prepare the concrete5 backup file using ALL option of https://github.com/katzueno/concrete5-backup-shell/

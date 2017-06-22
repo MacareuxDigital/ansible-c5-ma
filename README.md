@@ -1,11 +1,12 @@
-# concrete5 Ansible to setup Apache/Nginx/MySQL/MariaDB on an AWS EC2 Amazon Linux instance
+# concrete5 Ansible to setup Apache/Nginx/MySQL/MariaDB on an AWS EC2 Amazon Linux or CentOS7
 
 **Work-in-Progress**: Your input is greatly appreciated.
 
-This is a simple Ansible script to setup Apache or nginx, MariaDB or MySQL and Basic Auth into an EC2 instance.
+This was originally a simple Ansible script to setup Apache or nginx, MariaDB or MySQL and Basic Auth into an EC2 instance.
+
 You need to install Ansible in your PC to run.
 
-You will connect to EC2 server and start sending commands to setup the server automatically.
+You will connect to AWS Linux or CentOS7 and start sending commands to setup the server automatically.
 
 -----
 
@@ -31,6 +32,8 @@ OR
 
 ## Generate SSH Key for each user
 
+This script will create a sudo user.
+
 This is separate SSH key pair from `ec2-user` default SSH key.
 
 If you want to create new user(s), and you will use this SSH key to login.
@@ -49,9 +52,11 @@ File name must be `username`.pem. Default is c5juser.pem, but please change it s
 
   *It will generate [username.pem] [username.pen.pub] files.
 
-## Execute CloudFormation script & confirms SSH access
+## Get ready a server
 
-**I haven't published CloudFormation Script yet.** Just launch an Amazon LINUX EC2 instance with public IP access, then setup DNS record to be accessible from domain name.
+### Execute CloudFormation script & confirm SSH access
+
+**I haven't published CloudFormation Script yet.** Just launch an Amazon LINUX EC2 instance with public IP address, then setup DNS record to be accessible from domain name.
 
 - Execute `ec2-simple`  CloudFormation Script to launch an EC2 Instance. (OR you could create an instance manually)
 - Obtain an IP address of the EC2 instance
@@ -59,6 +64,9 @@ File name must be `username`.pem. Default is c5juser.pem, but please change it s
 - Obtain the ec2-user SSH key from AWS
 - Check to see if you can access to newly created EC2 instance via SSH
 
+### Prepare a CentOS7 server, and confirm SSH access
+
+OR prepare a CentOS7 server with public IP address.
 
 ## Modify the settings
 
@@ -82,28 +90,29 @@ $ ansible-playbook -i host.yml setup.yml
 
 -----
 
-HOW TO SET CONFIGURATION
+CONFIGURATION
 ====================
 
 # host.yml
 
-Set target IP address, and SSH username (usually `ec2-user`), and SSH key
+Set target IP address, and SSH username (usually `ec2-user` for Amazon Linux), SSH key or SSH password.
 
 ## Sample:
 
   ```
   [servers]
-  192.168.0.1 server_name="hoge01.hogehoge.com"
+  192.168.0.1 server_name="web01.example.com"
   [all:vars]
   ansible_ssh_user=ec2-user
   ansible_ssh_private_key_file=/PATH/TO/ec2-usr-key.pem
+  # ansible_ssh_pass="PASSWORD"
   ```
 
 ## [servers] Section
 
 - IP Address
 
-  - EC2 intance publicIP
+  - Server's publicIP
 
 - server_name=
 
@@ -113,17 +122,52 @@ Set target IP address, and SSH username (usually `ec2-user`), and SSH key
 
 - ansible_ssh_user=ec2-user
 
-  - the name of sudo user, usually `ec2-user`
+  - the name of sudo user, usually `ec2-user` if Amazon Linux
 
 - ansible_ssh_private_key_file=
 
-  - Path to your SSH key in your Mac
+  - Path to your SSH key
+
+- ansible_ssh_pass=
+
+  - SSH Password if any
 
 -----
 
 # setup.yml
 
 Change the parameters where necessaries.
+
+## Server Locale
+
+Setup the locale and timezone of your server. Use `localectl list-locales` to list available locales.
+Use `ls -F /usr/share/zoneinfo` to list timezone on CentOS6/Amazon Linux, or `sudo timedatectl list-timezones` on CentOS 7.
+
+```
+  - locale:                 "ja_JP.UTF-8"
+  - zone:                   "Asia/Tokyo"
+```
+## Amazon Linux?
+
+Amazon Linux has its own repo and setup. So we want you to indicate.
+
+```
+  - aws_awslinux:           "yes"
+  - aws_repo_upgrade:       "none"
+
+
+```
+
+## CentOS Version
+
+This script supports 6 or 7. If it's Amazon Linux earlier than 2017, please type as 6
+
+
+```
+# CentOS Version? (6 / 7)
+  - centos_version:         "6"
+```
+
 
 ## Instance Type
 
@@ -178,19 +222,23 @@ Please indicate user and group of concrete5 folder owner. Apache or Nginx will r
 
 ## Virtualhost Setting
 
-- **[vhost_domain]** : The domain names to set。
+- **[vhost_domain]** : The domain names to set. It will add www subdomain.
 
-  `- vhost_domain: "www.example.com"`
+  `- vhost_domain: "example.com"`
 
 - **[vhost_docroot]** : Set the web document root path
 
   `- vhost_docroot: "/var/www/vhosts/"`
 
-  With the setting above, it will set `www.example.com` as virtual host, and the document root of that domain will be "/var/www/vhosts/www.example.com"
+  With the setting above, it will set `example.com` & `www.example.com` as virtual host, and the document root of that domain will be "/var/www/vhosts/example.com"
 
 ## DB Environment
 
-Choose your DB environment(mariadb / mariadb-client / mysql / mysql-client / none )
+Choose your DB environment (mariadb / mariadb-client / mysql / mysql-client / none )
+
+This script **MAY NOT** be able to install MySQL **UNLESS** it's Amazon Linux.
+I have **NOT TESTED** yet for mariadb-client option.
+
     - mariadb: Install MariaDB Server & Client
     - mariadb-client: Install MariaDB Client
     - mysql: Install MySQL Server & Client
@@ -244,7 +292,22 @@ It will login as [mysql_loginuser] user and create database and additional user 
     - "localhost"
   ```
 
+## concrete5 Migration
+
+If you already have concrete5 site somewhere else, and want to migrate the data, please use this option.
+
+- **[c5_migration]** : yes or no if you want to migration concrete5 from different data.
+
+  `- c5_migration:           "no"`
+
+- **[c5_backup_zip_filename]** : You must use the backup file which was created via all option of [concrete5 backup shell](https://github.com/katzueno/concrete5-backup-shell). Give the file name without file extension. And save the zip files under `roles/concrete5_migration/files`.
+
+  `- c5_backup_zip_filename: "backup_202000000000"`
+
+
 ## concrete5 Installation Setting
+
+If you want to setup a new concrete5 installation, enter the information here.
 
 - **[c5_sitename]** : Enter the name of concrete5 sitename.
 
@@ -299,6 +362,35 @@ NewRelic is server monitoring service, if you're using it, you must set the sett
 
   `- newrelic_appname: "PHP Application_name"`
 
+You may get the following error and not getting the proper response from New Relic PHP
+
+```
+warning: daemon connect(fd=XX uds=/tmp/.newrelic.sock) returned -1 errno=ENOENT. Failed to connect to the newrelic-daemon. Please make sure that there is a properly configured newrelic-daemon running. For additional assistance, please see: https://newrelic.com/docs/php/newrelic-daemon-startup-modes
+```
+
+Try the following
+
+```
+$ sudo systemctl stop newrelic-daemon
+$ sudo rm /etc/newrelic/newrelic.cfg
+```
+
+## Mackerel Setting
+
+You can also install Mackerel
+
+```
+# Mackerel Setting
+## Use Mackerel (yes / no)
+  - use_mackerel:           "no"
+## Mackerel License
+  - mackerel_apikey:        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+```
+
+## Create Symbolic link
+
+At last, it will create a symbolic link from SSH user's home directory to webroot.
+
   -----
 
 # Role Settings
@@ -306,30 +398,39 @@ NewRelic is server monitoring service, if you're using it, you must set the sett
 - **[roles]** : Role contains the set up commands for Ansible. This package contains group set of commands. According to `roles`, it will execute each role in order, also you can use a little condition as well.
 
  ```
-   roles:
-   - role: default_setup
-     when: server_environment=="prod"
-   - role: add_users
-     when: if_add_users=="yes"
-   - role: apache
-     when: webserver_handle=="apache"
-   - role: nginx
-     when: webserver_handle=="nginx"
-   - role: web_dummy
-   - role: mysql_client
-     when: db_environment in ['mysql', 'mysql-client', 'mariadb-client']
-   - role: mysql_server
-     when: db_environment=="mysql"
-   - role: mariadb_repo
-     when: db_environment in ['mariadb', 'mariadb-client']
- #  - role: mariadb_client
- #    when: db_environment in ['mariadb', 'mariadb-client']
-   - role: mariadb_server
-     when: db_environment=="mariadb"
-   - role: mysql_appdb
-   - role: concrete5
-   - role: newrelic
-     when: use_newrelic=="yes"
-   - role: newrelic-php
-     when: use_newrelicphp=="yes"
+  roles:
+  - role: default_setup
+  - role: add_users
+    when: if_add_users=="yes"
+  - role: apache
+    when: webserver_handle=="apache"
+  - role: nginx
+    when: webserver_handle=="nginx"
+  - role: web_dummy
+  - role: mysql_client
+    when: db_environment in ['mysql', 'mysql-client']
+  - role: mysql_server
+    when: db_environment=="mysql"
+  - role: mariadb_repo
+    when: db_environment in ['mariadb', 'mariadb-client']
+  - role: mariadb_client
+    when: db_environment in ['mariadb', 'mariadb-client']
+  - role: mariadb_server
+    when: db_environment=="mariadb"
+  - role: mysql_appdb
+  - role: concrete5
+    when: c5_installation=="yes"
+  - role: concrete5_migration
+    when: c5_migration=="yes"
+  - role: basic_auth
+    when: use_basic_auth=="yes"
+  - role: newrelic_repo
+    when: use_newrelic=="yes" or use_newrelic_php=="yes"
+  - role: newrelic
+    when: use_newrelic=="yes"
+  - role: newrelic_php
+    when: use_newrelic_php=="yes"
+  - role: mackerel
+    when: use_mackerel=="yes"
+  - role: create_symlink_www
   ```

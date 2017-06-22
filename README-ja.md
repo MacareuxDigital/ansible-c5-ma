@@ -37,14 +37,21 @@
 
   ※コマンドを実行すると、[username.pem] [username.pem.pub]ファイルが生成されます。
 
+## サーバーの準備
 
-# AWS CloudFormation スクリプト等を実行して EC2 インスタンスを作成し、SSH 接続を確認
+AWS EC インスタンスや CentOS7 のサーバーを用意
 
-- 別途用意してある `ec2-simple`  CloudFormation スクリプトを実行し EC2 インスタンスを立ち上げるか、手動で EC2 インスタンスの作成、VPC や Elastic IP 、Route 53 の設定を行ってください。
+### AWS CloudFormation スクリプト等を実行して EC2 インスタンスを作成し、SSH 接続を確認
+
+- 別途用意してある（まだ非公開） `ec2-simple`  CloudFormation スクリプトを実行し EC2 インスタンスを立ち上げるか、手動で EC2 インスタンスの作成、VPC や Elastic IP 、Route 53 の設定を行ってください。
 - 該当する EC2 インスタンスのアクセス用 パブリック IP アドレスを取得してください。
     - 必要に応じてセキュリティグループを編集し IP 制限などを行ってください。
 - AWS で設定した `ec2-user` ユーザー用の SSH キーを取得してください。
 - SSH 接続ができるか確認してください。
+
+### CentOS サーバーを用意
+
+CentOS 7 のサーバーを用意し、SSH でアクセスできようにして下さい。
 
 ## ファイルのファイルの修正
 
@@ -70,6 +77,8 @@ $ ansible-playbook -i host.yml setup.yml
 ==============================
 設定ファイル詳細
 ==============================
+
+**この Readme は ver.1 時点のもので、CentOS 7 オプションや concrete5 データ移行、Mackerel の設定情報がまだ含まれていません。英語ドキュメントや setup.yml を中身を見て設定して下さい。**
 
 # host.yml
 
@@ -110,6 +119,35 @@ $ ansible-playbook -i host.yml setup.yml
 # setup.yml
 
 対象サーバーに設定する値を記載します。
+
+## サーバーの言語とタイムゾーンの設定
+
+Setup the locale and timezone of your server. Use `localectl list-locales` to list available locales.
+Use `ls -F /usr/share/zoneinfo` to list timezone on CentOS6/Amazon Linux, or `sudo timedatectl list-timezones` on CentOS 7.
+
+```
+  - locale:                 "ja_JP.UTF-8"
+  - zone:                   "Asia/Tokyo"
+```
+## Amazon Linux であるか?
+
+Amazon Linux has its own repo and setup. So we want you to indicate.
+
+```
+  - aws_awslinux:           "yes"
+  - aws_repo_upgrade:       "none"
+
+
+```
+
+## CentOS バージョン
+
+This script supports 6 or 7. If it's Amazon Linux earlier than 2017, please type as 6
+
+```
+# CentOS Version? (6 / 7)
+  - centos_version:         "6"
+```
 
 ## インスタンスタイプ
 
@@ -165,17 +203,20 @@ concrete5 が保存されるディレクトリの所有者ユーザー・グル�
 
 - **[vhost_domain]** : 設定するドメイン名です。
 
-  `- vhost_domain: "www.hogehoge.com"`
+  `- vhost_domain: "example.com"`
 
 - **[vhost_docroot]** : ドキュメントルートが設定される上位ディレクトリです。
 
   `- vhost_docroot: "/var/www/vhosts/"`
 
-- 上記の場合、Apacheにドメイン名[www.hogehoge.com]のバーチャルホストが設定され、ドキュメントルートが[/var/www/vhosts/www.hogehoge.com]となります。
+- 上記の場合、Apacheにドメイン名[example.com] & [www.example.com] のバーチャルホストが設定され、ドキュメントルートが[/var/www/vhosts/example.com]となります。
 
 ## MySQL or MariaDB の選択
 
+**現時点で Amazon Linux のみ MySQL をインストールできます。Cent OS の場合は MariaDB にしか対応していません。**
+
 DB環境を設定します (mariadb / mariadb-client / mysql / mysql-client / none )
+
     - mariadb: MariaDB のサーバーとクライアントをインストールします
     - mariadb-client: MariaDB のクライアントのみをインストールします。
     - mysql: MySQL のサーバーとクライアントをインストールします
@@ -231,7 +272,21 @@ DB環境を設定します (mariadb / mariadb-client / mysql / mysql-client / no
     - "localhost"
   ```
 
-  ## concrete5の設定
+## concrete5 データ移行
+
+If you already have concrete5 site somewhere else, and want to migrate the data, please use this option.
+
+- **[c5_migration]** : yes or no if you want to migration concrete5 from different data.
+
+  `- c5_migration:           "no"`
+
+- **[c5_backup_zip_filename]** : concrete5 バックアップシェルである [concrete5 backup shell](https://github.com/katzueno/concrete5-backup-shell) の All オプションを使って作成したバックアップファイルを拡張子なしで指定し、`roles/concrete5_migration/files` 配下に保存して下さい。
+
+  `- c5_backup_zip_filename: "backup_202000000000"`
+
+
+
+## concrete5の設定
 
 - **[c5_sitename]** : concrete5のサイト名を指定します。
 
@@ -283,37 +338,74 @@ DB環境を設定します (mariadb / mariadb-client / mysql / mysql-client / no
 
   `- newrelic_appname: "PHP Application_name"`
 
+You may get the following error and not getting the proper response from New Relic PHP
+
+```
+warning: daemon connect(fd=XX uds=/tmp/.newrelic.sock) returned -1 errno=ENOENT. Failed to connect to the newrelic-daemon. Please make sure that there is a properly configured newrelic-daemon running. For additional assistance, please see: https://newrelic.com/docs/php/newrelic-daemon-startup-modes
+```
+
+Try the following
+
+```
+$ sudo systemctl stop newrelic-daemon
+$ sudo rm /etc/newrelic/newrelic.cfg
+```
+
+## Mackerel 設定
+
+Mackerel のエージェントもインストール可能です。
+
+```
+# Mackerel Setting
+## Use Mackerel (yes / no)
+  - use_mackerel:           "no"
+## Mackerel License
+  - mackerel_apikey:        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+```
+
+## Create Symbolic link
+
+At last, it will create a symbolic link from SSH user's home directory to webroot.
+
 
 
 ## 実行するロールの指定
 
 - **[roles]** : 通常はこのままで問題ありません。
-
  ```
-   roles:
-   - role: default_setup
-     when: server_environment=="prod"
-   - role: add_users
-     when: if_add_users=="yes"
-   - role: apache
-     when: webserver_handle=="apache"
-   - role: nginx
-     when: webserver_handle=="nginx"
-   - role: web_dummy
-   - role: mysql_client
-     when: db_environment in ['mysql', 'mysql-client', 'mariadb-client']
-   - role: mysql_server
-     when: db_environment=="mysql"
-   - role: mariadb_repo
-     when: db_environment in ['mariadb', 'mariadb-client']
- #  - role: mariadb_client
- #    when: db_environment in ['mariadb', 'mariadb-client']
-   - role: mariadb_server
-     when: db_environment=="mariadb"
-   - role: mysql_appdb
-   - role: concrete5
-   - role: newrelic
-     when: use_newrelic=="yes"
-   - role: newrelic-php
-     when: use_newrelicphp=="yes"
+  roles:
+  - role: default_setup
+  - role: add_users
+    when: if_add_users=="yes"
+  - role: apache
+    when: webserver_handle=="apache"
+  - role: nginx
+    when: webserver_handle=="nginx"
+  - role: web_dummy
+  - role: mysql_client
+    when: db_environment in ['mysql', 'mysql-client']
+  - role: mysql_server
+    when: db_environment=="mysql"
+  - role: mariadb_repo
+    when: db_environment in ['mariadb', 'mariadb-client']
+  - role: mariadb_client
+    when: db_environment in ['mariadb', 'mariadb-client']
+  - role: mariadb_server
+    when: db_environment=="mariadb"
+  - role: mysql_appdb
+  - role: concrete5
+    when: c5_installation=="yes"
+  - role: concrete5_migration
+    when: c5_migration=="yes"
+  - role: basic_auth
+    when: use_basic_auth=="yes"
+  - role: newrelic_repo
+    when: use_newrelic=="yes" or use_newrelic_php=="yes"
+  - role: newrelic
+    when: use_newrelic=="yes"
+  - role: newrelic_php
+    when: use_newrelic_php=="yes"
+  - role: mackerel
+    when: use_mackerel=="yes"
+  - role: create_symlink_www
   ```
