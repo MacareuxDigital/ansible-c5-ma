@@ -85,8 +85,8 @@ $ ansible-playbook -i host.yml setup.yml
 
 ## Set DNS & Some Security Measure
 
-- Go to Route 53 to set DNS
-- Set additional security measure such as setting up basic auth, or IP address restriction.
+- Go to your DNS service (like Route53) to set DNS to point the domain to the IP
+- Set additional security measure such as setting up IP address restriction, stronger SSH auth.
 
 -----
 
@@ -122,7 +122,7 @@ Set target IP address, and SSH username (usually `ec2-user` for Amazon Linux), S
 
 - ansible_ssh_user=ec2-user
 
-  - the name of sudo user, usually `ec2-user` if Amazon Linux
+  - the name of sudo user or root, usually `ec2-user` if Amazon Linux
 
 - ansible_ssh_private_key_file=
 
@@ -309,15 +309,19 @@ If you already have concrete5 site somewhere else, and want to migrate the data,
 
 If you want to setup a new concrete5 installation, enter the information here.
 
-- **[c5_sitename]** : Enter the name of concrete5 sitename.
+- **[c5_installation]** : yes or no whether to install fresh copy of concrete5.
 
-  `- c5_sitename: "concrete5 Demo Site"`
+  `- c5_installation: "yes"`
 
-- **[c5dir_user]** : Enter the username of directory owner.
+- **[c5_sitename]** : Enter the site name.
+
+  `- c5_sitename: "concrete5 Demo"`
+
+- **[c5dir_user]** : Enter the user name of directory owner which must be the same as SSH user.
 
   `- c5dir_user: "c5juser"`
 
-- **[c5dir_user]** : Enter the groupname of directory owner. Our convention is "apache" for apache server and "nginx" for nginx server.
+- **[c5dir_user]** : Enter the group name of directory owner. Please set "apache" for apache server and "nginx" for nginx server.
 
   `- c5dir_group: "apache"`  
 
@@ -333,10 +337,19 @@ If you want to setup a new concrete5 installation, enter the information here.
 
   `- c5_admin_pass: "site_password"`
 
+- **[c5_locale]** : Set concrete5 default site locale
 
   `- c5_locale:         "ja_JP"`
 
-  - **[c5_locale]** : Set concrete5 default site locale
+- **[c5_from_*]** : Set concrete5's from email address of each notification emails.
+
+  `- c5_from_email:          "info@example.com"`
+  `- c5_from_name:           "From Email Name"`
+
+- **[c5_load_balancer]** : If concrete5 is set behind load balancer such as AWS ELB, please set it 'yes'.
+
+  `- c5_load_balancer:       "no" # (yes / no)`
+
 
 -----
 

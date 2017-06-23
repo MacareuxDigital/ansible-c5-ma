@@ -67,7 +67,7 @@
     - "localhost"
     #- "10.0.1.100" # Your EC Instance's Private IP If any
 
-# concrete5 Migration (yes / No ) + filename (without extension)
+# concrete5 Migration (yes / no ) + filename (without extension)
 ## Please prepare the concrete5 backup file using ALL option of https://github.com/katzueno/concrete5-backup-shell/
   - c5_migration:           "no"
   - c5_backup_zip_filename: "backup_202000000000" # filename without extension. Use Katz's concrete5 backup shell
@@ -75,10 +75,10 @@
 
 
 # concrete5 Settings
-## concrete5 Installation (yes / No)
+## concrete5 Installation (yes / no)
   - c5_installation:        "no"
 ## Site Name
-  - c5_sitename:            "hogehoge.com"
+  - c5_sitename:            "Site Name"
 ## Install Theme
 ## "elemental_blank" or "elemental_full"
   - c5_starting_point:      "elemental_blank"

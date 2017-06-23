@@ -69,16 +69,14 @@ $ ansible-playbook -i host.yml setup.yml
 
 ## DNS 設定なやセキュリティ設定
 
-- Route 53 などに行き、DNS の設定を行い、ドメインの設定をしてください。
-- Web サーバーに、Basic 認証を設定したり、セキュリティグループを編集し絵t、IP アドレスでのアクセス制限などを設定してください。
+- Route 53 などの DNS に行き、DNS の設定を行い、ドメインの設定をしてください。
+- Web サーバーに、Hosts 設定や、セキュリティグループを編集して、IP アドレスでのアクセス制限などを設定してください。
 
 -----
 
 ==============================
 設定ファイル詳細
 ==============================
-
-**この Readme は ver.1 時点のもので、CentOS 7 オプションや concrete5 データ移行、Mackerel の設定情報がまだ含まれていません。英語ドキュメントや setup.yml を中身を見て設定して下さい。**
 
 # host.yml
 
@@ -108,7 +106,7 @@ $ ansible-playbook -i host.yml setup.yml
 
 - ansible_ssh_user=ec2-user
 
-  - サーバーに接続するSSHユーザー名（sudoが可能なユーザー）
+  - サーバーに接続するSSHユーザー名（root か sudoが可能なユーザー）
 
 - ansible_ssh_private_key_file=
 
@@ -122,8 +120,8 @@ $ ansible-playbook -i host.yml setup.yml
 
 ## サーバーの言語とタイムゾーンの設定
 
-Setup the locale and timezone of your server. Use `localectl list-locales` to list available locales.
-Use `ls -F /usr/share/zoneinfo` to list timezone on CentOS6/Amazon Linux, or `sudo timedatectl list-timezones` on CentOS 7.
+サーバーの言語とローカルタイムを設定します。 `localectl list-locales` コマンドを使うと使用可能な言語のリストを取得でき、
+CentOS 6 系であれば `ls -F /usr/share/zoneinfo` CentOS 7 系であれば `sudo timedatectl list-timezones` を使うと、タイムゾーンのリストを取得できます。
 
 ```
   - locale:                 "ja_JP.UTF-8"
@@ -131,7 +129,7 @@ Use `ls -F /usr/share/zoneinfo` to list timezone on CentOS6/Amazon Linux, or `su
 ```
 ## Amazon Linux であるか?
 
-Amazon Linux has its own repo and setup. So we want you to indicate.
+Amazon Linux で AWS 内に設置されているかを指定します。
 
 ```
   - aws_awslinux:           "yes"
@@ -142,7 +140,7 @@ Amazon Linux has its own repo and setup. So we want you to indicate.
 
 ## CentOS バージョン
 
-This script supports 6 or 7. If it's Amazon Linux earlier than 2017, please type as 6
+CentOS のバージョンを指定します。Amazon Linux 2017.03 時点では CentOS は 6 を指定して下さい。
 
 ```
 # CentOS Version? (6 / 7)
@@ -274,11 +272,11 @@ DB環境を設定します (mariadb / mariadb-client / mysql / mysql-client / no
 
 ## concrete5 データ移行
 
-If you already have concrete5 site somewhere else, and want to migrate the data, please use this option.
+既に別の環境で concrete5 サイトを構築仕掛けている時に、バックアップファイルを所定のフォーマットの ZIP にまとめてサーバー構築と一緒にデータ移行も一緒にやることが出来ます。
 
-- **[c5_migration]** : yes or no if you want to migration concrete5 from different data.
+- **[c5_migration]** : 「yes」か「no」
 
-  `- c5_migration:           "no"`
+  `- c5_migration: "no"`
 
 - **[c5_backup_zip_filename]** : concrete5 バックアップシェルである [concrete5 backup shell](https://github.com/katzueno/concrete5-backup-shell) の All オプションを使って作成したバックアップファイルを拡張子なしで指定し、`roles/concrete5_migration/files` 配下に保存して下さい。
 
@@ -288,19 +286,23 @@ If you already have concrete5 site somewhere else, and want to migrate the data,
 
 ## concrete5の設定
 
+- **[c5_installation]** : 「yes」か「no」
+
+  `- c5_installation: "c5juser"`
+
 - **[c5_sitename]** : concrete5のサイト名を指定します。
 
-  `- c5_sitename: "www.hogehoge.com"`
+  `- c5_sitename: "Site Name"`
 
-- **[c5dir_user]** : Enter the username of directory owner.
+- **[c5dir_user]** : webルートのオーナーユーザーを指定します。SSHのユーザーと同じに設定にする必要があります。
 
   `- c5dir_user: "c5juser"`
 
-- **[c5dir_user]** : Enter the groupname of directory owner. Our convention is "apache" for apache server and "nginx" for nginx server.
+- **[c5dir_user]** : web ルートのグループを設定します。Apache であれば「apache」、Nginx であれば「nginx」と必ず設定して下さい。
 
   `- c5dir_group: "apache"`   
 
-- **[c5_starting_point]** : インストールテーマを選択します。"elemental_blank" か "elemental_full" を選択ください。
+- **[c5_starting_point]** : インストールテーマを選択します。"elemental_blank" か "elemental_full" を選択してください。
 
   `- c5_starting_point: "elemental_blank"`
 
@@ -312,9 +314,19 @@ If you already have concrete5 site somewhere else, and want to migrate the data,
 
   `- c5_admin_pass: "site_password"`
 
+- **[c5_locale]** : concrete5 のデフォルトロケールを設定します。
+
   `- c5_locale:         "ja_JP"`
 
-  - **[c5_locale]** : concrete5 のデフォルトロケールを設定します。
+- **[c5_from_*]** : concrete5 から送られるメールの FROM 欄の設定を行います。
+
+  `- c5_from_email:          "info@example.com"`
+  `- c5_from_name:           "From Email Name"`
+
+- **[c5_load_balancer]** : concrete5 が AWS ELB などのロードバランサーの背後に設定される場合 'yes' としてください。
+
+  `- c5_load_balancer:       "no" # (yes / no)`
+
 
 -----
 
@@ -338,15 +350,18 @@ If you already have concrete5 site somewhere else, and want to migrate the data,
 
   `- newrelic_appname: "PHP Application_name"`
 
-You may get the following error and not getting the proper response from New Relic PHP
+New Relic PHP を使っている際、下記のようなエラーが出て、正常にデータが送られない場合があります。
 
 ```
 warning: daemon connect(fd=XX uds=/tmp/.newrelic.sock) returned -1 errno=ENOENT. Failed to connect to the newrelic-daemon. Please make sure that there is a properly configured newrelic-daemon running. For additional assistance, please see: https://newrelic.com/docs/php/newrelic-daemon-startup-modes
 ```
 
-Try the following
+その場合は、下記を設定してみて下さい。
 
 ```
+# CentOS 6
+$ sudo service newrelic-daemon stop
+# CentOS 7
 $ sudo systemctl stop newrelic-daemon
 $ sudo rm /etc/newrelic/newrelic.cfg
 ```
@@ -363,9 +378,9 @@ Mackerel のエージェントもインストール可能です。
   - mackerel_apikey:        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ```
 
-## Create Symbolic link
+## ユーザーディレクトリからシンボルリンク
 
-At last, it will create a symbolic link from SSH user's home directory to webroot.
+最後に SSH ユーザーのホームディレクトリから、シンボルリンクを設定します。
 
 
 
