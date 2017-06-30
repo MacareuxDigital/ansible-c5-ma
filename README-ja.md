@@ -3,6 +3,8 @@
 -----
 Amazon Linux や CentOS 7 に、 SSH 接続をし、Apache/Nginx, PHP-FPM, MariaDB, MySQL などの設定を自動的に実行してくれるプログラムです。
 
+**現在検証中**: Amazon Linux + MySQL & CentOS7 + MariaDB のコンビネーションしかテストしていませんので、お気をつけ下さい。
+
 ## 準備
 
 事前にPlayBookを実行する端末に、ansibleコマンドのインストールを行います。
