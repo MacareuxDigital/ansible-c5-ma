@@ -1,5 +1,8 @@
+- name: Install Mackerel agent for Amazon Linux
+  when: aws_awslinux=="yes"
+  shell: curl -fsSL https://mackerel.io/file/script/amznlinux/setup-all-yum.sh | MACKEREL_APIKEY='{{ mackerel_apikey }}' sh
 - name: Install Mackerel agent for CentOS6
-  when: centos_version=="6"
+  when: centos_version=="6" and aws_awslinux=="no"
   shell: curl -fsSL https://mackerel.io/file/script/setup-all-yum.sh | MACKEREL_APIKEY='{{ mackerel_apikey }}' sh
 - name: Install Mackerel agent for CentOS7
   when: centos_version=="7"
