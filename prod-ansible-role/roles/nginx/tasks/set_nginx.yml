@@ -7,3 +7,6 @@
 - name: Adding Spam & Port Scanner Block
   template: src=deny_spambot.j2 dest=/etc/nginx/default.d/deny_spambot.conf
   notify: Restart Nginx
+- name: Adding Additional fastcgi parameters
+  template: src=deny_spambot.j2 dest=/etc/nginx/default.d/fastcgi_params_custom.j2
+  notify: Restart Nginx
