@@ -23,6 +23,14 @@ server {
 
     root         {{ vhost_docroot }}{{ vhost_domain }};
 
+	gzip_vary on;
+	gzip_disable msie6;
+	gzip_static on;
+	gzip_comp_level 9;
+ 	gzip_proxied any;
+	gzip_types text/plain text/css application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+	client_max_body_size 20m;
+
     include      /etc/nginx/default.d/deny_spambot.conf;
 
     auth_basic "Restricted";
