@@ -7,6 +7,7 @@
   - "php70-devel"
   - "php70-cli"
   - "php70-gd"
+  - "php70-fpm"
   - "php70-mbstring"
   - "php70-pecl-memcached"
   - "php70-mysqlnd"
