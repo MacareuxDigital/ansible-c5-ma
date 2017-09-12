@@ -3,8 +3,8 @@
 
   vars:
 
-# Server Locale (en_US.UTF8)
-  - locale:                 "ja_JP.UTF-8"
+# Server Locale (en_US.UTF8 / ja_JP.UTF8)
+  - locale:                 "en_US.UTF8"
   - zone:                   "Asia/Tokyo"
 
 # Is this AmazonLinux? (yes / no)
@@ -47,7 +47,10 @@
 #    - mysql: Install MySQL Server & Client
 #    - mysql-client: Install only MySQL Client
 #    - none: do nothing
-  - db_environment:         "mariadb"
+#
+# Please use mysql for AWS Linux
+#
+  - db_environment:         "mysql"
 
 ## MySQL or MariaDB Setting
 ## MySQL root
