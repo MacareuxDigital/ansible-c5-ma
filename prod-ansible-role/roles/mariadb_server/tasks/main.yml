@@ -2,7 +2,6 @@
   yum: name={{item}} state=installed
   with_items:
     - MariaDB-server
-    - MariaDB-client
   register: result
 - name: Install python mysqlmodule
   pip: name=mysql state=latest
