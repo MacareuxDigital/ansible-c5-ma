@@ -50,16 +50,20 @@
 # Amazon Linux with PHP 7.0
 - name: Change Permission session_dir
   file: path=/var/lib/php/7.0/session owner=root group={{c5dir_group}}
+  notify: Restart php-fpm
   when: aws_awslinux=="yes"
 - name: Change Permission wsdlcache_dir
   file: path=/var/lib/php/7.0/wsdlcache owner=root group={{c5dir_group}}
+  notify: Restart php-fpm
   when: aws_awslinux=="yes"
 # CentOS7 with webtactics repo
 - name: Change Permission session_dir
   file: path=/var/lib/php/session owner=root group={{c5dir_group}}
+  notify: Restart php-fpm
   when: aws_awslinux!="yes"
 - name: Change Permission wsdlcache_dir
   file: path=/var/lib/php/wsdlcache owner=root group={{c5dir_group}}
+  notify: Restart php-fpm
   when: aws_awslinux!="yes"
 
 - name: Disable Apache php setting
