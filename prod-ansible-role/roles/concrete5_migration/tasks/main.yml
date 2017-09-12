@@ -7,4 +7,6 @@
 - include: 30_upload_concrete5_config.yml
 - include: 40_restart_nginx.yml
   when: webserver_handle=="nginx"
+- include: 40_restart_apache.yml
+  when: webserver_handle=="apache"
 - include: 50_delete_backup.yml

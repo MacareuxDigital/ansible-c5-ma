@@ -4,19 +4,6 @@
 - name: Check if concrete5 files exist
   stat: path={{vhost_docroot}}{{vhost_domain}}/application/config/database.php
   register: concrete5copy
-- name: Chenge Directory Permission (packeges)
-  file: path="{{vhost_docroot}}{{vhost_domain}}/packages/" state=directory recurse=yes owner={{c5dir_user}} group={{c5dir_group}} mode=0775
-  when: concrete5copy.stat.exists == True
-- name: Chenge Directory Permission (files)
-  file: path="{{vhost_docroot}}{{vhost_domain}}/application/files/" state=directory recurse=yes owner={{c5dir_user}} group={{c5dir_group}} mode=0775
-  when: concrete5copy.stat.exists == True
-- name: Chenge Directory Permission (config)
-  file: path="{{vhost_docroot}}{{vhost_domain}}/application/config/" state=directory recurse=yes owner={{c5dir_user}} group={{c5dir_group}} mode=0775
-  when: concrete5copy.stat.exists == True
-- name: Chenge sitemap.xml permission
-  file: path="{{vhost_docroot}}{{vhost_domain}}/sitemap.xml" owner={{c5dir_user}} group={{c5dir_group}} mode=0775
-  when: concrete5copy.stat.exists == True
-  ignore_errors: yes
-- name: Chenge concrete5 CLI permission
-  file: path="{{vhost_docroot}}{{vhost_domain}}/concrete/bin/concrete5" owner={{c5dir_user}} group={{c5dir_group}} mode=0775
+- name: Change concrete5 (webroot) permission
+  file: path="{{vhost_docroot}}{{vhost_domain}}" state=directory recurse=yes owner={{c5dir_user}} group={{c5dir_group}} mode=0775
   when: concrete5copy.stat.exists == True
