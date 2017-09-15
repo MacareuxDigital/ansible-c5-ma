@@ -3,4 +3,4 @@
   when: result.stat.exists == False
 - name: Change concrete5 (webroot) permission
   file: path="{{vhost_docroot}}{{vhost_domain}}" state=directory recurse=yes owner={{c5dir_user}} group={{c5dir_group}} mode=0775
-  when: concrete5copy.stat.exists == True
+  when: result.stat.exists == True
