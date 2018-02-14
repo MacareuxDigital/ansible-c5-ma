@@ -15,6 +15,7 @@
   - "vim-enhanced"
   - "python-devel"
   - "python-setuptools"
+  - "MySQL-python"
   - "curl"
   - "curl-devel"
 - name: Install mail
