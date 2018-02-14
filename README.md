@@ -47,7 +47,7 @@ File name must be `username`.pem. Default is c5juser.pem, but please change it s
 - ssh-keygen command sample
 
 ```
-  ssh-keygen -f ./roles/default_setup/files/"USERNAME".pem -C "USERNAME"@localhost
+  ssh-keygen -f ./roles/add_users/files/"USERNAME".pem -C "USERNAME"@localhost
 ```
 
   *It will generate [username.pem] [username.pen.pub] files.
@@ -150,9 +150,10 @@ Use `ls -F /usr/share/zoneinfo` to list timezone on CentOS6/Amazon Linux, or `su
 ## Amazon Linux?
 
 Amazon Linux has its own repo and setup. So we want you to indicate.
+If you are using Amazon Linux, type "1". If you're using Amazon Linux 2, type "2".
 
 ```
-  - aws_awslinux:           "yes"
+  - aws_awslinux:           "2"
   - aws_repo_upgrade:       "none"
 
 
@@ -160,7 +161,7 @@ Amazon Linux has its own repo and setup. So we want you to indicate.
 
 ## CentOS Version
 
-This script supports 6 or 7. If it's Amazon Linux earlier than 2017, please type as 6
+This script supports 6 or 7. If it's Amazon Linux earlier than 2017, please type as 6. If it's Amazone Linux 2, please type as 7.
 
 
 ```
@@ -220,6 +221,16 @@ Please indicate user and group of concrete5 folder owner. Apache or Nginx will r
 
   `- webserver_handle: "apache"`
 
+ ## Change webserver user to SSH user or not.
+
+    **[webserver_changeowner]** :　yes or no
+
+  If you're going to run this server at closed & secure environment, you could change the Apache or Nginx, php-fpm user to SSH user so that SSH user can easily edit CMS generated files.
+
+  For safety, we have set the default value to be no.
+
+  - `- webserver_changeowner:  "no"`
+
 ## Virtualhost Setting
 
 - **[vhost_domain]** : The domain names to set. It will add www subdomain.
@@ -248,6 +259,12 @@ I have **NOT TESTED** yet for mariadb-client option.
 ```
   - db_environment:         "mariadb"
 ```
+## Create DB or not
+
+You can set whether to create DB and user from this ansible script. (Amazon Linux 2 doesn't work yet).
+
+  - `- db_create:              "no"`
+
 
 ## MySQL or MariaDB Master Setting
 

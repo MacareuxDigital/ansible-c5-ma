@@ -34,7 +34,7 @@ Amazon Linux や CentOS 7 に、 SSH 接続をし、Apache/Nginx, PHP-FPM, Maria
 - ssh-keygenコマンド
 
   ```
-  ssh-keygen -f ./roles/default_setup/files/"USERNAME".pem -C "USERNAME"@localhost
+  ssh-keygen -f ./roles/add_users/files/"USERNAME".pem -C "USERNAME"@localhost
   ```
 
   ※コマンドを実行すると、[username.pem] [username.pem.pub]ファイルが生成されます。
@@ -131,10 +131,10 @@ CentOS 6 系であれば `ls -F /usr/share/zoneinfo` CentOS 7 系であれば `s
 ```
 ## Amazon Linux であるか?
 
-Amazon Linux で AWS 内に設置されているかを指定します。
+Amazon Linux で AWS 内に設置されているかを指定します。Amazon Linux の場合は「1」、Amazon Linux 2 の場合は「2」を入れて下さい。
 
 ```
-  - aws_awslinux:           "yes"
+  - aws_awslinux:           "2"
   - aws_repo_upgrade:       "none"
 
 
@@ -143,10 +143,11 @@ Amazon Linux で AWS 内に設置されているかを指定します。
 ## CentOS バージョン
 
 CentOS のバージョンを指定します。Amazon Linux 2017.03 時点では CentOS は 6 を指定して下さい。
+Amazon Linux 2 の場合は 7 を入れて下さい
 
 ```
 # CentOS Version? (6 / 7)
-  - centos_version:         "6"
+  - centos_version:         "7"
 ```
 
 ## インスタンスタイプ
@@ -199,6 +200,16 @@ concrete5 が保存されるディレクトリの所有者ユーザー・グル�
 
   `- webserver_handle: "apache"`
 
+## Nginx か Apache ユーザーを SSH ユーザーと同じにするか
+
+  **[webserver_changeowner]** :　yes か no
+
+ネットに公開されていない閉じた安全な環境などで、Apache や php-fpm 実行ユーザーを、SSH ユーザーと同じにすることで CMS が生成するファイルのオーナーを同じにするかしないかの設定をします。
+
+安全のためデフォルトでは「no」になっています。
+
+- `- webserver_changeowner:  "no"`
+
 ## Virtualhostの設定
 
 - **[vhost_domain]** : 設定するドメイン名です。
@@ -226,6 +237,13 @@ DB環境を設定します (mariadb / mariadb-client / mysql / mysql-client / no
 ```
   - db_environment:         "mariadb"
 ```
+
+## DB の設定を行うか否か
+
+Ansibleで MySQL ユーザーの作成、DB の作成を行うか設定します。行う場合は、下記の設定値で設定が行われます。 (Amazon Linux 2 ではまだ動きません。)
+
+  - `- db_create:              "no"`
+
 
 ## MySQL or MariaDB の設定
 

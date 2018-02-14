@@ -7,9 +7,10 @@
   - locale:                 "en_US.UTF8"
   - zone:                   "Asia/Tokyo"
 
-# Is this AmazonLinux? (yes / no)
-  - aws_awslinux:           "yes"
-  - aws_repo_upgrade:       "none"
+# Is this AmazonLinux? (1 / 2 / no)
+## For Amazon Linux, type 1. For Amazon Linux 2, type 2.
+  - aws_awslinux:           "1"
+  - aws_repo_upgrade:       "no"
 
 # CentOS Version? (6 / 7)
   - centos_version:         "6"
@@ -32,6 +33,9 @@
 ## Use Webserver Apache or Nginx (apache / nginx)
   - webserver_handle:       "apache"
 
+## Change Apahce or Nginx owner to be SSH User? (no / yes)
+  - webserver_changeowner:  "no"
+
 ## Virtualhost Setting
   - vhost_domain:           "example.com"
   - vhost_docroot:          "/var/www/vhosts/"
@@ -53,6 +57,8 @@
   - db_environment:         "mysql"
 
 ## MySQL or MariaDB Setting
+## Create DB or not  (yes / no)
+  - db_create:              "no"
 ## MySQL root
   - mysql_rootpass:         "mysql_root_pass"
 ## MySQL host
@@ -135,6 +141,7 @@
   - role: mariadb_server
     when: db_environment=="mariadb"
   - role: mysql_appdb
+    when: db_create=="yes"
   - role: concrete5
     when: c5_installation=="yes"
   - role: concrete5_migration

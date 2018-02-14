@@ -6,6 +6,7 @@
     line="AddDefaultCharset Off"
   notify: Restart Apache
 - name: Set Apache User
+  when: webserver_changeowner=="yes"
   lineinfile: >
     dest=/etc/httpd/conf/httpd.conf
     state=present
@@ -49,4 +50,3 @@
   - regexp: '^#?\s*LoadModule mpm_event_module modules/mod_mpm_event.so'
     line: 'LoadModule mpm_event_module modules/mod_mpm_event.so'
   notify: Restart Apache
-

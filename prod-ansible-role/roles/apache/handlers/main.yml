@@ -1,4 +1,12 @@
 - name: Restart Apache
+  when: centos_version=="6"
   service: name=httpd state=restarted enabled=yes
 - name: Restart php-fpm
+  when: centos_version=="6"
   service: name=php-fpm state=restarted
+- name: Restart Apache
+  when: centos_version=="7"
+  systemd: name=httpd state=restarted enabled=yes
+- name: Restart php-fpm
+  when: centos_version=="7"
+  systemd: name=php-fpm state=restarted

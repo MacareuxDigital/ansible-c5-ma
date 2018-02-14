@@ -1,5 +1,5 @@
 - name: Install Apache and PHP for Amazon Linux
-  when: aws_awslinux=="yes"
+  when: aws_awslinux=="1"
   yum: name={{item}} state=latest
   with_items:
   - "httpd24"
@@ -20,8 +20,33 @@
   - "php71-xml"
   - "jq"
 
+- name: Install Amazon Linux Extra Lamp MariaDB for Amazon Linux 2
+  shell: amazon-linux-extras install lamp-mariadb10.2-php7.2
+  when: aws_awslinux=="2"
+
+- name: Install Apache and PHP for Amazon Linux
+  when: aws_awslinux=="2"
+  yum: name={{item}} state=latest
+  with_items:
+  - "httpd"
+  - "php-devel"
+  - "php-gd"
+  - "php-intl"
+  - "php-mbstring"
+  - "php-opcache"
+#  - "php-pecl-memcache"
+  - "php-xml"
+#  - "php"
+#  - "php-common"
+#  - "php-cli"
+#  - "php-fpm"
+#  - "php-mysqlnd"
+#  - "php-pdo"
+#  - "php-mcrypt"  (N/A)
+#  - "php-pecl-imagick" (N/A)
+
 - name: Install Apache and PHP for CentOS7
-  when: aws_awslinux!="yes"
+  when: aws_awslinux not in ['1', '2']
   yum: name={{item}} state=latest
   with_items:
   - "httpd"
@@ -42,7 +67,6 @@
   - "php71w-soap"
   - "php71w-xml"
   - "jq"
-
 
 - name: Start httpd
   service: name=httpd state=started enabled=yes

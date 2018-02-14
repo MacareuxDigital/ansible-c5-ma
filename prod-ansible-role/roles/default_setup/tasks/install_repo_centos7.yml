@@ -1,5 +1,5 @@
 - name: Install remi repository
-  yum: name=http://rpms.famillecollet.com/enterprise/remi-release-7.rpm state=present 
+  yum: name=http://rpms.famillecollet.com/enterprise/remi-release-7.rpm state=present
 
 #- name: Remove repository (and clean up left-over metadata)
 #  yum_repository:
@@ -11,4 +11,3 @@
 
 - name: Install webtatic repository
   yum: name=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm state=present
-
