@@ -5,6 +5,10 @@
   shell: amazon-linux-extras install lamp-mariadb10.2-php7.2
   when: aws_awslinux=="2"
 
+- name: Install Nginx for Amazon Linux 2
+  shell: amazon-linux-extras install nginx1.12
+  when: aws_awslinux=="2"
+
 - name: Install Python3 for Amazon Linux 2
   shell: amazon-linux-extras install python3
   when: aws_awslinux=="2"

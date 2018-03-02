@@ -1,11 +1,20 @@
 - name: Install MariaDB Server
+  when: aws_awslinux!="2"
   yum: name={{item}} state=installed
   with_items:
     - MariaDB-server
   register: result
-- name: Install python mysqlmodule
-  pip: name=mysql state=latest
-- name: Start mysqld
+- name: Install MariaDB Server
+  when: aws_awslinux=="2"
+  yum: name={{item}} state=installed
+  with_items:
+    - mariadb-server
+  register: result
+- name: Start mysqld (CentOS6)
+  when: centos_version=="6"
   service: name=mysqld state=started enabled=yes
+- name: Start mysqld (CentOS7)
+  when: centos_version=="7"
+  systemd: name=mysqld state=started enabled=yes
 
 - include: set_mysqlroot.yml
