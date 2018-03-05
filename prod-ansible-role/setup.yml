@@ -9,11 +9,11 @@
 
 # Is this AmazonLinux? (1 / 2 / no)
 ## For Amazon Linux, type 1. For Amazon Linux 2, type 2.
-  - aws_awslinux:           "1"
+  - aws_awslinux:           "2"
   - aws_repo_upgrade:       "no"
 
 # CentOS Version? (6 / 7)
-  - centos_version:         "6"
+  - centos_version:         "7"
 
 # Instance Type (t2micro / t2small)
   - aws_instance_type:      "t2small"
