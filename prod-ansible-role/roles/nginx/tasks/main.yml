@@ -64,6 +64,19 @@
   - "php71w-xml"
   - "jq"
 
+- name: Add User to Nginx-group
+  user: name={{ item }} groups=nginx state=present
+  with_items: "{{ add_users }}"
+
+- name: Add Nginx to User-group
+  user: name=nginx groups={{ item }} state=present
+  with_items: "{{ add_users }}"
+
+- include: set_php-fpm.yml
+- include: set_php.yml
+- include: set_nginx.yml
+- include: set_nginx-vhost.yml
+
 - name: Start Nginx
   when: centos_version=="6"
   service: name=nginx state=started enabled=yes
@@ -77,16 +90,3 @@
 - name: Start php-fpm
   when: centos_version=="7"
   systemd: name=php-fpm state=started enabled=yes
-
-- name: Add User to Nginx-group
-  user: name={{ item }} groups=nginx state=present
-  with_items: "{{ add_users }}"
-
-- name: Add Nginx to User-group
-  user: name=nginx groups={{ item }} state=present
-  with_items: "{{ add_users }}"
-
-- include: set_php-fpm.yml
-- include: set_php.yml
-- include: set_nginx.yml
-- include: set_nginx-vhost.yml

@@ -7,5 +7,8 @@
   - mysql56-libs
   register: result
 - name: Install pip
-  when: aws_awslinux=="no"
+  when: aws_awslinux not in ["1","2"]
   yum: name=python-pip state=latest
+- name: Install python mysqlmodule
+  when: aws_awslinux not in ["2"]
+  pip: name=mysql state=latest

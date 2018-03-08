@@ -69,9 +69,18 @@
   - "jq"
 
 - name: Start httpd
+  when: centos_version=="6"
   service: name=httpd state=started enabled=yes
 - name: Start php-fpm
+  when: centos_version=="6"
   service: name=php-fpm state=started enabled=yes
+
+- name: Start httpd
+  when: centos_version=="7"
+  systemd: name=httpd state=started enabled=yes
+- name: Start php-fpm
+  when: centos_version=="7"
+  systemd: name=php-fpm state=started enabled=yes
 
 - name: Add User to Apache-group
   user: name={{ item }} groups=apache state=present
