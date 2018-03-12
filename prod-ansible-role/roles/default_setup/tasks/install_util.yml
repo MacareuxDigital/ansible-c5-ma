@@ -1,7 +1,6 @@
 - name: Install utilities
   yum: name={{item}} state=latest
   with_items:
-  - "python-devel"
   - "telnet"
   - "wget"
   - "tcpdump"
@@ -15,9 +14,13 @@
   - "vim-enhanced"
   - "python-devel"
   - "python-setuptools"
-  - "MySQL-python"
   - "curl"
   - "curl-devel"
+- name: Install MySQL-Python for Amazon Linux
+  yum: name={{item}} state=latest
+  when: aws_awslinux in ["1","2"]
+  with_items:
+  - "MySQL-python"
 - name: Install mail
   yum: name={{item}} state=latest
   when: centos_version=="6"
