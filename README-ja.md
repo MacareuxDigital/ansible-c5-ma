@@ -131,18 +131,18 @@ CentOS 6 系であれば `ls -F /usr/share/zoneinfo` CentOS 7 系であれば `s
 ```
 ## Amazon Linux であるか?
 
-Amazon Linux で AWS 内に設置されているかを指定します。Amazon Linux の場合は「1」、Amazon Linux 2 の場合は「2」を入れて下さい。
+Amazon Linux で AWS 内に設置されているかを指定します。Amazon Linux の場合は「1」、Amazon Linux 2 の場合は「2」、そうでない場合は「no」と入力下さい。
 
 ```
-  - aws_awslinux:           "2"
-  - aws_repo_upgrade:       "none"
+  - aws_awslinux:           "1"
+  - aws_repo_upgrade:       "yes"
 
 
 ```
 
 ## CentOS バージョン
 
-CentOS のバージョンを指定します。Amazon Linux 2017.03 時点では CentOS は 6 を指定して下さい。
+CentOS のバージョンを指定します。Amazon Linux 2017.09 時点では CentOS は 6 を指定して下さい。
 Amazon Linux 2 の場合は 7 を入れて下さい
 
 ```

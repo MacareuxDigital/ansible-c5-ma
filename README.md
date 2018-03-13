@@ -150,10 +150,10 @@ Use `ls -F /usr/share/zoneinfo` to list timezone on CentOS6/Amazon Linux, or `su
 ## Amazon Linux?
 
 Amazon Linux has its own repo and setup. So we want you to indicate.
-If you are using Amazon Linux, type "1". If you're using Amazon Linux 2, type "2".
+If you are using Amazon Linux, type "1". If you're using Amazon Linux 2, type "2". If this is not Amazon Linux, type "no".
 
 ```
-  - aws_awslinux:           "2"
+  - aws_awslinux:           "1"
   - aws_repo_upgrade:       "none"
 
 
