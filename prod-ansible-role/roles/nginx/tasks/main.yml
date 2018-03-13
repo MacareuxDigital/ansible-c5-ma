@@ -1,4 +1,4 @@
-- name: Install Nginx and PHP for Amazon Linux
+- name: Install Nginx and PHP for Amazon Linux 1
   when: aws_awslinux=="1"
   yum: name={{ item }} state=latest
   with_items:
@@ -20,7 +20,7 @@
   - "php71-xml"
   - "jq"
 
-- name: Install Apache and PHP for Amazon Linux
+- name: Install Nginx and PHP for Amazon Linux 2
   when: aws_awslinux=="2"
   yum: name={{item}} state=latest
   with_items:
