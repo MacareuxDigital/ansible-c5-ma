@@ -42,7 +42,7 @@
 #  - "php-pecl-imagick" (N/A)
 
 - name: Install Nginx and PHP for CentOS
-  when: aws_awslinux not in ['1', '2']
+  when: aws_awslinux=="no"
   yum: name={{ item }} state=latest
   with_items:
   - "nginx"

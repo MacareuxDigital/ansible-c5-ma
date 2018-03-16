@@ -1,0 +1,6 @@
+- name: Restart mysqld (CentOS6)
+  when: centos_version=="6"
+  service: name=mysqld state=restarted
+- name: Restart mysqld (CentOS7)
+  when: centos_version=="7"
+  systemd: name=mysqld state=restarted
