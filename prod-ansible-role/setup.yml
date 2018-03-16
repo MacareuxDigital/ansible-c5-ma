@@ -8,7 +8,7 @@
   - zone:                   "Asia/Tokyo"
 
 # Is this AmazonLinux? (1 / 2 / no)
-## For Amazon Linux, type 1. For Amazon Linux 2, type 2.
+## For Amazon Linux, type 1. For Amazon Linux 2, type 2. "no" if is's not Amazon Linux.
   - aws_awslinux:           "2"
   - aws_repo_upgrade:       "no"
 

@@ -46,7 +46,7 @@
 #  - "php-pecl-imagick" (N/A)
 
 - name: Install Apache and PHP for CentOS7
-  when: aws_awslinux not in ['1', '2']
+  when: aws_awslinux=="no"
   yum: name={{item}} state=latest
   with_items:
   - "httpd"
