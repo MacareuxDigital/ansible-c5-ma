@@ -1,21 +1,25 @@
+# Amazon Linux 2 & CentOS
 - name: Set PHP-FPM User
   replace: >
     dest=/etc/php-fpm.d/www.conf
     regexp="user = apache"
     replace="user = {{c5dir_user}}"
   notify: Restart php-fpm
+  when: aws_awslinux!="1"
 - name: Set PHP-FPM Group
   replace: >
     dest=/etc/php-fpm.d/www.conf
     regexp="group = apache"
     replace="group = {{c5dir_group}}"
   notify: Restart php-fpm
+  when: aws_awslinux!="1"
 - name: Change PHP-FPM UnixSocket
   replace: >
     dest=/etc/php-fpm.d/www.conf
     regexp="listen = 127\.0\.0\.1:9000"
     replace="listen = {{ unixsocket_path }}"
   notify: Restart php-fpm
+  when: aws_awslinux!="1"
 - name: Set PHP-FPM listen.owner to SSH user
   when: webserver_changeowner=="yes"
   replace: >
@@ -23,6 +27,7 @@
     regexp="^;listen\.owner = nobody"
     replace="listen.owner = {{c5dir_user}}"
   notify: Restart php-fpm
+  when: aws_awslinux!="1"
 - name: Set PHP-FPM listen.owner to nginx
   when: webserver_changeowner=="no"
   replace: >
@@ -30,12 +35,14 @@
     regexp="^;listen\.owner = nobody"
     replace="listen.owner = nginx"
   notify: Restart php-fpm
+  when: aws_awslinux!="1"
 - name: Set PHP-FPM listen.group
   replace: >
     dest=/etc/php-fpm.d/www.conf
     regexp="^;listen\.group = nobody"
     replace="listen.group = {{c5dir_group}}"
   notify: Restart php-fpm
+  when: aws_awslinux!="1"
 - name: Set PHP-FPM listen.acl_users
   when: webserver_changeowner=="yes"
   replace: >
@@ -43,24 +50,87 @@
     regexp="^listen.acl_users = apache,nginx"
     replace=";listen.acl_users = apache,nginx,{{c5dir_user}}"
   notify: Restart php-fpm
+  when: aws_awslinux!="1"
 - name: Set PHP-FPM listen.mode
   replace: >
     dest=/etc/php-fpm.d/www.conf
     regexp="^;listen\.mode = 0666"
     replace="listen.mode = 0660"
   notify: Restart php-fpm
+  when: aws_awslinux!="1"
 
-# Amazon Linux with PHP 7.1
+# Amazon Linux 1
+- name: Set PHP-FPM User
+  replace: >
+    dest=/etc/php-fpm-7.1.d/www.conf
+    regexp="user = apache"
+    replace="user = {{c5dir_user}}"
+  notify: Restart php-fpm
+  when: aws_awslinux=="1"
+- name: Set PHP-FPM Group
+  replace: >
+    dest=/etc/php-fpm-7.1.d/www.conf
+    regexp="group = apache"
+    replace="group = {{c5dir_group}}"
+  notify: Restart php-fpm
+  when: aws_awslinux=="1"
+- name: Change PHP-FPM UnixSocket
+  replace: >
+    dest=/etc/php-fpm-7.1.d/www.conf
+    regexp="listen = 127\.0\.0\.1:9000"
+    replace="listen = {{ unixsocket_path }}"
+  notify: Restart php-fpm
+  when: aws_awslinux=="1"
+- name: Set PHP-FPM listen.owner to SSH user
+  when: webserver_changeowner=="yes"
+  replace: >
+    dest=/etc/php-fpm-7.1.d/www.conf
+    regexp="^;listen\.owner = nobody"
+    replace="listen.owner = {{c5dir_user}}"
+  notify: Restart php-fpm
+  when: aws_awslinux=="1"
+- name: Set PHP-FPM listen.owner to nginx
+  when: webserver_changeowner=="no"
+  replace: >
+    dest=/etc/php-fpm-7.1.d/www.conf
+    regexp="^;listen\.owner = nobody"
+    replace="listen.owner = nginx"
+  notify: Restart php-fpm
+  when: aws_awslinux=="1"
+- name: Set PHP-FPM listen.group
+  replace: >
+    dest=/etc/php-fpm-7.1.d/www.conf
+    regexp="^;listen\.group = nobody"
+    replace="listen.group = {{c5dir_group}}"
+  notify: Restart php-fpm
+  when: aws_awslinux=="1"
+- name: Set PHP-FPM listen.acl_users
+  when: webserver_changeowner=="yes"
+  replace: >
+    dest=/etc/php-fpm-7.1.d/www.conf
+    regexp="^listen.acl_users = apache,nginx"
+    replace=";listen.acl_users = apache,nginx,{{c5dir_user}}"
+  notify: Restart php-fpm
+  when: aws_awslinux=="1"
+- name: Set PHP-FPM listen.mode
+  replace: >
+    dest=/etc/php-fpm-7.1.d/www.conf
+    regexp="^;listen\.mode = 0666"
+    replace="listen.mode = 0660"
+  notify: Restart php-fpm
+  when: aws_awslinux=="1"
+
+# Amazon Linux 1 with PHP 7.1
 - name: Change Permission session_dir
   file: path=/var/lib/php/7.1/session owner=root group={{c5dir_group}}
   when: aws_awslinux=="1"
 - name: Change Permission wsdlcache_dir
   file: path=/var/lib/php/7.1/wsdlcache owner=root group={{c5dir_group}}
   when: aws_awslinux=="1"
-# CentOS7 with webtactics repo
+# CentOS7 with webtactics repo & Amazon Linux 2
 - name: Change Permission session_dir
   file: path=/var/lib/php/session owner=root group={{c5dir_group}}
-  when: aws_awslinux not in ["1", "2"]
+  when: aws_awslinux!="1"
 - name: Change Permission wsdlcache_dir
   file: path=/var/lib/php/wsdlcache owner=root group={{c5dir_group}}
-  when: aws_awslinux not in ["1", "2"]
+  when: aws_awslinux!="1"
