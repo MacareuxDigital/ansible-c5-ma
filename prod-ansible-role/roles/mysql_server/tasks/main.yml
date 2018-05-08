@@ -13,5 +13,5 @@
 - include: set_mysqlroot.yml
 
 - name: Replace MySQL Config to disable performance schema
-  template: src=vhost_default.conf.j2 dest=/etc/my.conf
-  notify: Restart MySQL
+  template: src=my.conf.j2 dest=/etc/my.conf
+  notify: Restart mysqld
