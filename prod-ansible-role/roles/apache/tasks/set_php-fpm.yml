@@ -5,7 +5,7 @@
     regexp="user = apache"
     replace="user = {{c5dir_user}}"
   notify: Restart php-fpm
-  when: aws_awslinux!="1"
+  when: aws_awslinux!="1" and webserver_changeowner=="yes"
 - name: Set PHP-FPM Group
   replace: >
     dest=/etc/php-fpm.d/www.conf
@@ -21,13 +21,12 @@
   notify: Restart php-fpm
   when: aws_awslinux!="1"
 - name: Set PHP-FPM listen.owner to SSH user
-  when: webserver_changeowner=="yes"
   replace: >
     dest=/etc/php-fpm.d/www.conf
     regexp="^;listen\.owner = nobody"
     replace="listen.owner = {{c5dir_user}}"
   notify: Restart php-fpm
-  when: aws_awslinux!="1"
+  when: aws_awslinux!="1" and webserver_changeowner=="yes"
 - name: Set PHP-FPM listen.owner to apache
   when: webserver_changeowner=="no"
   replace: >
@@ -44,13 +43,12 @@
   notify: Restart php-fpm
   when: aws_awslinux!="1"
 - name: Set PHP-FPM listen.acl_users
-  when: webserver_changeowner=="yes"
   replace: >
     dest=/etc/php-fpm.d/www.conf
     regexp="^listen.acl_users = apache,nginx"
     replace=";listen.acl_users = apache,nginx,{{c5dir_user}}"
   notify: Restart php-fpm
-  when: aws_awslinux!="1"
+  when: aws_awslinux!="1" and webserver_changeowner=="yes"
 - name: Set PHP-FPM listen.mode
   replace: >
     dest=/etc/php-fpm.d/www.conf
@@ -66,7 +64,7 @@
     regexp="user = apache"
     replace="user = {{c5dir_user}}"
   notify: Restart php-fpm
-  when: aws_awslinux=="1"
+  when: aws_awslinux=="1" and webserver_changeowner=="yes"
 - name: Set PHP-FPM Group
   replace: >
     dest=/etc/php-fpm-7.1.d/www.conf
