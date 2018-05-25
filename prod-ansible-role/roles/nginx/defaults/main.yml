@@ -1,1 +1,2 @@
 unixsocket_path: "/var/run/php-fpm/www.sock"
+nginx_user: "nginx"

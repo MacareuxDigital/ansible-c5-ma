@@ -1,6 +1,9 @@
 - name: Create Nginx CacheDir
   file: path=/var/cache/nginx/fastcgi_cache state=directory
   notify: Restart Nginx
+- name: Set Nginx username
+  nginx_user: {{nginx_user}}
+  when: webserver_changeowner=="yes"
 - name: Replace Nginx config
   template: src=nginx.conf.{{aws_instance_type}}.j2 dest=/etc/nginx/nginx.conf
   notify: Restart Nginx
@@ -10,3 +13,17 @@
 - name: Adding Additional fastcgi parameters
   template: src=fastcgi_params_custom.j2 dest=/etc/nginx/fastcgi_params_custom
   notify: Restart Nginx
+
+# Change permission of Nginx temp directory
+- name: Change Permission Nginx temp directory
+  file: path=/var/lib/nginx/tmp/client_body owner={{c5dir_user}} group={{c5dir_group}}
+  when: webserver_changeowner=="yes"
+- name: Change Permission session dir
+  file: path=/var/lib/nginx/tmp/proxy owner={{c5dir_user}} group={{c5dir_group}}
+  when: webserver_changeowner=="yes"
+- name: Change Permission session dir
+  file: path=/var/lib/nginx/tmp/scgi owner={{c5dir_user}} group={{c5dir_group}}
+  when: webserver_changeowner=="yes"
+- name: Change Permission session dir
+  file: path=/var/lib/nginx/tmp/uwsgi owner={{c5dir_user}} group={{c5dir_group}}
+  when: webserver_changeowner=="yes"

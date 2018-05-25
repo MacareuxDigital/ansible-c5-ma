@@ -122,16 +122,22 @@
   when: aws_awslinux=="1"
 
 # Amazon Linux 1 with PHP 7.1
-- name: Change Permission session_dir
+- name: Change Permission opcache dir
+  file: path=/var/lib/php/7.1/opcache owner=root group={{c5dir_group}}
+  when: aws_awslinux=="1"
+- name: Change Permission session dir
   file: path=/var/lib/php/7.1/session owner=root group={{c5dir_group}}
   when: aws_awslinux=="1"
-- name: Change Permission wsdlcache_dir
+- name: Change Permission wsdlcache dir
   file: path=/var/lib/php/7.1/wsdlcache owner=root group={{c5dir_group}}
   when: aws_awslinux=="1"
 # CentOS7 with webtactics repo & Amazon Linux 2
-- name: Change Permission session_dir
+- name: Change Permission opcache dir
+  file: path=/var/lib/php/opcache owner=root group={{c5dir_group}}
+  when: aws_awslinux!="1"
+- name: Change Permission session dir
   file: path=/var/lib/php/session owner=root group={{c5dir_group}}
   when: aws_awslinux!="1"
-- name: Change Permission wsdlcache_dir
+- name: Change Permission wsdlcache dir
   file: path=/var/lib/php/wsdlcache owner=root group={{c5dir_group}}
   when: aws_awslinux!="1"
