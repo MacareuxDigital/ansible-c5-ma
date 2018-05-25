@@ -26,8 +26,8 @@
   - add_users:
     - "c5juser"
 ## Directory & WebServer Owner Settings
-  - c5dir_user:             "c5juser"
-  - c5dir_group:            "apache" # (apache/nginx)
+  - c5dir_user:             "c5juser"  # (ssh username, apache, or nginx)
+  - c5dir_group:            "apache" # (apache or nginx)
 
 # WebServer Setting
 ## Use Webserver Apache or Nginx (apache / nginx)
