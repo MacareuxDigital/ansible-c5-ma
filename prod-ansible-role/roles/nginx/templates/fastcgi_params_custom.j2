@@ -6,7 +6,11 @@ fastcgi_param REQUEST_METHOD $request_method;
 fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
 fastcgi_read_timeout 60;
 
-fastcgi_cache_bypass $skip_cache;
-fastcgi_no_cache     $skip_cache;
-fastcgi_cache        fastcgi_cache;
-fastcgi_cache_valid  any 1m;
+fastcgi_cache_bypass    $skip_cache;
+fastcgi_no_cache        $skip_cache;
+fastcgi_cache           fastcgi_cache;
+fastcgi_cache_valid     200 5m;
+fastcgi_cache_valid     302 5m;
+fastcgi_cache_valid     301 5m;
+fastcgi_cache_valid     any 1m;
+fastcgi_ignore_headers  Cache-Control Expires;
