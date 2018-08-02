@@ -120,6 +120,20 @@
   user: name=nginx groups={{ item }} state=present
   with_items: "{{ add_users }}"
 
+- name: Start Nginx
+  when: centos_version=="6"
+  service: name=nginx state=started enabled=yes
+- name: Start php-fpm
+  when: centos_version=="6"
+  service: name=php-fpm state=started enabled=yes
+
+- name: Start Nginx
+  when: centos_version=="7"
+  systemd: name=nginx state=started enabled=yes
+- name: Start php-fpm
+  when: centos_version=="7"
+  systemd: name=php-fpm state=started enabled=yes
+
 - include: set_php-fpm.yml
   when:
   - centos_phprepo !="remi"
@@ -136,17 +150,3 @@
 
 - include: set_nginx.yml
 - include: set_nginx-vhost.yml
-
-- name: Start Nginx
-  when: centos_version=="6"
-  service: name=nginx state=started enabled=yes
-- name: Start php-fpm
-  when: centos_version=="6"
-  service: name=php-fpm state=started enabled=yes
-
-- name: Start Nginx
-  when: centos_version=="7"
-  systemd: name=nginx state=started enabled=yes
-- name: Start php-fpm
-  when: centos_version=="7"
-  systemd: name=php-fpm state=started enabled=yes

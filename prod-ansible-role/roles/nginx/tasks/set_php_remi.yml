@@ -22,3 +22,10 @@
     regexp="upload_max_filesize = 2M"
     replace="upload_max_filesize = 32M"
   notify: Restart php-fpm
+
+- name: Add Symbolic link to php
+  file: src=/opt/remi/{{php_version_remi}}/root/usr/bin/php dest=/usr/bin/php state=link
+- name: Add Symbolic link to php-cgi
+  file: src=/opt/remi/{{php_version_remi}}/root/usr/bin/php-cgi dest=/usr/bin/php-cgi state=link
+- name: Add Symbolic link to php-phar
+  file: src=/opt/remi/{{php_version_remi}}/root/usr/bin/php-phar dest=/usr/bin/php-phar state=link
