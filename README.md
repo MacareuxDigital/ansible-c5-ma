@@ -185,6 +185,22 @@ Currently we only have the following setting.
 - t2micro
 - t2small
 
+## PHP Variables
+
+Please enter which PHP version you want to install. Currently supports 4 types of repo: Amazon Linux, Remi, Webtactics and Amazon Linux 2 (beta). You may not be able to install certain types depends on the repos.
+
+For Amazon Linux 2, they only ship with PHP 7.2. (as of May 2018)
+
+```
+## PHP version for yum (php56 / php70 / php71 / php72)
+  - php_version_yum:        "php72"
+## PHP version for Remi (php56 / php70 / php71 / php72)
+  - php_version_remi:       "php72"
+## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
+  - php_version_amznlinux:  "7.2"
+```
+
+
 ## Add & Name your SSH user
 
 - **[if_add_users] : "Yes" to create sudo users with attached SSH key. Please make sure to generate them and store it under `add_users/files` with the format of `[username].pem` secret ssh key and `[username].pem.pub` public key.
