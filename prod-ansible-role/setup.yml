@@ -64,9 +64,13 @@
 #    - mysql-client: Install only MySQL Client
 #    - none: do nothing
 #
-# Please use mysql for AWS Linux
+# Please use mysql for AWS Linux & Cent OS (Amazon Linux 2 doesn't support MySQL yet, please use MariaDB)
 #
   - db_environment:         "mysql"
+
+## Select which MySQL vesion you want for non CentOS.
+### 55 / 56 / 57 / 80
+  - mysql_repo:          "57"
 
 ## MySQL or MariaDB Setting
 ## Create DB or not  (yes / no)
@@ -142,6 +146,10 @@
   - role: nginx
     when: webserver_handle=="nginx"
   - role: web_dummy
+  - role: mysql_repo
+    when:
+    - db_environment in ['mysql', 'mysql-client']
+    - aws_awslinux == "no"
   - role: mysql_client
     when: db_environment in ['mysql', 'mysql-client']
   - role: mysql_server

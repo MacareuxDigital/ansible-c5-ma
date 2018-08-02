@@ -1,8 +1,19 @@
-- name: Install mysql
+- name: Install MySQL server for Amazon Linux
   yum: name={{item}} state=latest
+  when: aws_awslinux =="1"
   with_items:
   - mysql56-server
   register: result
+
+## Amazon Linux 2 is not supported yet
+
+- name: Install MySQL server for CentOS
+  yum: name={{item}} state=latest
+  when: aws_awslinux =="no"
+  with_items:
+  - mysql-community-server
+  register: result
+
 - name: Start mysqld (CentOS6)
   when: centos_version=="6"
   service: name=mysqld state=started enabled=yes

@@ -4,12 +4,14 @@
   with_items:
     - MariaDB-server
   register: result
+
 - name: Install MariaDB Server
   when: aws_awslinux=="2"
   yum: name={{item}} state=installed
   with_items:
     - mariadb-server
   register: result
+
 - name: Start mysqld (CentOS6)
   when: centos_version=="6"
   service: name=mysqld state=started enabled=yes
