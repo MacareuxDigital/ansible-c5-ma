@@ -16,6 +16,8 @@
   - "python-setuptools"
   - "curl"
   - "curl-devel"
+  - "zip"
+  - "unzip"
 - name: Install MySQL-Python for Amazon Linux
   yum: name={{item}} state=latest
   when: aws_awslinux in ["1","2"]
