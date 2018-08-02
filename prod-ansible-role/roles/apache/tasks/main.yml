@@ -139,6 +139,10 @@
     - centos_phprepo=="remi"
 
 - include: set_php.yml
+  when: centos_phprepo!="remi"
+- include: set_php_remi.yml
+  when: centos_phprepo=="remi"
+  
 - include: set_apache.yml
 - include: set_apache-vhosts.yml
 - include: set_htaccess.yml

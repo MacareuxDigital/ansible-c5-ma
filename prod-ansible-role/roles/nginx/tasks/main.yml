@@ -128,7 +128,12 @@
   when: aws_awslinux=="1"
 - include: set_php-fpm-remi.yml
   when: centos_phprepo=="remi"
+
 - include: set_php.yml
+  when: centos_phprepo!="remi"
+- include: set_php_remi.yml
+  when: centos_phprepo=="remi"
+
 - include: set_nginx.yml
 - include: set_nginx-vhost.yml
 
