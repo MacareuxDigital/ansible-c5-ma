@@ -19,6 +19,9 @@
 ## PHP Repo for CentOS (remi/webtactics)
   - centos_phprepo:         "remi"
 
+## CentOS Initialize Firewall? (yes / no)
+  - centos_firewall_enable: "yes"
+
 # Instance Type (t2micro / t2small)
   - aws_instance_type:      "t2small"
 

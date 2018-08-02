@@ -75,7 +75,7 @@
 - name: Install Nginx and PHP for CentOS7 (Remi)
   when:
     - aws_awslinux=="no"
-    - centos_phprepo=="remi"
+    - centos_phprepo=="webtactics"
     - php_version_yum !="php72"
   yum: name={{item}} state=latest
   with_items:
@@ -106,7 +106,7 @@
 - name: Install PHP mcrypt extention for CentOS7 (Webtactics)
   when:
     - aws_awslinux=="no"
-    - centos_phprepo=="remi"
+    - centos_phprepo=="webtactics"
     - php_version_yum !="php72"
   yum: name={{item}} state=latest
   with_items:
