@@ -5,6 +5,8 @@ Amazon Linux や CentOS 7 に、 SSH 接続をし、Apache/Nginx, PHP-FPM, Maria
 
 **現在検証中**: Amazon Linux + MySQL & CentOS7 + MariaDB のコンビネーションしかテストしていませんので、お気をつけ下さい。
 
+このスクリプトは仕事をしながら常に更新しているので、 **完全な動作テストを全くしていません。** 必ず、テストインスタンスなどで試してから本番インスタンスで実行してください。
+
 ## 準備
 
 事前にPlayBookを実行する端末に、ansibleコマンドのインストールを行います。
@@ -165,6 +167,21 @@ AWS インスタンスに応じて最適化した設定を行います。
 - t2micro
 - t2small
 
+## PHP バージョン
+
+どの PHP バージョンを利用したいかを指定してください。現在、4つのレポジトリに対応しているはずです: Amazon Linux, Remi, Webtactics and Amazon Linux 2 (ベータ). 但しレポジトリによってはインストールできないバージョンもあるかもしれません。
+
+Amazon Linux 2 は、現在のところ、 PHP 7.2 しか対応 & 動作確認していません。 (as of May 2018)
+
+```
+## PHP version for yum (php56 / php70 / php71 / php72)
+  - php_version_yum:        "php72"
+## PHP version for Remi (php56 / php70 / php71 / php72)
+  - php_version_remi:       "php72"
+## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
+  - php_version_amznlinux:  "7.2"
+```
+
 ## 追加するSSHユーザーの指定
 
 - **[if_add_users] : "Yes" で sudo 権限付きの SSH ユーザーを新たに作成します。 `add_users/files` 内に「ユーザー名.pem」という秘密鍵と「ユーザー名.pem.pub」という公開鍵を保存してください。
@@ -236,6 +253,18 @@ DB環境を設定します (mariadb / mariadb-client / mysql / mysql-client / no
 
 ```
   - db_environment:         "mariadb"
+```
+
+## CentOS にインストールする MySQL バージョン
+
+CentOS では、どの MySQL バージョンをインストールするか指定できます。
+Amazon Linux は MySQL 5.6 だけです。
+Amazon Linux は MariaDB を使ってください。
+
+利用可能バージョン: 55 / 56 / 57 / 80.
+
+```
+  - mysql_repo:          "57"
 ```
 
 ## DB の設定を行うか否か

@@ -68,7 +68,7 @@
 #
   - db_environment:         "mysql"
 
-## Select which MySQL vesion you want for non CentOS.
+## Select which MySQL vesion you want for CentOS.
 ### 55 / 56 / 57 / 80
   - mysql_repo:          "57"
 

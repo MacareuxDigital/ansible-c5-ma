@@ -8,6 +8,8 @@ You need to install Ansible in your PC to run.
 
 You will connect to AWS Linux or CentOS7 and start sending commands to setup the server automatically.
 
+THIS ANSIBLE IS VERY UGRY. KEEP CHANGING AS WE WORK. WE CANNOT GURANTEE ANYTHING. SO YOU MUST USE FOR DEV INSTANCE FIRST BEFORE APPLYING PRODUCTION. I WOULD NOT DEPLOY TO PRODUCTION EITHER.
+
 -----
 
 [日本語はこちら](README-ja.md)
@@ -275,6 +277,19 @@ I have **NOT TESTED** yet for mariadb-client option.
 ```
   - db_environment:         "mariadb"
 ```
+
+## MySQL vesion for CentOS.
+
+You can choose which MySQL version you want to install onto CentOS.
+For Amazon Linux, you can only specify MySQL 5.6 for now.
+For Amazon Linux 2, please use MariaDB.
+
+Available versions: 55 / 56 / 57 / 80.
+
+```
+  - mysql_repo:          "57"
+```
+
 ## Create DB or not
 
 You can set whether to create DB and user from this ansible script. (Amazon Linux 2 doesn't work yet).
