@@ -1,60 +1,51 @@
-# Amazon Linux 2 & CentOS
+# CentOS & Remi PHP-fpm setting change
 - name: Set PHP-FPM User
   replace: >
-    dest=/etc/php-fpm.d/www.conf
+    dest=/etc/opt/remi/{{php_version_remi}}/php-fpm.d/www.conf
     regexp="user = apache"
     replace="user = {{c5dir_user}}"
   notify: Restart php-fpm
-  when: webserver_changeowner=="yes"
-- name: Set PHP-FPM User
-  replace: >
-    dest=/etc/php-fpm.d/www.conf
-    regexp="user = apache"
-    replace="user = nginx"
-  notify: Restart php-fpm
-  when: webserver_changeowner=="no"
 - name: Set PHP-FPM Group
   replace: >
-    dest=/etc/php-fpm.d/www.conf
+    dest=/etc/opt/remi/{{php_version_remi}}/php-fpm.d/www.conf
     regexp="group = apache"
     replace="group = {{c5dir_group}}"
   notify: Restart php-fpm
 - name: Change PHP-FPM UnixSocket
   replace: >
-    dest=/etc/php-fpm.d/www.conf
+    dest=/etc/opt/remi/{{php_version_remi}}/php-fpm.d/www.conf
     regexp="listen = 127\.0\.0\.1:9000"
     replace="listen = {{ unixsocket_path }}"
   notify: Restart php-fpm
 - name: Set PHP-FPM listen.owner to SSH user
   replace: >
-    dest=/etc/php-fpm.d/www.conf
+    dest=/etc/opt/remi/{{php_version_remi}}/php-fpm.d/www.conf
     regexp="^;listen\.owner = nobody"
     replace="listen.owner = {{c5dir_user}}"
   notify: Restart php-fpm
-  when: webserver_changeowner=="yes"
-- name: Set PHP-FPM listen.owner to nginx
-  replace: >
-    dest=/etc/php-fpm.d/www.conf
-    regexp="^;listen\.owner = nobody"
-    replace="listen.owner = nginx"
-  notify: Restart php-fpm
+- name: Set PHP-FPM listen.owner to apache
   when: webserver_changeowner=="no"
+  replace: >
+    dest=/etc/opt/remi/{{php_version_remi}}/php-fpm.d/www.conf
+    regexp="^;listen\.owner = nobody"
+    replace="listen.owner = apache"
+  notify: Restart php-fpm
 - name: Set PHP-FPM listen.group
   replace: >
-    dest=/etc/php-fpm.d/www.conf
+    dest=/etc/opt/remi/{{php_version_remi}}/php-fpm.d/www.conf
     regexp="^;listen\.group = nobody"
     replace="listen.group = {{c5dir_group}}"
   notify: Restart php-fpm
 - name: Set PHP-FPM listen.acl_users
   replace: >
-    dest=/etc/php-fpm.d/www.conf
+    dest=/etc/opt/remi/{{php_version_remi}}/php-fpm.d/www.conf
     regexp="^listen.acl_users = apache,nginx"
     replace=";listen.acl_users = apache,nginx,{{c5dir_user}}"
   notify: Restart php-fpm
   when: webserver_changeowner=="yes"
 - name: Change PHP-FPM mode from dynamic to static
   replace: >
-    dest=/etc/php-fpm.d/www.conf
+    dest=/etc/opt/remi/{{php_version_remi}}/php-fpm.d/www.conf
     regexp="pm = dynamic"
     replace="pm = static"
   notify: Restart php-fpm
@@ -67,8 +58,12 @@
 
 # CentOS7 with webtactics repo & Amazon Linux 2
 - name: Change Permission opcache dir
-  file: path=/var/lib/php/opcache owner=root group={{c5dir_group}}
+  file: path=/var/opt/remi/{{php_version_remi}}/lib/php/opcache owner=root group={{c5dir_group}}
 - name: Change Permission session dir
-  file: path=/var/lib/php/session owner=root group={{c5dir_group}}
+  file: path=/var/opt/remi/{{php_version_remi}}/lib/php/session owner=root group={{c5dir_group}}
 - name: Change Permission wsdlcache dir
-  file: path=/var/lib/php/wsdlcache owner=root group={{c5dir_group}}
+  file: path=/var/opt/remi/{{php_version_remi}}/lib/php/wsdlcache owner=root group={{c5dir_group}}
+
+- name: Disable Apache php setting
+  command: mv /etc/httpd/conf.d/php.conf /etc/httpd/conf.d/php.conf.bak
+  notify: Restart Apache

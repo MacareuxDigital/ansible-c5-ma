@@ -3,28 +3,35 @@
   yum: name={{item}} state=latest
   with_items:
   - "httpd24"
-  - "php71"
-  - "php71-common"
-  - "php71-cli"
-  - "php71-devel"
-  - "php71-fpm"
-  - "php71-gd"
-  - "php71-intl"
-  - "php71-mbstring"
-  - "php71-mysqlnd"
-  - "php71-mcrypt"
-  - "php71-opcache"
-  - "php71-pdo"
-  - "php71-pecl-imagick"
-  - "php71-pecl-memcached"
-  - "php71-xml"
+  - "{{php_version_yum}}"
+  - "{{php_version_yum}}-common"
+  - "{{php_version_yum}}-cli"
+  - "{{php_version_yum}}-devel"
+  - "{{php_version_yum}}-fpm"
+  - "{{php_version_yum}}-gd"
+  - "{{php_version_yum}}-intl"
+  - "{{php_version_yum}}-mbstring"
+  - "{{php_version_yum}}-mysqlnd"
+  - "{{php_version_yum}}-opcache"
+  - "{{php_version_yum}}-pdo"
+  - "{{php_version_yum}}-pecl-imagick"
+  - "{{php_version_yum}}-pecl-memcached"
+  - "{{php_version_yum}}-pecl-redis"
+  - "{{php_version_yum}}-xml"
   - "jq"
+- name: Install PHP mcrypt extension for Amazon Linux
+  when:
+    - aws_awslinux=="1"
+    - php_version_yum !="php72"
+  yum: name={{item}} state=latest
+  with_items:
+  - "{{php_version_yum}}-mcrypt"
 
 - name: Install Amazon Linux Extra Lamp MariaDB for Amazon Linux 2
   shell: amazon-linux-extras install lamp-mariadb10.2-php7.2
   when: aws_awslinux=="2"
 
-- name: Install Apache and PHP for Amazon Linux
+- name: Install Apache and PHP for Amazon Linux 2
   when: aws_awslinux=="2"
   yum: name={{item}} state=latest
   with_items:
@@ -45,28 +52,72 @@
 #  - "php-mcrypt"  (N/A)
 #  - "php-pecl-imagick" (N/A)
 
-- name: Install Apache and PHP for CentOS7
-  when: aws_awslinux=="no"
+- name: Install Apache and PHP for CentOS7 (Remi)
+  when:
+    - aws_awslinux=="no"
+    - centos_phprepo=="remi"
   yum: name={{item}} state=latest
   with_items:
   - "httpd"
-  - "php71w"
-  - "php71w-common"
-  - "php71w-cli"
-  - "php71w-devel"
-  - "php71w-fpm"
-  - "php71w-gd"
-  - "php71w-intl"
-  - "php71w-pdo"
-  - "php71w-pecl-imagick"
-  - "php71w-pecl-memcached"
-  - "php71w-mbstring"
-  - "php71w-mcrypt"
-  - "php71w-mysqlnd"
-  - "php71w-opcache"
-  - "php71w-soap"
-  - "php71w-xml"
+  - "{{php_version_yum}}"
+  - "{{php_version_yum}}-php"
+  - "{{php_version_yum}}-php-common"
+  - "{{php_version_yum}}-php-cli"
+  - "{{php_version_yum}}-php-fpm"
+  - "{{php_version_yum}}-php-gd"
+  - "{{php_version_yum}}-php-mbstring"
+  - "{{php_version_yum}}-php-mysql"
+  - "{{php_version_yum}}-php-opcache"
+  - "{{php_version_yum}}-php-pdo"
+  - "{{php_version_yum}}-php-xml"
+  - "{{php_version_yum}}-php-gmp"
+  - "{{php_version_yum}}-php-pecl-imagick"
+  - "{{php_version_yum}}-php-pecl-zip"
+  - "{{php_version_yum}}-php-pecl-redis"
+  - "{{php_version_yum}}-php-pecl-memcached"
   - "jq"
+- name: Install PHP mcrypt extention for CentOS7 (Remi)
+  when:
+    - aws_awslinux=="no"
+    - centos_phprepo=="remi"
+    - php_version_yum !="php72"
+  yum: name={{item}} state=latest
+  with_items:
+  - "{{php_version_yum}}-php-mcrypt"
+
+- name: Install Apache and PHP for CentOS7 (Webtactics)
+  when:
+    - aws_awslinux=="no"
+    - centos_phprepo=="webtactics"
+  yum: name={{item}} state=latest
+  with_items:
+  - "httpd"
+  - "{{php_version_yum}}w"
+  - "{{php_version_yum}}w-common"
+  - "{{php_version_yum}}w-cli"
+  - "{{php_version_yum}}w-devel"
+  - "{{php_version_yum}}w-fpm"
+  - "{{php_version_yum}}w-gd"
+  - "{{php_version_yum}}w-intl"
+  - "{{php_version_yum}}w-pdo"
+  - "{{php_version_yum}}w-pecl-imagick"
+  - "{{php_version_yum}}w-pecl-memcached"
+  - "{{php_version_yum}}w-pecl-redis"
+  - "{{php_version_yum}}w-mbstring"
+  - "{{php_version_yum}}w-mcrypt"
+  - "{{php_version_yum}}w-mysqlnd"
+  - "{{php_version_yum}}w-opcache"
+  - "{{php_version_yum}}w-soap"
+  - "{{php_version_yum}}w-xml"
+  - "jq"
+- name: Install PHP mcrypt extention for CentOS7 (Webtactics)
+  when:
+    - aws_awslinux=="no"
+    - centos_phprepo=="remi"
+    - php_version_yum !="php72"
+  yum: name={{item}} state=latest
+  with_items:
+  - "{{php_version_yum}}w-mcrypt"
 
 - name: Add User to Apache-group
   user: name={{ item }} groups=apache state=present
@@ -77,6 +128,16 @@
   with_items: "{{ add_users }}"
 
 - include: set_php-fpm.yml
+  when:
+  - centos_phprepo !="remi"
+  - aws_awslinux !="1"
+- include: set_php-fpm-al-1.yml
+  when: aws_awslinux=="1"
+- include: set_php-fpm-remi.yml
+  when:
+    - aws_awslinux=="no"
+    - centos_phprepo=="remi"
+
 - include: set_php.yml
 - include: set_apache.yml
 - include: set_apache-vhosts.yml

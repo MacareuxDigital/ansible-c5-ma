@@ -1,13 +1,15 @@
+- name: Install epel repository
+  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
+
 - name: Install remi repository
-  yum: name=http://rpms.famillecollet.com/enterprise/remi-release-7.rpm state=present
+  yum: name=http://rpms.remirepo.net/enterprise/remi-release-7.rpm state=present
+  when: centos_phprepo=="remi"
 
 #- name: Remove repository (and clean up left-over metadata)
 #  yum_repository:
 #    name: remi
 #    state: absent
 
-- name: Install epel repository
-  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
-
 - name: Install webtatic repository
   yum: name=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm state=present
+  when: centos_phprepo=="webtactics"
