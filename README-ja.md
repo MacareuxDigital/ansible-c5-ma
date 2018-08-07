@@ -152,9 +152,27 @@ Amazon Linux 2 の場合は 7 を入れて下さい
   - centos_version:         "7"
 ```
 
+## PHP レポジトリ指定 (remi/webtactics/none)
+
+CentOS 向けのみ。追加 PHP レポジトリを指定します。
+
+```
+  - centos_phprepo:         "remi"
+```
+
+## CentOS Initialize Firewall? (yes / no) Incompleted
+
+`yes` であれば、 `firewalld` をインストールし、http & https ポートを開放します。
+
+
+```
+  - centos_firewall_enable: "yes"
+```
+
+
 ## インスタンスタイプ
 
-AWS インスタンスに応じて最適化した設定を行います。
+AWS インスタンスに応じて最適化した Apache & Niginx 設定を行います。同じくらいのスペックの CentOS マシンでも同じです。
 
 ```
   - aws_instance_type:       "t2small"

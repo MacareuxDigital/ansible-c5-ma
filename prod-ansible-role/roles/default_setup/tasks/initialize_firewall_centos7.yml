@@ -1,3 +1,8 @@
+- name: Install firewalld
+  yum: name={{item}} state=latest
+  with_items:
+  - "firewalld"
+
 - name: Open http port
   shell: firewall-cmd --add-service=http --zone=public --permanent
 - name: Open https port

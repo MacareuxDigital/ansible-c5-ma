@@ -171,6 +171,22 @@ This script supports 6 or 7. If it's Amazon Linux earlier than 2017, please type
   - centos_version:         "6"
 ```
 
+## PHP Repo for CentOS (remi/webtactics/none)
+
+For CentOS, select which PHP repo you want to use.
+
+```
+  - centos_phprepo:         "remi"
+```
+
+## CentOS Initialize Firewall? (yes / no) Incompleted
+
+If set `yes`, it will install firewalld & set-up to open http & https port.
+
+
+```
+  - centos_firewall_enable: "yes"
+```
 
 ## Instance Type
 
