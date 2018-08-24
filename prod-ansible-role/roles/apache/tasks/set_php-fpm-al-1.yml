@@ -25,7 +25,7 @@
     regexp="^;listen\.owner = nobody"
     replace="listen.owner = {{c5dir_user}}"
   notify: Restart php-fpm
-- name: Set PHP-FPM listen.owner to nginx
+- name: Set PHP-FPM listen.owner to Apache
   when: webserver_changeowner=="no"
   replace: >
     dest=/etc/php-fpm-{{php_version_amznlinux}}.d/www.conf
