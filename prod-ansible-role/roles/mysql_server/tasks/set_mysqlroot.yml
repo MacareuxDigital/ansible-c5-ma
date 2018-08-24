@@ -3,4 +3,4 @@
   with_items:
     - 127.0.0.1
     - localhost
-  when: MySQLServerResult.changed == True
+  when: mysqlresult.changed==True
