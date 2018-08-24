@@ -1,6 +1,8 @@
 - name: Add concrete5 Config File (with Load Balancer)
   template: src=config_concrete_balancer.php.j2 dest={{ vhost_docroot }}{{ vhost_domain }}/application/config/concrete.php owner={{c5dir_user}} group={{c5dir_group}}
   when: c5_load_balancer=="yes"
-- name: Add concrete5 Config File
+- name: Add concrete5 Config File (when c5 installation)
   template: src=config_concrete_normal.php.j2 dest={{ vhost_docroot }}{{ vhost_domain }}/application/config/concrete.php owner={{c5dir_user}} group={{c5dir_group}}
-  when: c5_load_balancer!="yes"
+  when:
+    - c5_load_balancer!="yes"
+    - c5_installation!="yes"
