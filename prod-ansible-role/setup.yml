@@ -108,6 +108,8 @@
   - c5_upload:              "yes"
 ## concrete5 Installation (yes / no)
   - c5_installation:        "yes"
+## concrete5 Config Upload (yes / no)
+  - c5_installation_config_upload: "yes"
 ## Site Name
   - c5_sitename:            "Site Name"
 ## Install Theme
