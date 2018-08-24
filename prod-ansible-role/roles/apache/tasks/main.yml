@@ -150,3 +150,9 @@
 - name: Start php-fpm
   when: centos_version=="7"
   systemd: name=php-fpm state=started enabled=yes
+
+- name: Chenge Directory Permission -  Apache Log
+  file: path="/var/log/httpd/" state=directory recurse=yes mode=0755
+
+- name: Chenge Directory Permission - PHP-fpm
+  file: path="/var/log/php-fpm/" state=directory recurse=yes mode=0755

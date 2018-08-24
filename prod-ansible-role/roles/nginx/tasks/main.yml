@@ -142,3 +142,9 @@
 
 - include: set_nginx.yml
 - include: set_nginx-vhost.yml
+
+- name: Chenge Directory Permission -  Apache Log
+  file: path="/var/log/httpd/" state=directory recurse=yes mode=0755
+
+- name: Chenge Directory Permission - PHP-fpm
+  file: path="/var/log/php-fpm/" state=directory recurse=yes mode=0755
