@@ -175,12 +175,13 @@
     when: db_environment=="mariadb"
   - role: mysql_appdb
     when: db_create=="yes"
+  - role: basic_auth
+    when: use_basic_auth=="yes"
+  - role: create_symlink_www
   - role: concrete5
     when: c5_installation=="yes"
   - role: concrete5_migration
     when: c5_migration=="yes"
-  - role: basic_auth
-    when: use_basic_auth=="yes"
   - role: newrelic_repo
     when: use_newrelic=="yes" or use_newrelic_php=="yes"
   - role: newrelic
@@ -189,4 +190,3 @@
     when: use_newrelic_php=="yes"
   - role: mackerel
     when: use_mackerel=="yes"
-  - role: create_symlink_www
