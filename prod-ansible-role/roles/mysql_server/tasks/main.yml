@@ -3,7 +3,7 @@
   when: aws_awslinux =="1"
   with_items:
   - mysql{{mysql_repo}}-server
-  register: MySQLServerResult
+  register: mysqlresult
 
 ## Amazon Linux 2 is not supported yet
 
@@ -12,7 +12,7 @@
   when: aws_awslinux =="no"
   with_items:
   - mysql-community-server
-  register: MySQLServerResult
+  register: mysqlresult
 
 - name: Start mysqld (CentOS6)
   when: centos_version=="6"
