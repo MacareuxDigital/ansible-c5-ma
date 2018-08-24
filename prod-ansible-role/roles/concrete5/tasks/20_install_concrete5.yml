@@ -1,5 +1,7 @@
+- name: Make concrete5 CLI executable
+  file: path="{{vhost_docroot}}{{vhost_domain}}/concrete/bin/concrete5" owner={{c5dir_user}} group={{c5dir_group}} mode=0775
 - name: Install concrete5
-  shell: sh {{vhost_docroot}}{{vhost_domain}}/concrete/bin/concrete5 c5:install --db-server="{{ mysql_loginhost }}" --db-username="{{ mysql_username }}" --db-password="{{ mysql_userpass }}" --db-database="{{ mysql_dbname }}" --site="{{ c5_sitename }}" --starting-point="{{ c5_starting_point }}" --admin-email="{{ c5_admin_email }}" --admin-password="{{ c5_admin_pass }}" --site-locale="{{ c5_locale }}"
+  shell: sh {{vhost_docroot}}{{vhost_domain}}/concrete/bin/concrete5 c5:install --db-server='{{ mysql_loginhost }}' --db-username='{{ mysql_username }}' --db-password='{{ mysql_userpass }}' --db-database='{{ mysql_dbname }}' --site='{{ c5_sitename }}' --starting-point='{{ c5_starting_point }}' --admin-email='{{ c5_admin_email }}' --admin-password='{{ c5_admin_pass }}' --site-locale='{{ c5_locale }}'
   when: result.stat.exists == False
 - name: Chenge Directory Permission(files)
   file: path="{{vhost_docroot}}{{vhost_domain}}/application/files/" state=directory recurse=yes owner={{c5dir_user}} group={{c5dir_group}} mode=0775

@@ -12,6 +12,7 @@
 
 - include: 10_upload_concrete5.yml
 - include: 20_install_concrete5.yml
+  when: c5_installation=="yes"
 - include: 30_upload_concrete5_config.yml
 - include: 40_restart_nginx.yml
   when: webserver_handle=="nginx"

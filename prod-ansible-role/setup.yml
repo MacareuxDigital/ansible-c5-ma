@@ -103,8 +103,11 @@
 
 
 # concrete5 Settings
+# concrete5 Settings
+## concrete5 File upload (yes / no)
+  - c5_upload:              "yes"
 ## concrete5 Installation (yes / no)
-  - c5_installation:        "no"
+  - c5_installation:        "yes"
 ## Site Name
   - c5_sitename:            "Site Name"
 ## Install Theme
@@ -152,7 +155,7 @@
   - role: mysql_repo
     when:
     - db_environment in ['mysql', 'mysql-client']
-    - aws_awslinux == "no"
+    - aws_awslinux=="no"
   - role: mysql_client
     when: db_environment in ['mysql', 'mysql-client']
   - role: mysql_server
