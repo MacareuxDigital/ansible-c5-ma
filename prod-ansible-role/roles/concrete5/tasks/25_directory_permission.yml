@@ -9,7 +9,7 @@
     - result.stat.exists == False
     - webserver_changeowner == "yes"
 - name: Chenge Directory Permission (packagess) - Same as SSH User
-  file: path="{{vhost_docroot}}{{vhost_domain}}/application/packages/" state=directory recurse=yes owner={{c5dir_user}} group={{c5dir_group}} mode=0775
+  file: path="{{vhost_docroot}}{{vhost_domain}}/packages/" state=directory recurse=yes owner={{c5dir_user}} group={{c5dir_group}} mode=0775
   when:
     - result.stat.exists == False
     - webserver_changeowner == "yes"
@@ -25,7 +25,7 @@
     - result.stat.exists == False
     - webserver_changeowner == "no"
 - name: Chenge Directory Permission (packages) - {{webserver_handle}} User
-  file: path="{{vhost_docroot}}{{vhost_domain}}/application/packages/" state=directory recurse=yes owner={{webserver_handle}} group={{webserver_handle}} mode=0775
+  file: path="{{vhost_docroot}}{{vhost_domain}}/packages/" state=directory recurse=yes owner={{webserver_handle}} group={{webserver_handle}} mode=0775
   when:
     - result.stat.exists == False
     - webserver_changeowner == "no"
