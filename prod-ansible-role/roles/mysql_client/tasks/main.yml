@@ -1,14 +1,14 @@
-- name: Install mysql
+- name: Install MySQL Client for Amazon Linux 1
   yum: name={{item}} state=latest
   when: aws_awslinux =="1"
   with_items:
-  - mysql56
-  - mysql56-common
-  - mysql56-devel
-  - mysql56-libs
+  - mysql{{mysql_repo}}
+  - mysql{{mysql_repo}}-common
+  - mysql{{mysql_repo}}-devel
+  - mysql{{mysql_repo}}-libs
   register: result
 
-- name: Install mysql
+- name: Install MySQL Client
   yum: name={{item}} state=latest
   when: aws_awslinux =="no"
   with_items:
@@ -21,6 +21,7 @@
 - name: Install pip
   when: aws_awslinux=="no"
   yum: name=python-pip state=latest
-- name: Install python mysqlmodule
+  
+- name: Install Python MySQLModule
   when: aws_awslinux not in ["2"]
   pip: name=mysql state=latest
