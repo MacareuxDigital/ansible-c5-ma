@@ -1,0 +1,11 @@
+- name: Set Logrotate Unit
+  replace: >
+    dest=/etc/logrotate.conf
+    regexp="weekly"
+    replace="{{logrotate_unit}}"
+
+- name: Set Logrotate Frequency
+  replace: >
+    dest=/etc/logrotate.conf
+    regexp="rotate 4"
+    replace="rotate {{logrotate_generation}}"

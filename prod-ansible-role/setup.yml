@@ -7,6 +7,11 @@
   - locale:                 "en_US.UTF8"
 # Server Timezone (UTC / Asia/Tokyo)
   - zone:                   "Asia/Tokyo"
+# Logrotate
+## How often you want to rotate the log (daily/weekly/monthly)
+  - logrotate_unit:         "weekly"
+## How many generations do you want to keep" (numbers)
+  - logrotate_generation:    "4"
 
 # Is this AmazonLinux? (1 / 2 / no)
 ## For Amazon Linux, type 1. For Amazon Linux 2, type 2. "no" if is's not Amazon Linux.

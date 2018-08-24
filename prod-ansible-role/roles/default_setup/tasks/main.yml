@@ -30,3 +30,4 @@
   when:
     - centos_version=="7" and aws_awslinux=="no"
     - centos_firewall_enable=="yes"
+- include: initialize_logrorate.yml
