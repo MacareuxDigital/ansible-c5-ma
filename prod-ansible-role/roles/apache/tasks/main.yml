@@ -56,7 +56,7 @@
   when:
     - aws_awslinux=="no"
     - centos_phprepo=="remi"
-   yum: name={{item}} state=latest enablerepo=epel,remi,remi-{{php_version_yum}}
+  yum: name={{item}} state=latest enablerepo=epel,remi,remi-{{php_version_yum}}
   with_items:
   - "httpd"
   - "php"
