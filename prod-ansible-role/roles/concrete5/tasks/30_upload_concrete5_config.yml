@@ -5,4 +5,4 @@
   template: src=config_concrete_normal.php.j2 dest={{ vhost_docroot }}{{ vhost_domain }}/application/config/concrete.php owner={{c5dir_user}} group={{c5dir_group}}
   when:
     - c5_load_balancer!="yes"
-    - c5_installation!="yes"
+    - c5_installation=="yes"
