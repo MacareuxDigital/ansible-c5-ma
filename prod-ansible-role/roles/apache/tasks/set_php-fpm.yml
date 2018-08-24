@@ -64,6 +64,10 @@
 - name: Change Permission wsdlcache_dir
   file: path=/var/lib/php/wsdlcache owner=root group={{c5dir_group}}
 
+- name: Check if php.conf exist
+  stat: path=/etc/httpd/conf.d/php.conf
+  register: phpconffile
 - name: Disable Apache php setting
   command: mv /etc/httpd/conf.d/php.conf /etc/httpd/conf.d/php.conf.bak
+  when: phpconffile.stat.exists == True
   notify: Restart Apache
