@@ -84,7 +84,7 @@
     - php_version_yum !="php72"
   yum: name={{item}} state=latest
   with_items:
-  - "{{php_version_yum}}-php-mcrypt"
+  - "php-mcrypt"
 
 - name: Install Apache and PHP for CentOS7 (Webtactics)
   when:
