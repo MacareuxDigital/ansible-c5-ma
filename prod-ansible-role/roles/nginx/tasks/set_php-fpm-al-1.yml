@@ -1,23 +1,39 @@
 # Amazon Linux 1
-- name: Set PHP-FPM User
+- name: Set PHP-FPM User to {{c5dir_user}}
   replace: >
     dest=/etc/php-fpm-{{php_version_amznlinux}}.d/www.conf
     regexp="user = apache"
     replace="user = {{c5dir_user}}"
   notify: Restart php-fpm
-- name: Set PHP-FPM Group
+  when: webserver_changeowner=="yes"
+- name: Set PHP-FPM User to nginx
+  replace: >
+    dest=/etc/php-fpm-{{php_version_amznlinux}}.d/www.conf
+    regexp="user = apache"
+    replace="user = nginx"
+  notify: Restart php-fpm
+  when: webserver_changeowner=="no"
+- name: Set PHP-FPM Group to {{c5dir_group}}
   replace: >
     dest=/etc/php-fpm-{{php_version_amznlinux}}.d/www.conf
     regexp="group = apache"
     replace="group = {{c5dir_group}}"
   notify: Restart php-fpm
+  when: webserver_changeowner=="yes"
+- name: Set PHP-FPM Group to nginx
+  replace: >
+    dest=/etc/php-fpm-{{php_version_amznlinux}}.d/www.conf
+    regexp="group = apache"
+    replace="group = nginx"
+  notify: Restart php-fpm
+  when: webserver_changeowner=="no"
 - name: Change PHP-FPM UnixSocket
   replace: >
     dest=/etc/php-fpm-{{php_version_amznlinux}}.d/www.conf
     regexp="listen = 127\.0\.0\.1:9000"
     replace="listen = {{ unixsocket_path }}"
   notify: Restart php-fpm
-- name: Set PHP-FPM listen.owner to SSH user
+- name: Set PHP-FPM listen.owner to SSH user {{c5dir_user}}
   replace: >
     dest=/etc/php-fpm-{{php_version_amznlinux}}.d/www.conf
     regexp="^;listen\.owner = nobody"
@@ -31,11 +47,19 @@
     replace="listen.owner = nginx"
   notify: Restart php-fpm
   when: webserver_changeowner=="no"
-- name: Set PHP-FPM listen.group
+- name: Set PHP-FPM listen.group to {{c5dir_group}}
+  when: webserver_changeowner=="yes"
   replace: >
     dest=/etc/php-fpm-{{php_version_amznlinux}}.d/www.conf
     regexp="^;listen\.group = nobody"
     replace="listen.group = {{c5dir_group}}"
+  notify: Restart php-fpm
+- name: Set PHP-FPM listen.group to nginx
+  when: webserver_changeowner=="no"
+  replace: >
+    dest=/etc/php-fpm-{{php_version_amznlinux}}.d/www.conf
+    regexp="^;listen\.group = nobody"
+    replace="listen.group = nginx"
   notify: Restart php-fpm
 - name: Set PHP-FPM listen.acl_users
   replace: >

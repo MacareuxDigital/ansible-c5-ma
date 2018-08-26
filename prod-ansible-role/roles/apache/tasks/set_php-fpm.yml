@@ -12,6 +12,7 @@
     regexp="group = apache"
     replace="group = {{c5dir_group}}"
   notify: Restart php-fpm
+  when: webserver_changeowner=="yes"
 - name: Change PHP-FPM UnixSocket
   replace: >
     dest=/etc/php-fpm.d/www.conf

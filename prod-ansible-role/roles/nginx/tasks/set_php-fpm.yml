@@ -19,6 +19,14 @@
     regexp="group = apache"
     replace="group = {{c5dir_group}}"
   notify: Restart php-fpm
+  when: webserver_changeowner=="yes"
+- name: Set PHP-FPM Group
+  replace: >
+    dest=/etc/php-fpm.d/www.conf
+    regexp="group = apache"
+    replace="group = nginx"
+  notify: Restart php-fpm
+  when: webserver_changeowner=="no"
 - name: Change PHP-FPM UnixSocket
   replace: >
     dest=/etc/php-fpm.d/www.conf
@@ -40,10 +48,18 @@
   notify: Restart php-fpm
   when: webserver_changeowner=="no"
 - name: Set PHP-FPM listen.group
+  when: webserver_changeowner=="yes"
   replace: >
     dest=/etc/php-fpm.d/www.conf
     regexp="^;listen\.group = nobody"
     replace="listen.group = {{c5dir_group}}"
+  notify: Restart php-fpm
+- name: Set PHP-FPM listen.group
+  when: webserver_changeowner=="no"
+  replace: >
+    dest=/etc/php-fpm.d/www.conf
+    regexp="^;listen\.group = nobody"
+    replace="listen.group = nginx"
   notify: Restart php-fpm
 - name: Set PHP-FPM listen.acl_users
   replace: >
