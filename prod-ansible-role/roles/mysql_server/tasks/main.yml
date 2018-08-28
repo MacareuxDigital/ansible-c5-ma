@@ -8,7 +8,7 @@
 ## Amazon Linux 2 is not supported yet
 
 - name: Install MySQL Server for CentOS
-  yum: name={{item}} state=latest
+  yum: name={{item}} enablerepo=mysql{{mysql_repo}}-community state=latest
   when: aws_awslinux =="no"
   with_items:
   - mysql-community-server

@@ -162,7 +162,7 @@
   - role: mysql_repo
     when:
     - db_environment in ['mysql', 'mysql-client']
-    - aws_awslinux=="no"
+    - aws_awslinux in ['no', '2']
   - role: mysql_client
     when: db_environment in ['mysql', 'mysql-client']
   - role: mysql_server

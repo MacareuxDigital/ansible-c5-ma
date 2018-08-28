@@ -9,8 +9,8 @@
   register: result
 
 - name: Install MySQL Client
-  yum: name={{item}} state=latest
-  when: aws_awslinux =="no"
+  yum: name={{item}} enablerepo=mysql{{mysql_repo}}-community state=latest
+  when: aws_awslinux in ["no", "2"]
   with_items:
   - mysql-community-client
   - mysql-community-common
