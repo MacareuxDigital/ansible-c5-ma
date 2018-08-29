@@ -14,7 +14,6 @@
   - "{{php_version_yum}}-mysqlnd"
   - "{{php_version_yum}}-opcache"
   - "{{php_version_yum}}-pdo"
-  - "{{php_version_yum}}-pecl-imagick"
   - "{{php_version_yum}}-pecl-memcached"
   - "{{php_version_yum}}-pecl-redis"
   - "{{php_version_yum}}-xml"
@@ -46,7 +45,6 @@
 #  - "php-mysqlnd"
 #  - "php-pdo"
 #  - "php-mcrypt"  (N/A)
-#  - "php-pecl-imagick" (N/A)
 
 - name: Install Nginx and PHP for CentOS7 (Remi)
   when:
@@ -66,7 +64,6 @@
   - "php-pdo"
   - "php-xml"
   - "php-gmp"
-  - "php-pecl-imagick"
   - "php-pecl-zip"
   - "php-pecl-redis"
   - "php-pecl-memcached"
@@ -93,7 +90,6 @@
   - "{{php_version_yum}}w-gd"
   - "{{php_version_yum}}w-intl"
   - "{{php_version_yum}}w-pdo"
-  - "{{php_version_yum}}w-pecl-imagick"
   - "{{php_version_yum}}w-pecl-memcached"
   - "{{php_version_yum}}w-pecl-redis"
   - "{{php_version_yum}}w-mbstring"
