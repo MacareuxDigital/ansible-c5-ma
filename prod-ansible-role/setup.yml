@@ -15,7 +15,7 @@
 
 # Is this AmazonLinux? (1 / 2 / no)
 ## For Amazon Linux, type 1. For Amazon Linux 2, type 2. "no" if is's not Amazon Linux.
-  - aws_awslinux:           "2"
+  - aws_awslinux:           "no"
   - aws_repo_upgrade:       "no"
 
 # CentOS Version? (6 / 7)
@@ -112,7 +112,7 @@
 ## concrete5 File upload (yes / no)
   - c5_upload:              "yes"
 ## concrete5 Installation (yes / no)
-  - c5_installation:        "yes"
+  - c5_installation:        "no" # It doesn't work these days.
 ## concrete5 Config Upload (yes / no)
   - c5_installation_config_upload: "yes"
 ## Site Name
