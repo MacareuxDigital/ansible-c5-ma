@@ -1,11 +1,33 @@
 server {
     listen       80;
+    listen       [::]:80;
+    listen       443 ssl http2;
+    listen       [::]:443 ssl http2;
 
     server_name  {{ vhost_domain }} www.{{ vhost_domain }};
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
 
     charset      utf-8;
+	client_max_body_size 32m;
 
-    access_log   /var/log/nginx/{{ vhost_domain }}_access.log main;
+    include      /etc/nginx/default.d/deny_spambot.conf;
+
+    set $elbCheck 1;
+    set $auth_basic off;
+    if ($http_user_agent ~* '^ELB\-HealthChecker.*$') {
+        set $elbCheck 0;
+    }
+    if ($elbCheck = 0) {
+        set $auth_basic off;
+    }
+    if ($elbCheck = 1) {
+        set $auth_basic Restricted;
+    }
+
+    auth_basic $auth_basic;
+        auth_basic_user_file {{ vhost_docroot }}{{ vhost_domain }}/.htpasswd;
+
+    access_log   /var/log/nginx/{{ vhost_domain }}_access.log main if=$elbCheck;;
     error_log    /var/log/nginx/{{ vhost_domain }}_error.log warn;
 
     set $skip_cache 0;
@@ -22,6 +44,12 @@ server {
     }
 
     root         {{ vhost_docroot }}{{ vhost_domain }};
+    location /.well-known {
+        # dont-send to php we need it open for lets encrypt
+        # try if it exists, if not redirect back to index.php
+        auth_basic off;
+        try_files $uri / index.php;
+    }
 
 	gzip_vary on;
 	gzip_disable msie6;
@@ -29,12 +57,6 @@ server {
 	gzip_comp_level 9;
  	gzip_proxied any;
 	gzip_types text/plain text/css application/x-javascript text/xml application/xml application/xml+rss text/javascript;
-	client_max_body_size 32m;
-
-    include      /etc/nginx/default.d/deny_spambot.conf;
-
-    auth_basic "Restricted";
-        auth_basic_user_file {{ vhost_docroot }}{{ vhost_domain }}/.htpasswd;
 
     location / {
     	index  index.php;
@@ -44,13 +66,20 @@ server {
 
     }
 
-    location ~ \.php($|/) {
-        include       /etc/nginx/fastcgi_params;
-        include       /etc/nginx/fastcgi_params_custom;
+    location ~* \.(jpg|jpeg|gif|png|css|js|ico)$ {
+        access_log        off;
+        log_not_found     off;
+        expires           8d;
     }
 
     # Don't output hidden files
     location ~ /\. {
         return 404;
     }
+
+    location ~ \.php($|/) {
+        include       /etc/nginx/fastcgi_params;
+        include       /etc/nginx/fastcgi_params_custom;
+    }
+
 }

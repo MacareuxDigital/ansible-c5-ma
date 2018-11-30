@@ -15,7 +15,7 @@
   - "{{php_version_yum}}-opcache"
   - "{{php_version_yum}}-pdo"
   - "{{php_version_yum}}-pecl-memcached"
-  - "{{php_version_yum}}-pecl-redis"
+#  - "{{php_version_yum}}-pecl-redis" Not Available
   - "{{php_version_yum}}-xml"
   - "jq"
 - name: Install PHP mcrypt extension for Amazon Linux
@@ -30,21 +30,36 @@
   when: aws_awslinux=="2"
   yum: name={{item}} state=latest
   with_items:
-  - "php-devel"
+  - "php"
+  - "php-bcmath"
+  - "php-cli"
+  - "php-common"
+  - "php-dba"
+  - "php-embedded"
+  - "php-enchant"
+  - "php-fpm"
   - "php-gd"
+  - "php-gmp"
   - "php-intl"
+  - "php-json"
+  - "php-ldap"
   - "php-mbstring"
+  - "php-pecl-mcrypt"
+  - "php-mysqlnd"
+  - "php-odbc"
   - "php-opcache"
-#  - "php-pecl-memcache"
+  - "php-pdo"
+  - "php-pecl-igbinary"
+  - "php-pecl-ssh2"
+  - "php-pecl-zip"
+  - "php-pgsql"
+  - "php-process"
+  - "php-pspell"
+  - "php-recode"
+  - "php-snmp"
+  - "php-soap"
   - "php-xml"
-#  - "nginx"
-#  - "php"
-#  - "php-common"
-#  - "php-cli"
-#  - "php-fpm"
-#  - "php-mysqlnd"
-#  - "php-pdo"
-#  - "php-mcrypt"  (N/A)
+  - "php-xmlrpc"
 
 - name: Install Nginx and PHP for CentOS7 (Remi)
   when:
@@ -139,8 +154,8 @@
 - include: set_nginx.yml
 - include: set_nginx-vhost.yml
 
-- name: Chenge Directory Permission -  Apache Log
-  file: path="/var/log/httpd/" state=directory recurse=yes mode=0755
+- name: Chenge Directory Permission -  Nginx Log
+  file: path="/var/log/nginx/" state=directory recurse=yes mode=0755
 
 - name: Chenge Directory Permission - PHP-fpm
   file: path="/var/log/php-fpm/" state=directory recurse=yes mode=0755
