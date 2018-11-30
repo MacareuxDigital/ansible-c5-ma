@@ -1,0 +1,17 @@
+Timeout 60
+KeepAlive On
+
+MaxKeepAliveRequests 100
+
+KeepAliveTimeout 120
+
+<IfModule mpm_event_module>
+StartServers         100
+MinSpareThreads      2
+MaxSpareThreads      25
+ThreadsPerChild      64
+MaxRequestWorkers    128
+MaxConnectionsPerChild 500
+</IfModule>
+
+RedirectMatch 404 /\..*$
