@@ -15,7 +15,7 @@
   - "{{php_version_yum}}-opcache"
   - "{{php_version_yum}}-pdo"
   - "{{php_version_yum}}-pecl-memcached"
-  - "{{php_version_yum}}-pecl-redis"
+#  - "{{php_version_yum}}-pecl-redis" # Not Available
   - "{{php_version_yum}}-xml"
   - "jq"
 - name: Install PHP mcrypt extension for Amazon Linux
