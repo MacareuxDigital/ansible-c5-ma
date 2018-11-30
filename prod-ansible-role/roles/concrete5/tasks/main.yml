@@ -11,6 +11,7 @@
 #  when: webserver_handle=="nginx"
 
 - include: 10_upload_concrete5.yml
+  when: c5_upload=="yes"
 - include: 20_install_concrete5.yml
   when: c5_installation=="yes"
 - include: 25_directory_permission.yml

@@ -27,7 +27,7 @@
 ## CentOS Initialize Firewall? (yes / no)
   - centos_firewall_enable: "yes"
 
-# Instance Type (t2micro / t2small)
+# Instance Type (t2micro / t2small / m5large (WIP)
   - aws_instance_type:      "t2small"
 
 # PHP Variables
@@ -179,7 +179,7 @@
     when: use_basic_auth=="yes"
   - role: create_symlink_www
   - role: concrete5
-    when: c5_installation=="yes"
+    when: c5_upload=="yes" 
   - role: concrete5_migration
     when: c5_migration=="yes"
   - role: newrelic_repo
