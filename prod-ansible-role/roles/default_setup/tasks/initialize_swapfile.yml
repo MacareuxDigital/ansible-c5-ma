@@ -1,0 +1,30 @@
+- name: Check concrete5 Installed
+  stat: path={{ swap_file }}
+  register: swapfileresult
+- name: Create Swap file
+  command: dd if=/dev/zero of={{ swap_file }} bs={{ swap_size }} count=1M
+  args:
+    creates: '{{ swap_file }}'
+  when: swapfileresult.changed == True
+- name: Change swap file permission
+  file:
+    path: '{{ swap_file }}'
+    mode: '0600'
+- name: Check if file exists
+  command: file {{ swap_file }}
+  register: swap_file_test
+- name: Make swapfile
+  command: mkswap {{ swap_file }}
+  when: swap_file_test.stdout.find('swap file') == -1
+- name: Turn on Swap file
+  command: swapon {{ swap_file }}
+  when: swap_size < 1
+- name: Mount swap file
+  mount:
+    name: swap
+    src: '{{ swap_file }}'
+    fstype: swap
+    opts: defaults
+    passno: '0'
+    dump: '0'
+    state: present

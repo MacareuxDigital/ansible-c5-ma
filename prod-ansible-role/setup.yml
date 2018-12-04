@@ -11,21 +11,29 @@
 ## How often you want to rotate the log (daily/weekly/monthly)
   - logrotate_unit:         "weekly"
 ## How many generations do you want to keep" (numbers)
-  - logrotate_generation:    "4"
+  - logrotate_generation:    "30"
+
+# Swap (Only supports CentOS7 & Amazon Linux 2)
+## Create swap file on EC2 server? (yes / no)
+  - swap_create:             "yes"
+## Define the location of swapfile
+  - swap_file:               "/swapfile"
+## Define the size of swapfile
+  - swap_size:               "1024"
 
 # Is this AmazonLinux? (1 / 2 / no)
 ## For Amazon Linux, type 1. For Amazon Linux 2, type 2. "no" if is's not Amazon Linux.
-  - aws_awslinux:           "no"
-  - aws_repo_upgrade:       "no"
+  - aws_awslinux:           "2"
+  - aws_repo_upgrade:       "yes"
 
 # CentOS Version? (6 / 7)
   - centos_version:         "7"
 
 ## PHP Repo for CentOS (remi/webtactics/none)
-  - centos_phprepo:         "remi"
+  - centos_phprepo:         "none"
 
 ## CentOS Initialize Firewall? (yes / no)
-  - centos_firewall_enable: "yes"
+  - centos_firewall_enable: "no"
 
 # Instance Type (t2micro / t2small / m5large (WIP)
   - aws_instance_type:      "t2small"
@@ -47,14 +55,16 @@
     - "c5juser"
 ## Directory & WebServer Owner Settings
   - c5dir_user:             "c5juser"  # (ssh username, apache, or nginx)
-  - c5dir_group:            "apache" # (apache or nginx)
+  - c5dir_group:            "nginx" # (apache or nginx)
 
 # WebServer Setting
 ## Use Webserver Apache or Nginx (apache / nginx)
-  - webserver_handle:       "apache"
+  - webserver_handle:       "nginx"
 
-## Change Apahce or Nginx owner to be SSH User? (no / yes)
+## Change Apahce or Nginx owner to be SSH User? (no / yes) If yes, make sure to match username to SSH username
   - webserver_changeowner:  "no"
+  - webserver_user:         "nginx"
+  - webserver_group:        "nginx"
 
 ## Virtualhost Setting
   - vhost_domain:           "example.com"
@@ -74,7 +84,7 @@
 #
 # Please use mysql for AWS Linux & Cent OS (Amazon Linux 2 doesn't support MySQL yet, please use MariaDB)
 #
-  - db_environment:         "mysql"
+  - db_environment:         "mariadb"
 
 ## Select which MySQL vesion you want for CentOS.
 ### 55 / 56 / 57 / 80
@@ -82,7 +92,7 @@
 
 ## MySQL or MariaDB Setting
 ## Create DB or not  (yes / no)
-  - db_create:              "no"
+  - db_create:              "yes"
 ## MySQL root
   - mysql_rootpass:         "mysql_root_pass"
 ## MySQL host
@@ -108,7 +118,6 @@
 
 
 # concrete5 Settings
-# concrete5 Settings
 ## concrete5 File upload (yes / no)
   - c5_upload:              "yes"
 ## concrete5 Installation (yes / no)
@@ -125,7 +134,11 @@
   - c5_locale:              "ja_JP"
   - c5_from_email:          "info@example.com"
   - c5_from_name:           "From Email Name"
+## Add trusted proxy IPs if c5 webserver is behind load balanceror proxy. 
   - c5_load_balancer:       "no" # (yes / no)
+  - c5_trusted_proxy:
+    - "127.0.0.1/32"
+    - "127.0.0.1/32"
 
 # NewRelic Setting
 ## Use NewRelic (yes / no)
