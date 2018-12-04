@@ -27,7 +27,7 @@ server {
     auth_basic $auth_basic;
         auth_basic_user_file {{ vhost_docroot }}{{ vhost_domain }}/.htpasswd;
 
-    access_log   /var/log/nginx/{{ vhost_domain }}_access.log main if=$elbCheck;;
+    access_log   /var/log/nginx/{{ vhost_domain }}_access.log main if=$elbCheck;
     error_log    /var/log/nginx/{{ vhost_domain }}_error.log warn;
 
     set $skip_cache 0;

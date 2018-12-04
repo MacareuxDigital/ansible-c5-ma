@@ -1,10 +1,6 @@
 - name: Create Nginx CacheDir
   file: path=/var/cache/nginx/fastcgi_cache state=directory
   notify: Restart Nginx
-- name: Set Nginx username
-  when: webserver_changeowner=="yes"
-  set_fact:
-    nginx_user: "{{nginx_user}}"
 - name: Replace Nginx config
   template: src=nginx.conf.{{aws_instance_type}}.j2 dest=/etc/nginx/nginx.conf
   notify: Restart Nginx

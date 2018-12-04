@@ -18,7 +18,7 @@ server {
         set $elbCheck 0;
     }
 
-    access_log   /var/log/nginx/{{ vhost_domain }}_access.log main if=$elbCheck;;
+    access_log   /var/log/nginx/{{ vhost_domain }}_access.log main if=$elbCheck;
     error_log    /var/log/nginx/{{ vhost_domain }}_error.log warn;
 
     set $skip_cache 0;

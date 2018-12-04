@@ -18,6 +18,7 @@
 #  - "{{php_version_yum}}-pecl-redis" Not Available
   - "{{php_version_yum}}-xml"
   - "jq"
+  register: NginxPHPResult
 - name: Install PHP mcrypt extension for Amazon Linux
   when:
     - aws_awslinux=="1"
@@ -60,6 +61,7 @@
   - "php-soap"
   - "php-xml"
   - "php-xmlrpc"
+  register: NginxPHPResult
 
 - name: Install Nginx and PHP for CentOS7 (Remi)
   when:
@@ -83,6 +85,7 @@
   - "php-pecl-redis"
   - "php-pecl-memcached"
   - "jq"
+  register: NginxPHPResult
 - name: Install Nginx and PHP for CentOS7 (Remi)
   when:
     - aws_awslinux=="no"
@@ -113,6 +116,7 @@
   - "{{php_version_yum}}w-soap"
   - "{{php_version_yum}}w-xml"
   - "jq"
+  register: NginxPHPResult
 - name: Install PHP mcrypt extention for CentOS7 (Webtactics)
   when:
     - aws_awslinux=="no"
@@ -133,16 +137,20 @@
 - name: Start Nginx
   when: centos_version=="6"
   service: name=nginx state=started enabled=yes
+  when: NginxPHPResult.changed == True
 - name: Start php-fpm
   when: centos_version=="6"
   service: name=php-fpm state=started enabled=yes
+  when: NginxPHPResult.changed == True
 
 - name: Start Nginx
   when: centos_version=="7"
   systemd: name=nginx state=started enabled=yes
+  when: NginxPHPResult.changed == True
 - name: Start php-fpm
   when: centos_version=="7"
   systemd: name=php-fpm state=started enabled=yes
+  when: NginxPHPResult.changed == True
 
 - include: set_php-fpm.yml
   when: aws_awslinux !="1"
