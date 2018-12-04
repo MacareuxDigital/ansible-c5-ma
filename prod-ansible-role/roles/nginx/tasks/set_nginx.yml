@@ -17,14 +17,14 @@
 
 # Change permission of Nginx temp directory
 - name: Change Permission Nginx temp directory
-  file: path=/var/lib/nginx/tmp/client_body owner={{c5dir_user}} group={{c5dir_group}}
+  file: path=/var/lib/nginx/tmp/client_body owner={{webserver_user}} group={{webserver_group}}
   when: webserver_changeowner=="yes"
 - name: Change Permission session dir
-  file: path=/var/lib/nginx/tmp/proxy owner={{c5dir_user}} group={{c5dir_group}}
+  file: path=/var/lib/nginx/tmp/proxy owner={{webserver_user}} group={{webserver_group}}
   when: webserver_changeowner=="yes"
 - name: Change Permission session dir
-  file: path=/var/lib/nginx/tmp/scgi owner={{c5dir_user}} group={{c5dir_group}}
+  file: path=/var/lib/nginx/tmp/scgi owner={{webserver_user}} group={{webserver_group}}
   when: webserver_changeowner=="yes"
 - name: Change Permission session dir
-  file: path=/var/lib/nginx/tmp/uwsgi owner={{c5dir_user}} group={{c5dir_group}}
+  file: path=/var/lib/nginx/tmp/uwsgi owner={{webserver_user}} group={{webserver_group}}
   when: webserver_changeowner=="yes"

@@ -17,7 +17,7 @@
   service: name=mysqld state=started enabled=yes
 - name: Start mysqld (CentOS7)
   when: centos_version=="7"
-  systemd: name=mysqld state=started enabled=yes
+  systemd: name=mariadb state=started enabled=yes
 
 - name: Set root Password
   mysql_user: name="root" host={{ item }} password={{ mysql_rootpass }}

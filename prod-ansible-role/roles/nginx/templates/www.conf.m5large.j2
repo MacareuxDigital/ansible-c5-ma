@@ -1,10 +1,10 @@
 [www]
 listen = /var/run/php-fpm/www.sock
-user = {{c5dir_user}}
-group = {{c5dir_group}}
+user = {{webserver_user}}
+group = {{webserver_group}}
 request_slowlog_timeout = 5s
 listen.allowed_clients = 127.0.0.1
-listen.acl_users = {{c5dir_user}}
+listen.acl_users = {{webserver_user}}
 pm = static
 pm.max_children = 20
 pm.start_servers = 3

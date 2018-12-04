@@ -1,10 +1,11 @@
 <?php
-$remoteIp = $_SERVER['REMOTE_ADDR'];
-
 return [
     'security' => [
         'trusted_proxies' => [
-            'ips' => [$remoteIp]
+            'ips' => [
+{% for item in c5_trusted_proxy %}                '{{ item }}',
+{% endfor %}
+            ]
         ],
         'session' => [
             'invalidate_on_ip_mismatch' => false

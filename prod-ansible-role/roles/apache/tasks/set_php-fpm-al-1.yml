@@ -3,14 +3,14 @@
   replace: >
     dest=/etc/php-fpm-{{php_version_amznlinux}}.d/www.conf
     regexp="user = apache"
-    replace="user = {{c5dir_user}}"
+    replace="user = {{webserver_user}}"
   notify: Restart php-fpm
   when: webserver_changeowner=="yes"
 - name: Set PHP-FPM Group
   replace: >
     dest=/etc/php-fpm-{{php_version_amznlinux}}.d/www.conf
     regexp="group = apache"
-    replace="group = {{c5dir_group}}"
+    replace="group = {{webserver_group}}"
   notify: Restart php-fpm
   when: webserver_changeowner=="yes"
 - name: Change PHP-FPM UnixSocket
@@ -24,7 +24,7 @@
   replace: >
     dest=/etc/php-fpm-{{php_version_amznlinux}}.d/www.conf
     regexp="^;listen\.owner = nobody"
-    replace="listen.owner = {{c5dir_user}}"
+    replace="listen.owner = {{webserver_user}}"
   notify: Restart php-fpm
 - name: Set PHP-FPM listen.owner to Apache
   when: webserver_changeowner=="no"
@@ -37,7 +37,7 @@
   replace: >
     dest=/etc/php-fpm-{{php_version_amznlinux}}.d/www.conf
     regexp="^;listen\.group = nobody"
-    replace="listen.group = {{c5dir_group}}"
+    replace="listen.group = {{webserver_group}}"
   notify: Restart php-fpm
 - name: Change PHP-FPM mode from dynamic to static
   replace: >
@@ -61,9 +61,9 @@
 
 # Amazon Linux 1 with PHP {{php_version_amznlinux}}
 - name: Change Permission session_dir
-  file: path=/var/lib/php/{{php_version_amznlinux}}/session owner=root group={{c5dir_group}}
+  file: path=/var/lib/php/{{php_version_amznlinux}}/session owner=root group={{webserver_group}}
 - name: Change Permission wsdlcache_dir
-  file: path=/var/lib/php/{{php_version_amznlinux}}/wsdlcache owner=root group={{c5dir_group}}
+  file: path=/var/lib/php/{{php_version_amznlinux}}/wsdlcache owner=root group={{webserver_group}}
 
 - name: Check if php.conf exist
   stat: path=/etc/httpd/conf.d/php.conf
