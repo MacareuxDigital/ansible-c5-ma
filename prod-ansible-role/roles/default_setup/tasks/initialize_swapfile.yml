@@ -1,11 +1,7 @@
-- name: Check concrete5 Installed
-  stat: path={{ swap_file }}
-  register: swapfileresult
 - name: Create Swap file
   command: dd if=/dev/zero of={{ swap_file }} bs={{ swap_size }} count=1M
   args:
     creates: '{{ swap_file }}'
-  when: swapfileresult.changed == True
 - name: Change swap file permission
   file:
     path: '{{ swap_file }}'
