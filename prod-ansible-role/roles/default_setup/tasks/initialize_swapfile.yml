@@ -14,7 +14,7 @@
   when: swap_file_test.stdout.find('swap file') == -1
 - name: Turn on Swap file
   command: swapon {{ swap_file }}
-  when: swap_size < 1
+  when: swap_file_test.stdout.find('swap file') == -1
 - name: Mount swap file
   mount:
     name: swap
