@@ -1,14 +1,13 @@
 - name: Install epel repository
   yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
 
-- name: Install Amazon Linux Extra LAMP MariaDB for Amazon Linux 2
-  shell: amazon-linux-extras install lamp-mariadb10.2-php7.2
+- name: Install Amazon Linux Extra PHP7.2 and Nginx 1.12 for Amazon Linux 2
+  shell: amazon-linux-extras install php7.2 nginx1.12 -y
   when: aws_awslinux=="2"
 
-- name: Install Nginx for Amazon Linux 2
-  shell: amazon-linux-extras install nginx1.12
-  when: aws_awslinux=="2"
-
-- name: Install Python3 for Amazon Linux 2
-  shell: amazon-linux-extras install python3
-  when: aws_awslinux=="2"
+- name: Install utilities
+  yum: name={{item}} state=latest
+  with_items:
+  - "aws-cfn-bootstrap"
+  - "cloud-init"
+  - "aws-cli"
