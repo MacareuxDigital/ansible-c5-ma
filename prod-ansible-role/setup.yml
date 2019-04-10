@@ -50,7 +50,7 @@
 ## Create SSH user? (yes / no)
   - if_add_users:           "yes"
 ## Befrore run this command
-## "ssh-keygen -f roles/add_users/files/"USERNAME".pem -C "USERNAME"@localhost"
+## "ssh-keygen -t rsa -b 4096 -f roles/add_users/files/"USERNAME".pem -C "USERNAME"@localhost"
   - add_users:
     - "c5juser"
 ## Directory & WebServer Owner Settings
