@@ -1,8 +1,7 @@
 - name: Install MySQL Server for Amazon Linux
-  yum: name={{item}} state=latest
+  yum: state=latest
   when: aws_awslinux =="1"
-  with_items:
-  - mysql{{mysql_repo}}-server
+  name: ['mysql{{mysql_repo}}-server']
   register: mysqlresult
 
 ## Amazon Linux 2 is not supported yet

@@ -50,7 +50,7 @@
 #  - "php-pdo"
 #  - "php-mcrypt"  (N/A)
 
-- name: Install Apache and PHP for CentOS7 (Remi)
+- name: Install Apache and PHP for CentOS6 & 7 (Remi)
   when:
     - aws_awslinux=="no"
     - centos_phprepo=="remi"
@@ -79,7 +79,7 @@
     - aws_awslinux=="no"
     - centos_phprepo=="remi"
     - php_version_yum !="php72"
-  yum: name={{item}} state=latest
+  yum: name={{item}} state=latest enablerepo=epel,remi,remi-{{php_version_yum}}
   with_items:
   - "php-mcrypt"
 

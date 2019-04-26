@@ -17,6 +17,8 @@
   changed_when: false
   timezone:
     name: "{{zone}}"
+- include: install_repo_centos6.yml
+  when: centos_version=="6" and aws_awslinux=="no"
 - include: install_repo_centos7.yml
   when: centos_version=="7" and aws_awslinux=="no"
 - include: install_repo_amazonlinux2.yml
