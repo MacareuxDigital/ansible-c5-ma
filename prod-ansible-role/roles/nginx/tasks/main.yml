@@ -29,7 +29,7 @@
 
 - name: Install Nginx and PHP for Amazon Linux 2
   when: aws_awslinux=="2"
-  yum: name={{item}} state=latest
+  yum: name={{item}} state=latest enablerepo=amzn2extra-{{php_version_amznlinux2}}
   with_items:
   - "php"
   - "php-bcmath"
@@ -51,7 +51,8 @@
   - "php-opcache"
   - "php-pdo"
   - "php-pecl-igbinary"
-  - "php-pecl-ssh2"
+  - "php-pecl-redis"
+ # - "php-pecl-ssh2"
   - "php-pecl-zip"
   - "php-pgsql"
   - "php-process"

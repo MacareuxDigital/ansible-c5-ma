@@ -19,17 +19,11 @@
   - "zip"
   - "unzip"
 - name: Install MySQL-Python for Amazon Linux
-  yum: name={{item}} state=latest
+  yum: name="MySQL-python" state=latest
   when: aws_awslinux in ["1","2"]
-  with_items:
-  - "MySQL-python"
 - name: Install mail
-  yum: name={{item}} state=latest
+  yum: name="mail" state=latest
   when: centos_version=="6"
-  with_items:
-  - "mail"
 - name: Install mailx
-  yum: name={{item}} state=latest
+  yum: name="mailx" state=latest
   when: centos_version=="7"
-  with_items:
-  - "mailx"

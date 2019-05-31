@@ -189,15 +189,15 @@ AWS インスタンスに応じて最適化した Apache & Niginx 設定を行�
 
 どの PHP バージョンを利用したいかを指定してください。現在、4つのレポジトリに対応しているはずです: Amazon Linux, Remi, Webtactics and Amazon Linux 2 (ベータ). 但しレポジトリによってはインストールできないバージョンもあるかもしれません。
 
-Amazon Linux 2 は、現在のところ、 PHP 7.2 しか対応 & 動作確認していません。 (as of May 2018)
-
 ```
-## PHP version for yum (php56 / php70 / php71 / php72)
+## PHP version for yum (php56 / php70 / php71 / php72 / php73)
   - php_version_yum:        "php72"
-## PHP version for Remi (php56 / php70 / php71 / php72)
+## PHP version for Remi (php56 / php70 / php71 / php72 / php73)
   - php_version_remi:       "php72"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
   - php_version_amznlinux:  "7.2"
+## PHP version for Amazon Linux 2 (php7.1 / php7.2 / php7.3)
+  - php_version_amznlinux2:  "php7.3"
 ```
 
 ## 追加するSSHユーザーの指定

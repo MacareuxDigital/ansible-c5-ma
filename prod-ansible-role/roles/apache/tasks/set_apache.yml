@@ -47,7 +47,7 @@
 #     state=present
 #     regexp="^SSLProtocol"
 #     line="SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1"
-#   notify: Restart Apache
+#  notify: Restart Apache
 - name: Add Additional config
   template: src=additional-setting.conf.{{aws_instance_type}}.j2 dest=/etc/httpd/conf.d/additional-setting.conf
   notify: Restart Apache

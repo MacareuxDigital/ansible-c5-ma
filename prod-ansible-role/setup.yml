@@ -39,18 +39,24 @@
   - aws_instance_type:      "t2small"
 
 # PHP Variables
-## PHP version for yum (php56 / php70 / php71 / php72)
+## PHP version for yum (php56 / php70 / php71 / php72 / php73)
   - php_version_yum:        "php72"
-## PHP version for Remi (php56 / php70 / php71 / php72)
+## PHP version for Remi (php56 / php70 / php71 / php72 / php73)
   - php_version_remi:       "php72"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
   - php_version_amznlinux:  "7.2"
+## PHP version for Amazon Linux 2 (php7.1 / php7.2 / php7.3)
+  - php_version_amznlinux2:  "php7.3"
 
 # SSH Users
 ## Create SSH user? (yes / no)
   - if_add_users:           "yes"
 ## Befrore run this command
 ## "ssh-keygen -t rsa -b 4096 -f roles/add_users/files/"USERNAME".pem -C "USERNAME"@localhost"
+## "ssh-keygen -t rsa -b 4096 -f roles/add_users/files/username.pem -C usename@example.com"
+## "sudo -u nginx ssh-keygen -t rsa -b 4096 -C nginx@example.com"
+## "sudo -u apache ssh-keygen -t rsa -b 4096 -C nginx@example.com"
+"
   - add_users:
     - "c5juser"
 ## Directory & WebServer Owner Settings
@@ -71,8 +77,9 @@
   - vhost_docroot:          "/var/www/vhosts/"
 
 ## Basic Auth (yes / no)
-### Please make sure to create roles/basic_auth/files/.htpasswd
+### Please make sure to create roles/basic_auth/files/htpasswd
 ### You can generate at http://www.htaccesstools.com/htpasswd-generator/
+#### ID/ password
   - use_basic_auth:         "yes"
 
 # DB environment(mariadb / mariadb-client / mysql / mysql-client / none )
@@ -130,6 +137,7 @@
 ## "elemental_blank" or "elemental_full"
   - c5_starting_point:      "elemental_blank"
   - c5_admin_email:         "info@example.com"
+  - c5_admin_user:          "admin" # This has nothing to do with. Just for your record purpose.
   - c5_admin_pass:          "site_password"
   - c5_locale:              "ja_JP"
   - c5_from_email:          "info@example.com"

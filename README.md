@@ -207,15 +207,15 @@ Currently we only have the following setting.
 
 Please enter which PHP version you want to install. Currently supports 4 types of repo: Amazon Linux, Remi, Webtactics and Amazon Linux 2 (beta). You may not be able to install certain types depends on the repos.
 
-For Amazon Linux 2, they only ship with PHP 7.2. (as of May 2018)
-
 ```
-## PHP version for yum (php56 / php70 / php71 / php72)
+## PHP version for yum (php56 / php70 / php71 / php72 / php73)
   - php_version_yum:        "php72"
-## PHP version for Remi (php56 / php70 / php71 / php72)
+## PHP version for Remi (php56 / php70 / php71 / php72 / php73)
   - php_version_remi:       "php72"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
   - php_version_amznlinux:  "7.2"
+## PHP version for Amazon Linux 2 (php7.1 / php7.2 / php7.3)
+  - php_version_amznlinux2:  "php7.3"
 ```
 
 
