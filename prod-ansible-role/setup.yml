@@ -93,9 +93,11 @@
 #
   - db_environment:         "mariadb"
 
-## Select which MySQL vesion you want for CentOS.
+## Select which MySQL or MariaDB vesion you want for CentOS.
 ### 55 / 56 / 57 / 80
   - mysql_repo:             "57"
+### 10.2 / 10.3
+  - mariadb_repo:           "10.3"
 
 ## MySQL or MariaDB Setting
 ## Create DB or not  (yes / no)
