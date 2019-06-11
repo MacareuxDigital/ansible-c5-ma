@@ -40,13 +40,14 @@
 
 # PHP Variables
 ## PHP version for yum (php56 / php70 / php71 / php72 / php73)
-  - php_version_yum:        "php72"
+  - php_version_yum:        "php73"
 ## PHP version for Remi (php56 / php70 / php71 / php72 / php73)
-  - php_version_remi:       "php72"
+  - php_version_remi:       "php73"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
   - php_version_amznlinux:  "7.2"
 ## PHP version for Amazon Linux 2 (php7.1 / php7.2 / php7.3)
   - php_version_amznlinux2:  "php7.3"
+  # Redis driver is not available for PHP 7.1 package
 
 # SSH Users
 ## Create SSH user? (yes / no)
@@ -55,7 +56,7 @@
 ## "ssh-keygen -t rsa -b 4096 -f roles/add_users/files/"USERNAME".pem -C "USERNAME"@localhost"
 ## "ssh-keygen -t rsa -b 4096 -f roles/add_users/files/username.pem -C usename@example.com"
 ## "sudo -u nginx ssh-keygen -t rsa -b 4096 -C nginx@example.com"
-## "sudo -u apache ssh-keygen -t rsa -b 4096 -C nginx@example.com"
+## "sudo -u apache ssh-keygen -t rsa -b 4096 -C apache@example.com"
 "
   - add_users:
     - "c5juser"
@@ -92,6 +93,8 @@
 # Please use mysql for AWS Linux & Cent OS (Amazon Linux 2 doesn't support MySQL yet, please use MariaDB)
 #
   - db_environment:         "mariadb"
+
+# ToDo: MySQL Server to support UTF8mb4 encoding
 
 ## Select which MySQL or MariaDB vesion you want for CentOS.
 ### 55 / 56 / 57 / 80
