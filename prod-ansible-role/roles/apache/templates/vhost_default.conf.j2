@@ -17,7 +17,7 @@ ExtendedStatus On
   </Location>
 
   <Location /status>
-    SetHandler "proxy:unix:/var/run/php-fpm/www.sock|fcgi://localhost/"
+    SetHandler "proxy:unix:/var/run/php-fpm/www.sock|fcgi://localhost"
     Order deny,allow
     Deny from all
     Allow from localhost
