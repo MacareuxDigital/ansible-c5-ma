@@ -26,29 +26,51 @@
   with_items:
   - "{{php_version_yum}}-mcrypt"
 
-- name: Install Amazon Linux Extra Lamp MariaDB for Amazon Linux 2
-  shell: amazon-linux-extras install lamp-mariadb10.2-php7.2
-  when: aws_awslinux=="2"
-
 - name: Install Apache and PHP for Amazon Linux 2
   when: aws_awslinux=="2"
-  yum: name={{item}} state=latest
+  yum: name={{item}} state=latest enablerepo=amzn2extra-{{php_version_amznlinux2}} disablerepo=epel
   with_items:
   - "httpd"
-  - "php-devel"
+  - "php"
+  - "php-bcmath"
+  - "php-cli"
+  - "php-common"
+  - "php-dba"
+  - "php-embedded"
+  - "php-enchant"
+  - "php-fpm"
   - "php-gd"
+  - "php-gmp"
   - "php-intl"
+  - "php-json"
+  - "php-ldap"
   - "php-mbstring"
+  - "php-pecl-mcrypt"
+  - "php-mysqlnd"
+  - "php-odbc"
   - "php-opcache"
-#  - "php-pecl-memcache"
+  - "php-pdo"
+  - "php-pecl-igbinary"
+ # - "php-pecl-ssh2"
+  - "php-pecl-zip"
+  - "php-pgsql"
+  - "php-process"
+  - "php-pspell"
+  - "php-recode"
+  - "php-snmp"
+  - "php-soap"
   - "php-xml"
-#  - "php"
-#  - "php-common"
-#  - "php-cli"
-#  - "php-fpm"
-#  - "php-mysqlnd"
-#  - "php-pdo"
-#  - "php-mcrypt"  (N/A)
+  - "php-xmlrpc"
+  register: NginxPHPResult
+
+- name: Install PHP Redis Extension for Amazon Linux 2
+  when:
+    - aws_awslinux=="2"
+    - php_version_amznlinux2 !="php7.1"
+  yum: name={{item}} state=latest enablerepo=amzn2extra-{{php_version_amznlinux2}} disablerepo=epel
+  with_items:
+  - "php-pecl-redis"
+
 
 - name: Install Apache and PHP for CentOS6 & 7 (Remi)
   when:
