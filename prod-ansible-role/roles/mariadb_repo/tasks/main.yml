@@ -1,3 +1,4 @@
-- name: Set mariadb.repo
-  when: aws_awslinux!="2"
+- name: Set MariDB Repo
+  # when:
+  # - aws_awslinux!="2" and webserver_handle!="apache"
   template: src=mariadb.repo.j2 dest=/etc/yum.repos.d/mariadb.repo

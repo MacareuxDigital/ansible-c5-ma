@@ -12,12 +12,12 @@
     - mariadb-server
   register: MariaDBServerResult
 
-- name: Backup original /etc/my.conf.d/server.cnf file
-  copy: src=/etc/my.conf.d/server.cnf dest=/etc/my.conf.d/server.cnf.bak mode=0644 owner=root group=root
-  notify: Restart mysqld
+# - name: Backup original /etc/my.cnf.d/server.cnf file
+#   copy: src=/etc/my.cnf.d/server.cnf dest=/etc/my.cnf.d/server.cnf.bak mode=644
+#   notify: Restart mysqld
 
 - name: Replace MySQL Config to support mb4
-  template: src=server.cnf.j2 dest=/etc/my.conf.d/server.cnf
+  template: src=server.cnf.j2 dest=/etc/my.cnf.d/server.cnf
   notify: Restart mysqld
 
 - name: Start mysqld (CentOS6)
@@ -33,5 +33,3 @@
     - 127.0.0.1
     - localhost
   when: MariaDBServerResult.changed == True
-  
-  
