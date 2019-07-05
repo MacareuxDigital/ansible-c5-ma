@@ -48,6 +48,7 @@ server {
         # dont-send to php we need it open for lets encrypt
         # try if it exists, if not redirect back to index.php
         auth_basic off;
+        allow all;
         try_files $uri / index.php;
     }
 

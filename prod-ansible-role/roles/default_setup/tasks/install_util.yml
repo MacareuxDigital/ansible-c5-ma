@@ -14,6 +14,7 @@
   - "vim-enhanced"
   - "python-devel"
   - "python-setuptools"
+  - "python-pip"
   - "curl"
   - "curl-devel"
   - "zip"
