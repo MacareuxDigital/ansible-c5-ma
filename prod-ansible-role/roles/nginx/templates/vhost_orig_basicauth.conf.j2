@@ -42,6 +42,9 @@ server {
     if ($http_cookie ~ "CONCRETE5") {
             set $skip_cache 1;
     }
+    if ($http_cookie ~ "CONCRETE5_LOGIN") {
+            set $skip_cache 1;
+    }
 
     root         {{ vhost_docroot }}{{ vhost_domain }};
     location /.well-known {
