@@ -68,7 +68,10 @@ server {
     }
 
     # Don't output hidden files
-    location ~ /\. {
+    location ~ /\.git {
+        return 404;
+    }
+    location ~ /\.ht {
         return 404;
     }
 
