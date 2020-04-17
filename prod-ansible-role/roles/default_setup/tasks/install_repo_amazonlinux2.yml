@@ -2,7 +2,7 @@
   yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
 
 - name: "Install Amazon Linux Extra Epel, {{php_version_amznlinux2}} and Nginx 1.12 for Amazon Linux 2"
-  shell: amazon-linux-extras install {{ php_version_amznlinux2 }} nginx1.12 -y
+  shell: amazon-linux-extras install {{ php_version_amznlinux2 }} nginx1 -y
   when:
     - aws_awslinux=="2"
     - webserver_handle=="nginx"
