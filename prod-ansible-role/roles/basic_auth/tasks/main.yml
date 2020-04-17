@@ -1,2 +1,2 @@
-- name: Upload .htpasswd file
-  copy: src=htpasswd dest={{ vhost_docroot }}{{ vhost_domain }}/.htpasswd mode=644 owner={{c5dir_user}} group={{c5dir_group}}
+- name: "Create .htpasswd file"
+  sell: echo "{{ basicauth_ID }}:$(openssl passwd -apr1 {{ basicauth_password }})" >> {{ vhost_docroot }}{{ vhost_domain }}/.htpasswd

@@ -81,6 +81,8 @@
 ### You can generate at http://www.htaccesstools.com/htpasswd-generator/
 #### ID/ password
   - use_basic_auth:         "yes"
+  - basicauth_ID :          "username"
+  - basicauth_password :    "password!@"
 
 # DB environment(mariadb / mariadb-client / mysql / mysql-client / none )
 #    - mariadb: Install MariaDB Server & Client
