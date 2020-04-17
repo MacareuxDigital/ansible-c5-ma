@@ -1,2 +1,2 @@
 - name: "Create .htpasswd file"
-  sell: echo "{{ basicauth_ID }}:$(openssl passwd -apr1 {{ basicauth_password }})" >> {{ vhost_docroot }}{{ vhost_domain }}/.htpasswd
+  shell: echo "{{ basicauth_ID }}:$(openssl passwd -apr1 {{ basicauth_password }})" >> {{ vhost_docroot }}{{ vhost_domain }}/.htpasswd
