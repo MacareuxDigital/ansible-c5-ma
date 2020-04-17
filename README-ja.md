@@ -257,6 +257,20 @@ concrete5 が保存されるディレクトリの所有者ユーザー・グル�
 
 - 上記の場合、Apacheにドメイン名[example.com] & [www.example.com] のバーチャルホストが設定され、ドキュメントルートが[/var/www/vhosts/example.com]となります。
 
+## Basic 認証設定
+
+  **[use_basic_auth]** : yes か no
+  **[basicauth_ID]**   : Basic 認証のユーザー名
+  **[basicauth_password]** : Basic 認証のパスワード。
+  
+  サーバーに Basic 認証を設定したい場合は、yes にして、希望ユーザー名とパスワードを設定してください。
+
+```
+- use_basic_auth:         "yes"
+- basicauth_ID :          "username"
+- basicauth_password :    "password!@"
+```
+
 ## MySQL or MariaDB の選択
 
 **現時点で Amazon Linux のみ MySQL をインストールできます。Cent OS の場合は MariaDB にしか対応していません。**

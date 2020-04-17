@@ -277,6 +277,20 @@ Please indicate user and group of concrete5 folder owner. Apache or Nginx will r
 
   With the setting above, it will set `example.com` & `www.example.com` as virtual host, and the document root of that domain will be "/var/www/vhosts/example.com"
 
+## Basic Auth
+
+  **[use_basic_auth]** : yes or no
+  **[basicauth_ID]**   : Enter basic auth username
+  **[basicauth_password]** : Enter basic auth password
+  
+  If you want to protect your server with basic auth, please say "yes" and enter your desired username and password.
+
+```
+- use_basic_auth:         "yes"
+- basicauth_ID :          "username"
+- basicauth_password :    "password!@"
+```
+
 ## DB Environment
 
 Choose your DB environment (mariadb / mariadb-client / mysql / mysql-client / none )
