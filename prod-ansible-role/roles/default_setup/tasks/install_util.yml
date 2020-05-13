@@ -1,7 +1,6 @@
 - name: Install utilities
   yum: name={{item}} state=latest
   with_items:
-  - "telnet"
   - "wget"
   - "tcpdump"
   - "sysstat"
