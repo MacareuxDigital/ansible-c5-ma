@@ -122,6 +122,8 @@ $ ansible-playbook -i host.yml setup.yml
 
 対象サーバーに設定する値を記載します。
 
+setup.yml の中に書いてあるコメントが一番最新です。ここの Readme の更新はよく遅れます。
+
 ## サーバーの言語とタイムゾーンの設定
 
 サーバーの言語とローカルタイムを設定します。 `localectl list-locales` コマンドを使うと使用可能な言語のリストを取得でき、
@@ -189,15 +191,17 @@ AWS インスタンスに応じて最適化した Apache & Niginx 設定を行�
 
 どの PHP バージョンを利用したいかを指定してください。現在、4つのレポジトリに対応しているはずです: Amazon Linux, Remi, Webtactics and Amazon Linux 2 (ベータ). 但しレポジトリによってはインストールできないバージョンもあるかもしれません。
 
+Amazon Linux 2 は、PHP5.6 (Apache のみ), PHP 7.2, PHP7.3 の動作確認をしています。 (as of May 2020)
+
 ```
-## PHP version for yum (php56 / php70 / php71 / php72 / php73)
+## PHP version for yum (php56 / php70 / php71 / php72)
   - php_version_yum:        "php72"
-## PHP version for Remi (php56 / php70 / php71 / php72 / php73)
+## PHP version for Remi (php56 / php70 / php71 / php72)
   - php_version_remi:       "php72"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
   - php_version_amznlinux:  "7.2"
-## PHP version for Amazon Linux 2 (php7.1 / php7.2 / php7.3)
-  - php_version_amznlinux2:  "php7.3"
+## PHP version for Amazon Linux (php56 / php7.2 / php7.3)
+  - php_version_amznlinux2:  "7.2"
 ```
 
 ## 追加するSSHユーザーの指定
@@ -256,20 +260,6 @@ concrete5 が保存されるディレクトリの所有者ユーザー・グル�
   `- vhost_docroot: "/var/www/vhosts/"`
 
 - 上記の場合、Apacheにドメイン名[example.com] & [www.example.com] のバーチャルホストが設定され、ドキュメントルートが[/var/www/vhosts/example.com]となります。
-
-## Basic 認証設定
-
-  **[use_basic_auth]** : yes か no
-  **[basicauth_ID]**   : Basic 認証のユーザー名
-  **[basicauth_password]** : Basic 認証のパスワード。
-  
-  サーバーに Basic 認証を設定したい場合は、yes にして、希望ユーザー名とパスワードを設定してください。
-
-```
-- use_basic_auth:         "yes"
-- basicauth_ID :          "username"
-- basicauth_password :    "password!@"
-```
 
 ## MySQL or MariaDB の選択
 

@@ -8,7 +8,7 @@ You need to install Ansible in your PC to run.
 
 You will connect to AWS Linux or CentOS7 and start sending commands to setup the server automatically.
 
-THIS ANSIBLE IS VERY UGLY. KEEP CHANGING AS WE WORK. WE CANNOT GUARANTEE ANYTHING. SO YOU MUST USE FOR DEV INSTANCE FIRST BEFORE APPLYING PRODUCTION. I WOULD NOT DEPLOY TO PRODUCTION EITHER.
+THIS ANSIBLE IS VERY UGRY. KEEP CHANGING AS WE WORK. WE CANNOT GURANTEE ANYTHING. SO YOU MUST USE FOR DEV INSTANCE FIRST BEFORE APPLYING PRODUCTION. I WOULD NOT DEPLOY TO PRODUCTION EITHER.
 
 -----
 
@@ -140,6 +140,8 @@ Set target IP address, and SSH username (usually `ec2-user` for Amazon Linux), S
 
 Change the parameters where necessaries.
 
+THE COMMENTS IN steup.yml IS LATEST, this documentation tends to be older than latest.
+
 ## Server Locale
 
 Setup the locale and timezone of your server. Use `localectl list-locales` to list available locales.
@@ -207,15 +209,15 @@ Currently we only have the following setting.
 
 Please enter which PHP version you want to install. Currently supports 4 types of repo: Amazon Linux, Remi, Webtactics and Amazon Linux 2 (beta). You may not be able to install certain types depends on the repos.
 
+For Amazon Linux 2, I've tested PHP5.6 (Apache only) 7.2 & 7.3. (as of May 2020)
+
 ```
-## PHP version for yum (php56 / php70 / php71 / php72 / php73)
+## PHP version for yum (php56 / php70 / php71 / php72)
   - php_version_yum:        "php72"
-## PHP version for Remi (php56 / php70 / php71 / php72 / php73)
+## PHP version for Remi (php56 / php70 / php71 / php72)
   - php_version_remi:       "php72"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
   - php_version_amznlinux:  "7.2"
-## PHP version for Amazon Linux 2 (php7.1 / php7.2 / php7.3)
-  - php_version_amznlinux2:  "php7.3"
 ```
 
 
@@ -276,20 +278,6 @@ Please indicate user and group of concrete5 folder owner. Apache or Nginx will r
   `- vhost_docroot: "/var/www/vhosts/"`
 
   With the setting above, it will set `example.com` & `www.example.com` as virtual host, and the document root of that domain will be "/var/www/vhosts/example.com"
-
-## Basic Auth
-
-  **[use_basic_auth]** : yes or no
-  **[basicauth_ID]**   : Enter basic auth username
-  **[basicauth_password]** : Enter basic auth password
-  
-  If you want to protect your server with basic auth, please say "yes" and enter your desired username and password.
-
-```
-- use_basic_auth:         "yes"
-- basicauth_ID :          "username"
-- basicauth_password :    "password!@"
-```
 
 ## DB Environment
 
