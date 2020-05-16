@@ -9,7 +9,3 @@
 #  yum_repository:
 #    name: remi
 #    state: absent
-
-- name: Install webtatic repository
-  yum: name=https://mirror.webtatic.com/yum/el7/webtatic-release.rpm state=present
-  when: centos_phprepo=="webtactics"

@@ -1,17 +1,27 @@
 - name: Install epel repository
   yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
 
-- name: "Install Amazon Linux Extra Epel, {{php_version_amznlinux2}} and Nginx 1.12 for Amazon Linux 2"
-  shell: amazon-linux-extras install {{ php_version_amznlinux2 }} nginx1 -y
+- name: "Install Amazon Linux Extra Nginx for Amazon Linux 2"
+  shell: amazon-linux-extras install nginx1 -y
   when:
-    - aws_awslinux=="2"
     - webserver_handle=="nginx"
 
-- name: "Install Amazon Linux Extra Epel, {{php_version_amznlinux2}} and Apache for Amazon Linux 2"
+- name: "Install Amazon Linux Extra {{php_version_amznlinux2}} for Amazon Linux 2"
   shell: amazon-linux-extras install {{ php_version_amznlinux2 }} -y
   when:
-    - aws_awslinux=="2"
-    - webserver_handle=="apache"
+    - php_version_amznlinux2!="php56"
+
+- name: Install Remi repository for Amazon Linux 2 PHP5.6
+  yum: name=http://rpms.remirepo.net/enterprise/remi-release-7.rpm state=present
+  when: php_version_amznlinux2=="php56"
+
+- name: Enable remi-php56 repo
+  ini_file:
+    dest: /etc/yum.repos.d/remi.repo
+    section: remi-php56
+    option: enabled
+    value: 1
+  when: php_version_amznlinux2=="php56"
 
 - name: Install utilities
   yum: name={{item}} state=latest

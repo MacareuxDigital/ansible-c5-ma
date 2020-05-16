@@ -1,8 +1,13 @@
-- name: Install Nginx and PHP for Amazon Linux 1
-  when: aws_awslinux=="1"
+- name: Install Nginx
   yum: name={{ item }} state=latest
   with_items:
   - "nginx"
+
+
+- name: Install PHP for Amazon Linux 1
+  when: aws_awslinux=="1"
+  yum: name={{ item }} state=latest
+  with_items:
   - "{{php_version_yum}}"
   - "{{php_version_yum}}-common"
   - "{{php_version_yum}}-cli"
@@ -22,16 +27,15 @@
 - name: Install PHP mcrypt extension for Amazon Linux
   when:
     - aws_awslinux=="1"
-    - php_version_yum !="php72"
+    - php_version_yum in ["php56", "php70", "php71"]
   yum: name={{item}} state=latest
   with_items:
   - "{{php_version_yum}}-mcrypt"
 
-- name: Install Nginx and PHP for Amazon Linux 2
+- name: Install PHP for Amazon Linux 2
   when: aws_awslinux=="2"
   yum: name={{item}} state=latest enablerepo=amzn2extra-{{php_version_amznlinux2}} disablerepo=epel
   with_items:
-  - "nginx"
   - "php"
   - "php-bcmath"
   - "php-cli"
@@ -67,18 +71,17 @@
 - name: Install PHP Redis Extension for Amazon Linux 2
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2 !="php7.1"
+    - php_version_amznlinux2 not in ["php5.6", "php7.0", "php7.1"]
   yum: name={{item}} state=latest enablerepo=amzn2extra-{{php_version_amznlinux2}} disablerepo=epel
   with_items:
   - "php-pecl-redis"
 
-- name: Install Nginx and PHP for CentOS7 (Remi)
+- name: Install PHP for CentOS7 (Remi)
   when:
     - aws_awslinux=="no"
     - centos_phprepo=="remi"
   yum: name={{item}} state=latest enablerepo=epel,remi,remi-{{php_version_yum}}
   with_items:
-  - "nginx"
   - "php"
   - "php-common"
   - "php-cli"
@@ -104,36 +107,29 @@
   with_items:
    - "php-mcrypt"
 
-- name: Install Nginx and PHP for CentOS (Webtactics)
-  when: aws_awslinux=="no"
-  yum: name={{ item }} state=latest
-  with_items:
-  - "nginx"
-  - "{{php_version_yum}}w"
-  - "{{php_version_yum}}w-common"
-  - "{{php_version_yum}}w-cli"
-  - "{{php_version_yum}}w-devel"
-  - "{{php_version_yum}}w-fpm"
-  - "{{php_version_yum}}w-gd"
-  - "{{php_version_yum}}w-intl"
-  - "{{php_version_yum}}w-pdo"
-  - "{{php_version_yum}}w-pecl-memcached"
-  - "{{php_version_yum}}w-pecl-redis"
-  - "{{php_version_yum}}w-mbstring"
-  - "{{php_version_yum}}w-mysqlnd"
-  - "{{php_version_yum}}w-opcache"
-  - "{{php_version_yum}}w-soap"
-  - "{{php_version_yum}}w-xml"
-  - "jq"
-  register: NginxPHPResult
-- name: Install PHP mcrypt extention for CentOS7 (Webtactics)
+- name: Install Apache and PHP5.6 for Amazon Linux 2 Remi
   when:
-    - aws_awslinux=="no"
-    - centos_phprepo=="webtactics"
-    - php_version_yum !="php72"
-  yum: name={{item}} state=latest
+    - aws_awslinux=="2"
+    - php_version_amznlinux2=="php56"
+  yum: name={{item}} state=latest enablerepo=epel,remi,remi-{{php_version_yum}}
   with_items:
-  - "{{php_version_yum}}w-mcrypt"
+  - "php"
+  - "php-common"
+  - "php-devel"
+  - "php-cli"
+  - "php-fpm"
+  - "php-gd"
+  - "php-intl"
+  - "php-mbstring"
+  - "php-mysqlnd"
+  - "php-opcache"
+  - "php-pdo"
+  - "php-gmp"
+  - "php-pecl-memcached"
+  - "php-pecl-redis"
+  - "php-pecl-zip"
+  - "php-xml"
+  - "php-mcrypt"
 
 - name: Add User to Nginx-group
   user: name={{ item }} groups=nginx state=present

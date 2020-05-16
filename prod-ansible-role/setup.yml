@@ -29,7 +29,7 @@
 # CentOS Version? (6 / 7)
   - centos_version:         "7"
 
-## PHP Repo for CentOS (remi/webtactics/none)
+## PHP Repo for CentOS (remi/none)
   - centos_phprepo:         "none"
 
 ## CentOS Initialize Firewall? (yes / no)
@@ -45,9 +45,10 @@
   - php_version_remi:       "php73"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
   - php_version_amznlinux:  "7.2"
-## PHP version for Amazon Linux 2 (php7.1 / php7.2 / php7.3)
+## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3)
   - php_version_amznlinux2:  "php7.3"
   # Redis driver is not available for PHP 7.1 package
+  # For PHP5.6 on Amazon Linux, it will use Remi repo regardless. The parameter format is different. Please be careful
 
 # SSH Users
 ## Create SSH user? (yes / no)
