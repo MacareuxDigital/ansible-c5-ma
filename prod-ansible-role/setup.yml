@@ -57,6 +57,7 @@
 ## "ssh-keygen -t rsa -b 4096 -f roles/add_users/files/"USERNAME".pem -C "USERNAME"@localhost"
 ## "ssh-keygen -t rsa -b 4096 -f roles/add_users/files/username.pem -C usename@example.com"
 ## "sudo -u nginx ssh-keygen -t rsa -b 4096 -C nginx@example.com"
+## sudo mkdir /usr/share/httpd/.ssh/ && sudo chown apache:apache /usr/share/httpd/.ssh/
 ## "sudo -u apache ssh-keygen -t rsa -b 4096 -C apache@example.com"
   - add_users:
     - "c5juser"
