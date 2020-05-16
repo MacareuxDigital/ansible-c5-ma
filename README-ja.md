@@ -200,8 +200,8 @@ Amazon Linux 2 は、PHP5.6 (Apache のみ), PHP 7.2, PHP7.3 の動作確認を�
   - php_version_remi:       "php72"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
   - php_version_amznlinux:  "7.2"
-## PHP version for Amazon Linux (php56 / php7.2 / php7.3)
-  - php_version_amznlinux2:  "7.2"
+## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3)
+  - php_version_amznlinux2:  "php7.3"
 ```
 
 ## 追加するSSHユーザーの指定

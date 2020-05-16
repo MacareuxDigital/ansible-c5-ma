@@ -218,6 +218,8 @@ For Amazon Linux 2, I've tested PHP5.6 (Apache only) 7.2 & 7.3. (as of May 2020)
   - php_version_remi:       "php72"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
   - php_version_amznlinux:  "7.2"
+## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3)
+  - php_version_amznlinux2:  "php7.3"
 ```
 
 
