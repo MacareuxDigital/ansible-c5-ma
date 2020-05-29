@@ -279,7 +279,11 @@ Please indicate user and group of concrete5 folder owner. Apache or Nginx will r
 
   `- vhost_docroot: "/var/www/vhosts/"`
 
-  With the setting above, it will set `example.com` & `www.example.com` as virtual host, and the document root of that domain will be "/var/www/vhosts/example.com"
+- **[vhost_htdocs]** : Set the additional web document root path. You could leave it blank
+
+  `- vhost_docroot: "/html"`
+
+  With the setting above, it will set `example.com` & `www.example.com` as virtual host, and the document root of that domain will be "/var/www/vhosts/example.com/html"
 
 ## DB Environment
 

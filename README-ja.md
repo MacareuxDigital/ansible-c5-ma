@@ -249,7 +249,7 @@ concrete5 が保存されるディレクトリの所有者ユーザー・グル�
 
 - `- webserver_changeowner:  "no"`
 
-## Virtualhostの設定
+## Virtual Hostの設定
 
 - **[vhost_domain]** : 設定するドメイン名です。
 
@@ -259,7 +259,11 @@ concrete5 が保存されるディレクトリの所有者ユーザー・グル�
 
   `- vhost_docroot: "/var/www/vhosts/"`
 
-- 上記の場合、Apacheにドメイン名[example.com] & [www.example.com] のバーチャルホストが設定され、ドキュメントルートが[/var/www/vhosts/example.com]となります。
+- **[vhost_htdocs]** : ドキュメントルートが設定されるディレクトリの追加情報です。こちらは空欄でも構いません。
+
+  `- vhost_docroot: "/html"`
+
+- 上記の場合、Apache & Nginx にドメイン名[example.com] & [www.example.com] のバーチャルホストが設定され、ドキュメントルートが [/var/www/vhosts/example.com/html] となります。
 
 ## MySQL or MariaDB の選択
 
