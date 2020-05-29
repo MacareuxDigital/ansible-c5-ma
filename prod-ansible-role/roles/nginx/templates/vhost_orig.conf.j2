@@ -1,14 +1,29 @@
+# MEMO Reverse Proxy Nginx Config
+# map "$http_x_forwarded_server:$http_host" $name {
+#     default $http_host;
+#     "~example.com" "example.com";
+#     "~www.example.com" "www.example.com";
+# }
 server {
     listen       80;
     listen       [::]:80;
-    listen       443 ssl http2;
-    listen       [::]:443 ssl http2;
+    # listen       443 ssl http2;
+    # listen       [::]:443 ssl http2;
 
     server_name  {{ vhost_domain }} www.{{ vhost_domain }};
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
 
     charset      utf-8;
 	client_max_body_size 32m;
+
+    # Add & Modify if it's https site
+    # ssl_certificate         /etc/letsencrypt/live/EXAMPLE.com/fullchain.pem;
+    # ssl_certificate_key     /etc/letsencrypt/live/EXAMPLE.com/privkey.pem;
+
+    # Add & Modify if it's https redirect for load balancer
+    # if ($http_x_forwarded_proto != 'https') {
+    #     return 301 https://$name$request_uri;
+    # }
 
     include      /etc/nginx/default.d/deny_spambot.conf;
 
@@ -37,7 +52,7 @@ server {
             set $skip_cache 1;
     }
 
-    root         {{ vhost_docroot }}{{ vhost_domain }};
+    root {{ vhost_docroot }}{{ vhost_domain }}{{ vhost_htdocs }};
     location /.well-known {
         # dont-send to php we need it open for lets encrypt
         # try if it exists, if not redirect back to index.php
@@ -46,20 +61,38 @@ server {
         try_files $uri / index.php;
     }
 
-	gzip_vary on;
-	gzip_disable msie6;
-	gzip_static on;
-	gzip_comp_level 9;
- 	gzip_proxied any;
-	gzip_types text/plain text/css application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip_vary on;
+    gzip_disable msie6;
+    gzip_static on;
+    gzip_comp_level 9;
+    gzip_proxied any;
+    gzip_types text/plain text/css application/x-javascript text/xml application/xml application/xml+rss text/javascript;
 
     location / {
     	index index.php index.html index.htm;
+        absolute_redirect off;
         if (!-e $request_filename) {
-        rewrite ^ /index.php last;
+            rewrite ^ /index.php last;
         }
 
     }
+
+    # WIP: This is subdirectory config for future reference.
+    # location ^~ /subdirectory {
+    #     alias {{ vhost_docroot }}/{{ vhost_domain }}{{ vhost_htdocs }};
+    #     index  index.php index.html;
+    #     absolute_redirect off;
+    #     location ~ \.php($|/) {
+    #         fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+    #         include       /etc/nginx/fastcgi_params;
+    #         include       /etc/nginx/fastcgi_params_custom;
+    #         # WIP: Reverse Proxy
+    #         # fastcgi_param HTTP_HOST $name;
+    #     }
+    #      if (!-e $request_filename) {
+    #          rewrite ^/(.*)$ /subdirectory/index.php last;
+    #     }
+    # }
 
     location ~* \.(jpg|jpeg|gif|png|css|js|ico)$ {
         access_log        off;
@@ -76,7 +109,10 @@ server {
     }
 
     location ~ \.php($|/) {
+        fastcgi_split_path_info ^(.+?\.php)(/.*)$;
         include       /etc/nginx/fastcgi_params;
         include       /etc/nginx/fastcgi_params_custom;
+        # WIP: Reverse Proxy
+        # fastcgi_param HTTP_HOST $name;
     }
 }

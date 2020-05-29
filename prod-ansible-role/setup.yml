@@ -74,9 +74,13 @@
   - webserver_user:         "nginx"
   - webserver_group:        "nginx"
 
-## Virtualhost Setting
+## Virtual Host Setting
+#    The web root will be /vhost_docroot/vhost_domain/vhost_htdocs
+#    e.g.) /var/www/vhosts/example.com/html
+#    You could leave "vhost_htdocs" blank.
   - vhost_domain:           "example.com"
   - vhost_docroot:          "/var/www/vhosts/"
+  - vhost_htdocs:           "/html"
 
 ## Basic Auth (yes / no)
 ### ID/ password
