@@ -61,7 +61,7 @@ server {
             set $skip_cache 1;
     }
 
-    root {{ vhost_docroot }}{{ vhost_domain }}{{ vhost_deployer }};
+    root {{ vhost_docroot }}{{ vhost_domain }}{{ vhost_htdocs }};
     location /.well-known {
         # dont-send to php we need it open for lets encrypt
         # try if it exists, if not redirect back to index.php
