@@ -17,8 +17,8 @@ server {
 	client_max_body_size 32m;
 
     # Add & Modify if it's https site
-    # ssl_certificate         /etc/letsencrypt/live/EXAMPLE.com/fullchain.pem;
-    # ssl_certificate_key     /etc/letsencrypt/live/EXAMPLE.com/privkey.pem;
+    # ssl_certificate         /etc/letsencrypt/live/{{ vhost_domain }}/fullchain.pem;
+    # ssl_certificate_key     /etc/letsencrypt/live/{{ vhost_domain }}/privkey.pem;
 
     # Add & Modify if it's https redirect for load balancer
     # if ($http_x_forwarded_proto != 'https') {

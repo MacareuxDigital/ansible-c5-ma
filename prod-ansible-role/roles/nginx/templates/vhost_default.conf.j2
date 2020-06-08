@@ -7,8 +7,8 @@ server {
     server_name  dummy;
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains";
 
-    # ssl_certificate         /etc/letsencrypt/live/EXAMPLE.com/fullchain.pem;
-    # ssl_certificate_key     /etc/letsencrypt/live/EXAMPLE.com/privkey.pem;
+    # ssl_certificate         /etc/letsencrypt/live/{{ vhost_domain }}/fullchain.pem;
+    # ssl_certificate_key     /etc/letsencrypt/live/{{ vhost_domain }}/privkey.pem;
 
     charset      utf-8;
 
