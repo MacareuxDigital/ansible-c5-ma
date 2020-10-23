@@ -27,12 +27,15 @@
   - aws_repo_upgrade:       "yes"
 
 # CentOS Version? (6 / 7)
+## This option is also used for Amazon Linux and Amazon Linux 2
   - centos_version:         "7"
 
 ## PHP Repo for CentOS (remi/none)
+## This option is only used for CentOS instances NOT Amazon Linux OSs
   - centos_phprepo:         "none"
 
 ## CentOS Initialize Firewall? (yes / no)
+### This option is only used for CentOS instances NOT Amazon Linux OSs
   - centos_firewall_enable: "no"
 
 # Instance Type (t2micro / t2small / m5large (WIP)
@@ -42,6 +45,7 @@
 ## PHP version for yum (php56 / php70 / php71 / php72 / php73)
   - php_version_yum:        "php73"
 ## PHP version for Remi (php56 / php70 / php71 / php72 / php73)
+### This option is only used for CentOS instances NOT Amazon Linux OSs UNLESS you really need to use Remi repo, modify the internal script to use this option
   - php_version_remi:       "php73"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
   - php_version_amznlinux:  "7.2"
@@ -53,12 +57,13 @@
 # SSH Users
 ## Create SSH user? (yes / no)
   - if_add_users:           "yes"
-## Befrore run this command
-## "ssh-keygen -t rsa -b 4096 -f roles/add_users/files/"USERNAME".pem -C "USERNAME"@localhost"
-## "ssh-keygen -t rsa -b 4096 -f roles/add_users/files/username.pem -C usename@example.com"
-## "sudo -u nginx ssh-keygen -t rsa -b 4096 -C nginx@example.com"
-## sudo mkdir /usr/share/httpd/.ssh/ && sudo chown apache:apache /usr/share/httpd/.ssh/
-## "sudo -u apache ssh-keygen -t rsa -b 4096 -C apache@example.com"
+## Befrore run this ansible script, generate SSH key for the additional user.
+### "ssh-keygen -t rsa -b 4096 -f roles/add_users/files/"USERNAME".pem -C "USERNAME"@localhost"
+### "ssh-keygen -t rsa -b 4096 -f roles/add_users/files/username.pem -C usename@example.com"
+## Make apache & nginx SSH key in order to use git repo as Nginx or Apache user
+### "sudo -u nginx ssh-keygen -t rsa -b 4096 -C nginx@example.com"
+### sudo mkdir /usr/share/httpd/.ssh/ && sudo chown apache:apache /usr/share/httpd/.ssh/
+### "sudo -u apache ssh-keygen -t rsa -b 4096 -C apache@example.com"
   - add_users:
     - "c5juser"
 ## Directory & WebServer Owner Settings
@@ -69,7 +74,7 @@
 ## Use Webserver Apache or Nginx (apache / nginx)
   - webserver_handle:       "nginx"
 
-## Change Apahce or Nginx owner to be SSH User? (no / yes) If yes, make sure to match username to SSH username
+## Change Apache or Nginx owner to be SSH User? (no / yes) If yes, make sure to match username to SSH username
   - webserver_changeowner:  "no"
   - webserver_user:         "nginx"
   - webserver_group:        "nginx"
@@ -101,11 +106,11 @@
 
 # ToDo: MySQL Server to support UTF8mb4 encoding
 
-## Select which MySQL or MariaDB vesion you want for CentOS.
+## Select which MySQL or MariaDB version you want for CentOS.
 ### 55 / 56 / 57 / 80
   - mysql_repo:             "57"
-### 10.2 / 10.3
-  - mariadb_repo:           "10.4"
+### 10.2 / 10.3 / 10.4 / 10.5
+  - mariadb_repo:           "10.5"
 
 ## MySQL or MariaDB Setting
 ## Create DB or not  (yes / no)
