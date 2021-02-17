@@ -19,7 +19,7 @@
   register: result
 
 - name: Install pip
-  when: aws_awslinux=="no"
+  when: aws_awslinux in ["no", "2"]
   yum: name=python-pip state=latest
   
 - name: Install Python MySQLModule
