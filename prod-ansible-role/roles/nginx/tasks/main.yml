@@ -73,7 +73,7 @@
 - name: Install PHP Redis Extension for Amazon Linux 2
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2 not in ["php5.6", "php7.0", "php7.1"]
+    - php_version_amznlinux2 not in ["php56","php7.0","php7.1"]
   yum: name={{item}} state=latest enablerepo=amzn2extra-{{php_version_amznlinux2}} disablerepo=epel
   with_items:
   - "php-pecl-redis"
