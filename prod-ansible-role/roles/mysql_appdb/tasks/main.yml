@@ -16,3 +16,25 @@
     login_password={{ mysql_loginpass }}
     login_host={{ mysql_loginhost }}
   with_items: "{{ mysql_userpermitedhost }}"
+- name: CreateDB Bkup
+  mysql_db:
+    name={{mysql_dbname+'-bkup'}}
+    state=present
+    login_user={{ mysql_loginuser }}
+    login_password={{ mysql_loginpass }}
+    login_host={{ mysql_loginhost }}
+  when:
+    - db_create_bkup=="yes"
+- name: Grant User
+  mysql_user:
+    name={{ mysql_username }}
+    state=present
+    host={{ item }}
+    password={{ mysql_userpass }}
+    priv={{mysql_dbname+'-bkup'}}.*:ALL,GRANT
+    login_user={{ mysql_loginuser }}
+    login_password={{ mysql_loginpass }}
+    login_host={{ mysql_loginhost }}
+  with_items: "{{ mysql_userpermitedhost }}"
+  when:
+    - db_create_bkup=="yes"

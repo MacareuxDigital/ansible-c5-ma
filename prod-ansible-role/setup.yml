@@ -115,6 +115,8 @@
 ## MySQL or MariaDB Setting
 ## Create DB or not  (yes / no)
   - db_create:              "yes"
+## Create DB backup or not  (yes / no)
+  - db_create_bkup:         "yes"
 ## MySQL root
   - mysql_rootpass:         "mysql_root_pass"
 ## MySQL host
