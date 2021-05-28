@@ -73,7 +73,7 @@
 - name: Install PHP for Amazon Linux 2
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2 in ["php70", "php71", "php72", "php73"] 
+    - php_version_amznlinux2 in ["php72", "php73"] 
   yum: name={{item}} state=latest enablerepo=amzn2extra-{{php_version_amznlinux2}} disablerepo=epel
   with_items:
   - "php-pecl-mcrypt"
