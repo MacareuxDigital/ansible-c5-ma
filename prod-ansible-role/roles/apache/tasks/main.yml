@@ -42,7 +42,7 @@
   when:
     - aws_awslinux=="2"
     - php_version_amznlinux2!="php56"
-  yum: name={{item}} state=latest enablerepo=amzn2extra-{{php_version_amznlinux2}} disablerepo=epel,amzn2-core
+  yum: name={{item}} state=latest enablerepo=amzn2extra-{{php_version_amznlinux2}} disablerepo=epel
   with_items:
   - "httpd"
   - "php"
@@ -66,11 +66,11 @@
   - "php-pdo"
   - "php-pecl-igbinary"
  # - "php-pecl-ssh2"
-  - "php-pecl-zip"
+ # - "php-pecl-zip"
   - "php-pgsql"
   - "php-process"
   - "php-pspell"
-  - "php-recode"
+ # - "php-recode"
   - "php-snmp"
   - "php-soap"
   - "php-xml"
@@ -84,6 +84,7 @@
   yum: name={{item}} state=latest enablerepo=amzn2extra-{{php_version_amznlinux2}} disablerepo=epel
   with_items:
   - "php-pecl-mcrypt"
+  - "php-pecl-zip"
 
 - name: Install PHP Redis Extension for Amazon Linux 2
   when:
