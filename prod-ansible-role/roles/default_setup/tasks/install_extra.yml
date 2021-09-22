@@ -1,5 +1,6 @@
 - name: Install extra packages
-  yum: name={{item}} state=latest enablerepo=epel
-  with_items:
-  - "etckeeper"
-#  - "monit"
+  yum:
+    name:
+      - "etckeeper"
+      #  - "monit"
+    enablerepo: epel

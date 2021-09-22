@@ -1,5 +1,8 @@
 - name: Install newrelic-sysmond
-  yum: name="newrelic-sysmond" state=latest
+  yum:
+    name:
+      - "newrelic-sysmond"
+    state: latest
   register: result
 - name: sysmond Add License
   shell: nrsysmond-config --set license_key={{ newrelic_licensekey }}

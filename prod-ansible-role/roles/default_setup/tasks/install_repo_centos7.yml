@@ -1,8 +1,14 @@
 - name: Install epel repository
-  yum: name=https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm state=present
+  yum:
+    name:
+      - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state: present
 
 - name: Install remi repository
-  yum: name=http://rpms.remirepo.net/enterprise/remi-release-7.rpm state=present
+  yum:
+    name:
+      - http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+    state: present
   when: centos_phprepo=="remi"
 
 #- name: Remove repository (and clean up left-over metadata)

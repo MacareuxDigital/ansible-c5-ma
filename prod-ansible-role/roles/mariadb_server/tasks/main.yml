@@ -1,15 +1,17 @@
 - name: Install MariaDB Server
   when: aws_awslinux!="2"
-  yum: name={{item}} state=installed
-  with_items:
-    - MariaDB-server
+  yum:
+    name:
+      - MariaDB-server
+    state: installed
   register: MariaDBServerResult
 
 - name: Install MariaDB Server
   when: aws_awslinux=="2"
-  yum: name={{item}} state=installed
-  with_items:
-    - mariadb-server
+  yum:
+    name:
+      - mariadb-server
+    state: installed
   register: MariaDBServerResult
 
 # - name: Backup original /etc/my.cnf.d/server.cnf file

@@ -1,9 +1,15 @@
 - name: Remove MariaDB lib
-  yum: name=mariadb-lib state=absent
+  yum:
+    name:
+      - mariadb-lib
+    state: absent
   when: centos_version=="7"
 
 - name: Install MySQL Repo for CentOS {{centos_version}}
-  yum: name=https://dev.mysql.com/get/mysql80-community-release-el{{centos_version}}-1.noarch.rpm state=present
+  yum:
+    name:
+      - https://dev.mysql.com/get/mysql80-community-release-el{{centos_version}}-1.noarch.rpm
+    state: present
   # As of Aug 2018, MySQL yum repo include MySQL 5.5.x through 5.7.x Experiment
 
 - name: Disable MySQL8.0 Repo to Enable older version of MySQL
