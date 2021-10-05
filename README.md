@@ -78,7 +78,7 @@ OR prepare a CentOS7 server with public IP address.
 
 ## For Debug: you can use docker to test
 
-There is optional setting that you can use Docker to test-run you ansible script. Please be ware that some tasks are skipped such as changing locale, making swap due to the docker's restriction. It it highly recommended to test on actual server or VM instance before using it on production.
+There is optional setting that you can use Docker to test-run you ansible script. Please be ware that some tasks are skipped such as changing locale, making swap, making databases and db users due to the docker's restriction. It it highly recommended to test on actual server or VM instance before using it on production.
 
 - Edit host.docker.yml
   - Use it you want to test Ansible on your local docker before launching and executing on actual server

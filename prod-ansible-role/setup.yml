@@ -1,6 +1,6 @@
 - hosts: all
   become: yes
-  # DEBUG: enable docker connection comment if you want to debug using Docker image
+  # DEBUG: enable docker connection if you want to debug using Docker image
   # connection: docker
 
   vars:

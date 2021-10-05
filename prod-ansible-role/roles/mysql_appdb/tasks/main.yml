@@ -1,11 +1,12 @@
-- name: CreateDB
+- name: Create a DB
   mysql_db:
     name={{ mysql_dbname }}
     state=present
     login_user={{ mysql_loginuser }}
     login_password={{ mysql_loginpass }}
     login_host={{ mysql_loginhost }}
-- name: CreateUser
+  when: isDocker=="no"
+- name: Create User for the DB
   mysql_user:
     name={{ mysql_username }}
     state=present
@@ -16,7 +17,8 @@
     login_password={{ mysql_loginpass }}
     login_host={{ mysql_loginhost }}
   with_items: "{{ mysql_userpermitedhost }}"
-- name: CreateDB Bkup
+  when: isDocker=="no"
+- name: Create a bkup DB
   mysql_db:
     name={{mysql_dbname+'-bkup'}}
     state=present
@@ -25,7 +27,8 @@
     login_host={{ mysql_loginhost }}
   when:
     - db_create_bkup=="yes"
-- name: Grant User
+    - isDocker=="no"
+- name: Grant a user for the backup DB
   mysql_user:
     name={{ mysql_username }}
     state=present
@@ -38,3 +41,5 @@
   with_items: "{{ mysql_userpermitedhost }}"
   when:
     - db_create_bkup=="yes"
+    - isDocker=="no"
+

@@ -165,23 +165,29 @@
   with_items: "{{ add_users }}"
 
 - name: Start Nginx
-  when: centos_version=="6"
+  when:
+    - centos_version=="6"
+    - NginxPHPResult.changed == True
+    - isDocker=="no"
   service: name=nginx state=started enabled=yes
-  when: NginxPHPResult.changed == True
 - name: Start php-fpm
-  when: centos_version=="6"
   service: name=php-fpm state=started enabled=yes
-  when: NginxPHPResult.changed == True
-
+  when:
+    - centos_version=="6"
+    - NginxPHPResult.changed == True
+    - isDocker=="no"
 - name: Start Nginx
-  when: centos_version=="7"
   systemd: name=nginx state=started enabled=yes
-  when: NginxPHPResult.changed == True
+  when:
+    - centos_version=="7"
+    - NginxPHPResult.changed == True
+    - isDocker=="no"
 - name: Start php-fpm
-  when: centos_version=="7"
   systemd: name=php-fpm state=started enabled=yes
-  when: NginxPHPResult.changed == True
-
+  when:
+    - centos_version=="7"
+    - NginxPHPResult.changed == True
+    - isDocker=="no"
 - include: set_php-fpm.yml
   when: aws_awslinux !="1"
 - include: set_php-fpm-al-1.yml
