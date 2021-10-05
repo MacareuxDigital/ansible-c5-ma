@@ -61,6 +61,18 @@ server {
             set $skip_cache 1;
     }
 
+    # WordPress: Skip FastCGI cache for API, admin request and pages
+    # if ($request_uri ~* "/wp-admin/|/xmlrpc.php|wp-.*.php|/feed/|index.php|sitemap(_index)?.xml") {
+    #     set $skip_cache 1;
+    # }
+    # 
+    # if ($http_cookie ~* "comment_author|wordpress_[a-f0-9]+|wp-postpass|wordpress_no_cache|wordpress_logged_in") {
+    #     set $skip_cache 1;
+    # }
+    # location ~*/wp-config.php {
+    #     deny all;
+    # }
+
     root {{ vhost_docroot }}{{ vhost_domain }}{{ vhost_htdocs }};
     location /.well-known {
         # dont-send to php we need it open for lets encrypt
@@ -117,6 +129,52 @@ server {
     location ~ /\.ht {
         return 404;
     }
+
+    # WordPress Specific Config
+    # location ~ /wp-login\.php {
+    #     index index.php index.html index.htm;
+    # 
+    #     ## 許可するIPアドレスを記述
+    #     #allow 192.168.0.1;
+    #     #deny all;
+    #     
+    #     # auth_basic "Please enter your ID and password";
+    #     #     auth_basic_user_file {{ vhost_docroot }}{{ vhost_domain }}/.htpasswd;
+    # 
+    #     include       /etc/nginx/fastcgi_params;
+    #     include       /etc/nginx/fastcgi_params_custom;
+    # }
+    # 
+    # location ~ /wp-admin/((?!admin-ajax\.php).)*$ {
+    #     index index.php index.html index.htm;
+    # 
+    #     ## 許可するIPアドレスを記述
+    #     #allow 192.168.0.1;
+    #     #deny all;
+    #     
+    #     # auth_basic "Please enter your ID and password";
+    #     #    auth_basic_user_file {{ vhost_docroot }}{{ vhost_domain }}/.htpasswd;
+    #     
+    #     location ~ \.php($|/) {
+    #         fastcgi_split_path_info ^(.+?\.php)(/.*)$;
+    #         include       /etc/nginx/fastcgi_params;
+    #         include       /etc/nginx/fastcgi_params_custom;
+    #     }
+    # 
+    #     if (!-e $request_filename) {
+    #         rewrite ^/(.*)$ /index.html last;
+    #     }
+    # }
+    # location = /xmlrpc.php {
+    #     allow 192.0.64.0/18;
+    #     allow 153.120.171.20;
+    #     deny all;
+    #     access_log off;
+    #     log_not_found off;
+    #     
+    #     include       /etc/nginx/fastcgi_params;
+    #     include       /etc/nginx/fastcgi_params_custom;
+    # }
 
     location ~ \.php($|/) {
         fastcgi_split_path_info ^(.+?\.php)(/.*)$;
