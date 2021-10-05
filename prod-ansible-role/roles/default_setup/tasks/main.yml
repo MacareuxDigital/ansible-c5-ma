@@ -39,6 +39,7 @@
   when:
     - centos_version=="7" and aws_awslinux=="no"
     - centos_firewall_enable=="yes"
+    - isDocker=="no"
 - include: initialize_swapfile.yml
   when:
     - centos_version=="7" or aws_awslinux=="2"
