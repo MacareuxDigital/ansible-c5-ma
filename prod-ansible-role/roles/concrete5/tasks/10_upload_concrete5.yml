@@ -1,6 +1,32 @@
-- name: Upload and unzip concrete5.zip
-  unarchive: src=concrete.zip dest="{{vhost_docroot}}{{vhost_domain}}"
+- name: Fetch and unzip Concrete CMS package
+  unarchive:
+    src: "{{c5_package_url}}"
+    dest: "{{vhost_docroot}}{{vhost_domain}}"
+    remote_src: yes
   when: result.stat.exists == False
+  register: result_remotefetched
+- name: Move all files from package folder to vhost folder
+  copy:
+    src: "{{vhost_docroot}}{{vhost_domain}}/{{c5_package_folder_name}}/"
+    remote_src: yes
+    dest: "{{vhost_docroot}}{{vhost_domain}}/"
+  register: result_ccmfilemoved
+  when:
+    - result.stat.exists == False
+    - result_remotefetched.changed ==True
+- name: Delete empty package folder
+  file:
+    path: "{{vhost_docroot}}{{vhost_domain}}/{{c5_package_folder_name}}"
+    state: absent
+  register: result_ccmfetcheddirremoved
+  when:
+    - result.stat.exists == False
+    - result_remotefetched.changed ==True
+    - result_ccmfilemoved.changed == True
 - name: Change concrete5 (webroot) permission
   file: path="{{vhost_docroot}}{{vhost_domain}}" state=directory recurse=yes owner={{c5dir_user}} group={{c5dir_group}} mode=0775
-  when: result.stat.exists == False
+  when:
+    - result.stat.exists == False
+    # - result_remotefetched.changed ==True
+    # - result_ccmfilemoved.changed == True
+    # - result_ccmfetcheddirremoved.changed == True
