@@ -1,6 +1,10 @@
 - name: Restart mysqld
-  when: centos_version=="6"
+  when:
+    - centos_version=="6"
+    - isDocker=="no"
   service: name=mysqld state=restarted
 - name: Restart mysqld
-  when: centos_version=="7"
+  when:
+    - centos_version=="7"
+    - isDocker=="no"
   systemd: name=mysqld state=restarted

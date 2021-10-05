@@ -18,13 +18,18 @@
   register: mysqlresult
 
 - name: Start mysqld (CentOS6)
-  when: centos_version=="6"
   service: name=mysqld state=started enabled=yes
+  when:
+    - centos_version=="6"
+    - isDocker=="no"
 - name: Start mysqld (CentOS7)
-  when: centos_version=="7"
+  when:
+    - centos_version=="7"
+    - isDocker=="no"
   systemd: name=mysqld state=started enabled=yes
 
 - include: set_mysqlroot.yml
+  when: isDocker=="no"
 
 - name: Replace MySQL Config to disable performance schema
   template: src=my.conf.j2 dest=/etc/my.conf

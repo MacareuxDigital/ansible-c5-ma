@@ -1,0 +1,2 @@
+[servers]
+ansible-test server_name="ex1.example.com"

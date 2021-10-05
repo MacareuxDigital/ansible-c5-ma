@@ -1,4 +1,6 @@
 - name: set locale to /etc/cloud/cloud.cfg
   lineinfile: 'dest=/etc/cloud/cloud.cfg line="locale: {{locale}}"'
+  when: isDocker=="no"
 - name: set repo_upgrade to /etc/cloud/cloud.cfg
   lineinfile: 'dest=/etc/cloud/cloud.cfg regexp="repo_upgrade\:" line="repo_upgrade: {{aws_repo_upgrade}}"'
+  when: isDocker=="no"

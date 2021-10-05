@@ -76,7 +76,22 @@ OR prepare a CentOS7 server with public IP address.
     - If there is a new version of concrete5, make sure to replace it
     - This package contains concrete5 package as a zip file. HOWEVER, the zip file which is distributed at concrete5.org contains a folder with `concrete5-[version]`. You must re-zip the package without the folder.
 
-## AnsiblePlayBook
+## For Debug: you can use docker to test
+
+There is optional setting that you can use Docker to test-run you ansible script. Please be ware that some tasks are skipped such as changing locale, making swap due to the docker's restriction. It it highly recommended to test on actual server or VM instance before using it on production.
+
+- Edit host.docker.yml
+  - Use it you want to test Ansible on your local docker before launching and executing on actual server
+  - Change `ansible-test` to your docker container name.
+  - `server_name` is optional
+- For "setup.yml", see setup.yml configuration below
+
+```
+$ cd [path/to/ansible]
+$ ansible-playbook -i host.docker.yml setup.yml
+```
+
+## Execute ansible-playBook
 
 Execute Ansible, sit and wait.
 
@@ -84,6 +99,7 @@ Execute Ansible, sit and wait.
 $ cd [path/to/ansible]
 $ ansible-playbook -i host.yml setup.yml
 ```
+
 
 ## Set DNS & Some Security Measure
 
@@ -141,6 +157,14 @@ Set target IP address, and SSH username (usually `ec2-user` for Amazon Linux), S
 Change the parameters where necessaries.
 
 THE COMMENTS IN steup.yml IS LATEST, this documentation tends to be older than latest.
+
+## DEBUG: to test using Docker
+
+Make sure to uncomment `connection: docker` on the 4th line
+
+```
+  connection: docker
+```
 
 ## Server Locale
 

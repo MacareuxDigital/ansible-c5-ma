@@ -18,15 +18,19 @@
 #   copy: src=/etc/my.cnf.d/server.cnf dest=/etc/my.cnf.d/server.cnf.bak mode=644
 #   notify: Restart mysqld
 
-- name: Replace MySQL Config to support mb4
+- name: Replace MariaDB Config to support mb4
   template: src=server.cnf.j2 dest=/etc/my.cnf.d/server.cnf
   notify: Restart mysqld
 
-- name: Start mysqld (CentOS6)
-  when: centos_version=="6"
+- name: Start MariaDB (CentOS6)
+  when:
+    - centos_version=="6"
+    - isDocker=="no"
   service: name=mysqld state=started enabled=yes
-- name: Start mysqld (CentOS7)
-  when: centos_version=="7"
+- name: Start MariaDB (CentOS7)
+  when:
+    - centos_version=="7"
+    - isDocker=="no"
   systemd: name=mariadb state=started enabled=yes
 
 - name: Set root Password

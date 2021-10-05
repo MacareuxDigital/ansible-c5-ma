@@ -1,11 +1,11 @@
 # Ansibleの使い方
 
 -----
-Amazon Linux や CentOS 7 に、 SSH 接続をし、Apache/Nginx, PHP-FPM, MariaDB, MySQL などの設定を自動的に実行してくれるプログラムです。
-
-**現在検証中**: Amazon Linux + MySQL & CentOS7 + MariaDB のコンビネーションしかテストしていませんので、お気をつけ下さい。
+Amazon Linux 2 や CentOS 7 に、 SSH 接続をし、Apache/Nginx, PHP-FPM, MariaDB, MySQL などの設定を自動的に実行してくれるプログラムです。
 
 このスクリプトは仕事をしながら常に更新しているので、 **完全な動作テストを全くしていません。** 必ず、テストインスタンスなどで試してから本番インスタンスで実行してください。
+
+2021年10月時点で、Amazon Linux 2, PHP7.4, Nginx, MariaDB 10.5 をメインに動作確認をしています。
 
 ## 準備
 
@@ -63,7 +63,22 @@ CentOS 7 のサーバーを用意し、SSH でアクセスできようにして�
     - 特に新しいバージョンの concrete5 がリリースされた時など、ZIPファイルを変更したり、コマンドが変更されている場合があるので、確認が必要です。
     - concrete5.org で配布されている ZIP ファイルは「concrete5-バージョン名」というフォルダの中に格納されているのですが、格納している concrete5 の ZIP ファイルは、バージョン名のフォルダを含めない形で保存されています。
 
-## AnsiblePlayBookの実行
+## デバッグ用: Docker を使ってローカルでテスト
+
+手軽にローカルの Docker でテストランができるデバッグオプションも用意しました。ただし、Docker の制約で、ホスト名変更、SWAPファイル作成、ファイルのアップロード、サービス (systemcltd) での起動ができないので、必ず、本番環境で設定する前に、実際のサーバーや VM インスタンスでのテスト実行を行ってください。
+
+- host.docker.yml を編集
+  - Docker で利用するためのホスト設定ファイル
+  - `ansible-test` の部分を自分が立てたコンテナー名に変更してください。
+  - `server_name` はオプションです。ただそのままにしてくだしあ。
+- "setup.yml"の設定については下記をご覧ください。
+
+```
+$ cd [path/to/ansible]
+$ ansible-playbook -i host.docker.yml setup.yml
+```
+
+## ansible-playBookの実行
 
 ```
 $ ansible-playbook -i host.yml setup.yml

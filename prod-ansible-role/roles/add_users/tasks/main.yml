@@ -10,3 +10,4 @@
 - name: Add SSH-Keyfiles
   copy: src={{ item }}.pem.pub dest=/home/{{item}}/.ssh/authorized_keys mode=600 owner={{ item }} group={{ item }}
   with_items: "{{ add_users }}"
+  when: isDocker=="no"

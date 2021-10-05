@@ -1,5 +1,6 @@
 - name: Set hostname to {{server_name}}
   hostname: name={{server_name}}
+  when: isDocker=="no"
 - include: initialize_amazonlinux.yml
   when: aws_awslinux in ["1", "2"]
 - name: Set locale to /etc/sysconfig/i18n
@@ -9,7 +10,9 @@
     regexp='^LANG=en_US\.UTF-8'
     replace='LANG={{locale}}'
 - name: set locale to {{locale}}
-  when: centos_version=="7"
+  when:
+    - centos_version=="7"
+    - isDocker=="no"
   shell: localectl set-locale LANG={{locale}}
   register: set_locale
   changed_when: false
@@ -17,6 +20,7 @@
   changed_when: false
   timezone:
     name: "{{zone}}"
+  when: isDocker=="no"
 - include: install_repo_centos6.yml
   when: centos_version=="6" and aws_awslinux=="no"
 - include: install_repo_centos7.yml
@@ -38,3 +42,4 @@
 - include: initialize_swapfile.yml
   when:
     - centos_version=="7" or aws_awslinux=="2"
+    - isDocker=="no"
