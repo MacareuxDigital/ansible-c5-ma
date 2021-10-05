@@ -1,7 +1,7 @@
 # Ansibleの使い方
 
 -----
-Amazon Linux 2 や CentOS 7 に、 SSH 接続をし、Apache/Nginx, PHP-FPM, MariaDB, MySQL などの設定を自動的に実行してくれるプログラムです。
+Concrete CMS 用に Amazon Linux 2 や CentOS 7 に、 SSH 接続をし、Apache/Nginx, PHP-FPM, MariaDB, MySQL などの設定を自動的に実行してくれるプログラムです。
 
 このスクリプトは仕事をしながら常に更新しているので、 **完全な動作テストを全くしていません。** 必ず、テストインスタンスなどで試してから本番インスタンスで実行してください。
 
@@ -60,8 +60,8 @@ CentOS 7 のサーバーを用意し、SSH でアクセスできようにして�
 ## ファイルのファイルの修正
 
 - host.yml と setup.yml を下記を参考に、各項目を修正ください。
-    - 特に新しいバージョンの concrete5 がリリースされた時など、ZIPファイルを変更したり、コマンドが変更されている場合があるので、確認が必要です。
-    - concrete5.org で配布されている ZIP ファイルは「concrete5-バージョン名」というフォルダの中に格納されているのですが、格納している concrete5 の ZIP ファイルは、バージョン名のフォルダを含めない形で保存されています。
+    - 特に新しいバージョンの Concrete CMS がリリースされた時など、ZIPファイルを変更したり、コマンドが変更されている場合があるので、確認が必要です。
+    - Concrete CMS.org で配布されている ZIP ファイルは「Concrete CMS-バージョン名」というフォルダの中に格納されているのですが、格納している Concrete CMS の ZIP ファイルは、バージョン名のフォルダを含めない形で保存されています。
 
 ## デバッグ用: Docker を使ってローカルでテスト
 
@@ -242,7 +242,7 @@ Amazon Linux 2 は、PHP5.6 (Apache のみ), PHP 7.2, PHP7.3 の動作確認を�
 
 ## ユーザー名, グループ名を指定
 
-concrete5 が保存されるディレクトリの所有者ユーザー・グループ、Apache もしくは nginx の実行グループを指定します。
+Concrete CMS が保存されるディレクトリの所有者ユーザー・グループ、Apache もしくは nginx の実行グループを指定します。
 
 ```
 - c5dir_user:        "c5juser"
@@ -360,27 +360,39 @@ Ansibleで MySQL ユーザーの作成、DB の作成を行うか設定します
     - "localhost"
   ```
 
-## concrete5 データ移行
+## Concrete CMS データ移行
 
-既に別の環境で concrete5 サイトを構築仕掛けている時に、バックアップファイルを所定のフォーマットの ZIP にまとめてサーバー構築と一緒にデータ移行も一緒にやることが出来ます。
+既に別の環境で Concrete CMS サイトを構築仕掛けている時に、バックアップファイルを所定のフォーマットの ZIP にまとめてサーバー構築と一緒にデータ移行も一緒にやることが出来ます。
 
 - **[c5_migration]** : 「yes」か「no」
 
   `- c5_migration: "no"`
 
-- **[c5_backup_zip_filename]** : concrete5 バックアップシェルである [concrete5 backup shell](https://github.com/katzueno/concrete5-backup-shell) の All オプションを使って作成したバックアップファイルを拡張子なしで指定し、`roles/concrete5_migration/files` 配下に保存して下さい。
+- **[c5_backup_zip_filename]** : Concrete CMS バックアップシェルである [Concrete CMS backup shell](https://github.com/katzueno/concrete5-backup-shell) の All オプションを使って作成したバックアップファイルを拡張子なしで指定し、`roles/concrete5_migration/files` 配下に保存して下さい。
 
   `- c5_backup_zip_filename: "backup_202000000000"`
 
 
 
-## concrete5の設定
+## Concrete CMSの設定
+
+- **[c5_upload]** : 「yes」か「no」で Concrete CMS をリモートから ZIP を取得して展開します。
+
+  `- c5_upload: "yes"`
+
+- **[c5_package_folder_name]** : Concrete CMS が格納されている ZIP ファイル内のディレクトリ名を入れてください。
+
+  `- c5_package_folder_name: "concrete5-8.5.6"`
+
+- **[c5_package_url]** : 他の場所もしくはバージョンの Concrete CMS をダウンロードするのであれば変更してください。
+
+  `- c5_package_url: "https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224"`
 
 - **[c5_installation]** : 「yes」か「no」
 
   `- c5_installation: "c5juser"`
 
-- **[c5_sitename]** : concrete5のサイト名を指定します。
+- **[c5_sitename]** : Concrete CMSのサイト名を指定します。
 
   `- c5_sitename: "Site Name"`
 
@@ -396,24 +408,24 @@ Ansibleで MySQL ユーザーの作成、DB の作成を行うか設定します
 
   `- c5_starting_point: "elemental_blank"`
 
-- **[c5_admin_email]** : concrete5 のAdminメールアドレスを設定します。
+- **[c5_admin_email]** : Concrete CMS のAdminメールアドレスを設定します。
 
   `- c5_admin_email: "info@hogehoge.com"`
 
-- **[c5_admin_pass]** : concrete5 のAdminパスワードを設定します。
+- **[c5_admin_pass]** : Concrete CMS のAdminパスワードを設定します。
 
   `- c5_admin_pass: "site_password"`
 
-- **[c5_locale]** : concrete5 のデフォルトロケールを設定します。
+- **[c5_locale]** : Concrete CMS のデフォルトロケールを設定します。
 
   `- c5_locale:         "ja_JP"`
 
-- **[c5_from_*]** : concrete5 から送られるメールの FROM 欄の設定を行います。
+- **[c5_from_*]** : Concrete CMS から送られるメールの FROM 欄の設定を行います。
 
   `- c5_from_email:          "info@example.com"`
   `- c5_from_name:           "From Email Name"`
 
-- **[c5_load_balancer]** : concrete5 が AWS ELB などのロードバランサーの背後に設定される場合 'yes' としてください。
+- **[c5_load_balancer]** : Concrete CMS が AWS ELB などのロードバランサーの背後に設定される場合 'yes' としてください。
 
   `- c5_load_balancer:       "no" # (yes / no)`
 

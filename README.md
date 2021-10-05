@@ -1,14 +1,16 @@
-# concrete5 Ansible to setup Apache/Nginx/PHP-FPM/MySQL/MariaDB on Amazon Linux or CentOS
+# Concrete CMS Ansible to setup Apache/Nginx/PHP-FPM/MySQL/MariaDB on Amazon Linux or CentOS
 
 **Work-in-Progress**: Your input is greatly appreciated.
 
-This was originally a simple Ansible script to setup Apache or nginx, MariaDB or MySQL and Basic Auth into an Amazon Linux or CentOS instance.
+This was originally a simple Ansible script to setup Apache or Nginx, MariaDB or MySQL and Basic Auth into an Amazon Linux or CentOS instance.
 
 You need to install Ansible in your PC to run.
 
 You will connect to AWS Linux or CentOS7 and start sending commands to setup the server automatically.
 
 THIS ANSIBLE IS VERY UGRY. KEEP CHANGING AS WE WORK. WE CANNOT GURANTEE ANYTHING. SO YOU MUST USE FOR DEV INSTANCE FIRST BEFORE APPLYING PRODUCTION. I WOULD NOT DEPLOY TO PRODUCTION EITHER.
+
+As of Oct, 2021, I've mainly tested on Amazon Linux 2 with Nginx, PHP7.4 and MariaDB 10.5
 
 -----
 
@@ -73,8 +75,8 @@ OR prepare a CentOS7 server with public IP address.
 ## Modify the settings
 
 - Edit host.yml, setup.yml reading the instruction below.
-    - If there is a new version of concrete5, make sure to replace it
-    - This package contains concrete5 package as a zip file. HOWEVER, the zip file which is distributed at concrete5.org contains a folder with `concrete5-[version]`. You must re-zip the package without the folder.
+    - If there is a new version of Concrete CMS, make sure to replace it
+    - This package contains Concrete CMS package as a zip file. HOWEVER, the zip file which is distributed at Concrete CMS.org contains a folder with `Concrete CMS-[version]`. You must re-zip the package without the folder.
 
 ## For Debug: you can use docker to test
 
@@ -270,7 +272,7 @@ However, you also need to create additional SSH keys
 
 ## Name user and group
 
-Please indicate user and group of concrete5 folder owner. Apache or Nginx will run as this user and group as well.
+Please indicate user and group of Concrete CMS folder owner. Apache or Nginx will run as this user and group as well.
 
 ```
 - c5dir_user:        "c5juser"
@@ -363,19 +365,19 @@ You can set whether to create DB and user from this ansible script. (Amazon Linu
 
   `- mysql_loginpass: "mysql_root_pass"`
 
-## MySQL Setting for concrete5
+## MySQL Setting for Concrete CMS
 
 It will login as [mysql_loginuser] user and create database and additional user based on the following information.
 
-- **[mysql_dbname]** : Set the name of concrete5 MySQL database. Leave it as default unless instructed.
+- **[mysql_dbname]** : Set the name of Concrete CMS MySQL database. Leave it as default unless instructed.
 
   `- mysql_dbname: "dev-c5db"`
 
-- **[mysql_username]** : Set concrete5's MySQL DB username. Leave it as default unless instructed.
+- **[mysql_username]** : Set Concrete CMS's MySQL DB username. Leave it as default unless instructed.
 
   `- mysql_username: "dev-c5dbuser"`
 
-- **[mysql_userpass]** : Set concrete5's MySQL User password. Make sure to make random and secure password that fits MySQL password restriction.
+- **[mysql_userpass]** : Set Concrete CMS's MySQL User password. Make sure to make random and secure password that fits MySQL password restriction.
 
   `- mysql_userpass: "db-password"`
 
@@ -388,30 +390,42 @@ It will login as [mysql_loginuser] user and create database and additional user 
     - "localhost"
   ```
 
-## concrete5 Migration
+## Concrete CMS Migration
 
-If you already have concrete5 site somewhere else, and want to migrate the data, please use this option.
+If you already have Concrete CMS site somewhere else, and want to migrate the data, please use this option.
 
-- **[c5_migration]** : yes or no if you want to migration concrete5 from different data.
+- **[c5_migration]** : yes or no if you want to migration Concrete CMS from different data.
 
   `- c5_migration:           "no"`
 
-- **[c5_backup_zip_filename]** : You must use the backup file which was created via all option of [concrete5 backup shell](https://github.com/katzueno/concrete5-backup-shell). Give the file name without file extension. And save the zip files under `roles/concrete5_migration/files`.
+- **[c5_backup_zip_filename]** : You must use the backup file which was created via all option of [Concrete CMS backup shell](https://github.com/katzueno/concrete5-backup-shell). Give the file name without file extension. And save the zip files under `roles/concrete5_migration/files`.
 
   `- c5_backup_zip_filename: "backup_202000000000"`
 
 
-## concrete5 Installation Setting
+## Concrete CMS Installation Setting
 
-If you want to setup a new concrete5 installation, enter the information here.
+If you want to setup a new Concrete CMS installation, enter the information here.
 
-- **[c5_installation]** : yes or no whether to install fresh copy of concrete5.
+- **[c5_upload]** : yes or no whether to upload a copy of Concrete CMS.
+
+  `- c5_upload: "yes"`
+
+- **[c5_package_folder_name]** : write down the folder name of Concrete CMS package from download.
+
+  `- c5_package_folder_name: "concrete5-8.5.6"`
+
+- **[c5_package_url]** : change the URL if you need to download Concrete package from somewhere else or different version.
+
+  `- c5_package_url: "https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224"`
+
+- **[c5_installation]** : yes or no whether to install fresh copy of Concrete CMS.
 
   `- c5_installation: "yes"`
 
 - **[c5_sitename]** : Enter the site name.
 
-  `- c5_sitename: "concrete5 Demo"`
+  `- c5_sitename: "Concrete CMS Demo"`
 
 - **[c5dir_user]** : Enter the user name of directory owner which must be the same as SSH user.
 
@@ -425,24 +439,24 @@ If you want to setup a new concrete5 installation, enter the information here.
 
   `- c5_starting_point: "elemental_blank"`
 
-- **[c5_admin_email]** : Set concrete5 Admin user email address. Make it as server@concrete5.co.jp unless instructed.
+- **[c5_admin_email]** : Set Concrete CMS Admin user email address. Make it as server@concrete5.co.jp unless instructed.
 
   `- c5_admin_email: "info@example.com"`
 
-- **[c5_admin_pass]** : Set concrete5 Admin user password. Please generate the secure password, and make a note.
+- **[c5_admin_pass]** : Set Concrete CMS Admin user password. Please generate the secure password, and make a note.
 
   `- c5_admin_pass: "site_password"`
 
-- **[c5_locale]** : Set concrete5 default site locale
+- **[c5_locale]** : Set Concrete CMS default site locale
 
   `- c5_locale:         "ja_JP"`
 
-- **[c5_from_*]** : Set concrete5's from email address of each notification emails.
+- **[c5_from_*]** : Set Concrete CMS's from email address of each notification emails.
 
   `- c5_from_email:          "info@example.com"`
   `- c5_from_name:           "From Email Name"`
 
-- **[c5_load_balancer]** : If concrete5 is set behind load balancer such as AWS ELB, please set it 'yes'.
+- **[c5_load_balancer]** : If Concrete CMS is set behind load balancer such as AWS ELB, please set it 'yes'.
 
   `- c5_load_balancer:       "no" # (yes / no)`
 
