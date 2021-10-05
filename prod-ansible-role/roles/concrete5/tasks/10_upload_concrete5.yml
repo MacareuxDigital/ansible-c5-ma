@@ -4,28 +4,28 @@
     dest: "{{vhost_docroot}}{{vhost_domain}}"
     remote_src: yes
   when: result.stat.exists == False
-  register: result.stat.remotefetched
+  register: result_remotefetched
 - name: Move all files from package folder to vhost folder
   copy:
     src: "{{vhost_docroot}}{{vhost_domain}}{{c5_package_folder_name}}/*"
     dest: "{{vhost_docroot}}{{vhost_domain}}"
-  register: result.stat.ccmfilemoved
+  register: result_ccmfilemoved
   when:
     - result.stat.exists == False
-    - result.stat.remotefetched==True
+    - result_remotefetched.stat.exists==True
 - name: Delete empty package folder
   file:
     path: "{{vhost_docroot}}{{vhost_domain}}{{c5_package_folder_name}}"
     state: absent
-  register: result.stat.ccmfetcheddirectoryremoved
+  register: result_ccmfetcheddirremoved
   when:
     - result.stat.exists == False
-    - result.stat.remotefetched == True
-    - result.stat.ccmfilemoved == True
+    - result_remotefetched.stat.exists ==True
+    - result_ccmfilemoved.stat.exists == True
 - name: Change concrete5 (webroot) permission
   file: path="{{vhost_docroot}}{{vhost_domain}}" state=directory recurse=yes owner={{c5dir_user}} group={{c5dir_group}} mode=0775
   when:
     - result.stat.exists == False
-    - result.stat.remotefetched == True
-    - result.stat.ccmfilemoved == True
-    - result.stat.ccmfetcheddirectoryremoved == True
+    - result_remotefetched.stat.exists ==True
+    - result_ccmfilemoved.stat.exists == True
+    - result_ccmfetcheddirremoved.stat.exists == True
