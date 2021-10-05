@@ -1,5 +1,8 @@
 - name: Install newrelic-php
-  yum: name="newrelic-php5" state=latest
+  yum:
+    name:
+      - "newrelic-php5"
+    state: latest
 
 - name: newrelic-php5 Add Licensekey
   lineinfile: >

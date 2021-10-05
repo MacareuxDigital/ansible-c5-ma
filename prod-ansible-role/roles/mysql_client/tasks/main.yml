@@ -1,26 +1,31 @@
 - name: Install MySQL Client for Amazon Linux 1
-  yum: name={{item}} state=latest
+  yum:
+    name:
+      - mysql{{mysql_repo}}
+      - mysql{{mysql_repo}}-common
+      - mysql{{mysql_repo}}-devel
+      - mysql{{mysql_repo}}-libs
+    state: latest
   when: aws_awslinux =="1"
-  with_items:
-  - mysql{{mysql_repo}}
-  - mysql{{mysql_repo}}-common
-  - mysql{{mysql_repo}}-devel
-  - mysql{{mysql_repo}}-libs
   register: result
 
 - name: Install MySQL Client
-  yum: name={{item}} enablerepo=mysql{{mysql_repo}}-community state=latest
-  when: aws_awslinux in ["no", "2"]
-  with_items:
-  - mysql-community-client
-  - mysql-community-common
-  - mysql-community-devel
-  - mysql-community-libs
+  yum:
+    name:
+      - mysql-community-client
+      - mysql-community-common
+      - mysql-community-devel
+      - mysql-community-libs
+    enablerepo: mysql{{mysql_repo}}-community
+    state: latest
   register: result
 
 - name: Install pip
   when: aws_awslinux in ["no", "2"]
-  yum: name=python-pip state=latest
+  yum:
+    name:
+      - python-pip
+    state: latest
   
 - name: Install Python MySQLModule
   when: aws_awslinux not in ["2"]

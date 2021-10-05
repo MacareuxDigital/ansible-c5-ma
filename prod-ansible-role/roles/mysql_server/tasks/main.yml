@@ -1,17 +1,20 @@
 - name: Install MySQL Server for Amazon Linux
-  yum: name={{item}} state=latest
-  with_items:
-  -  mysql{{mysql_repo}}-server
+  yum:
+    name:
+      -  mysql{{mysql_repo}}-server
+    state: latest
   when: aws_awslinux =="1"
   register: mysqlresult
 
 ## Amazon Linux 2 is not supported yet
 
 - name: Install MySQL Server for CentOS
-  yum: name={{item}} enablerepo=mysql{{mysql_repo}}-community state=latest
+  yum:
+    name:
+      - mysql-community-server
+    enablerepo: mysql{{mysql_repo}}-community
+    state: latest
   when: aws_awslinux =="no"
-  with_items:
-  - mysql-community-server
   register: mysqlresult
 
 - name: Start mysqld (CentOS6)

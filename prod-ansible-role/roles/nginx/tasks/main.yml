@@ -1,141 +1,160 @@
 - name: Install Nginx
-  yum: name={{ item }} state=latest
-  with_items:
-  - "nginx"
+  yum:
+    name:
+      - "nginx"
+    state: latest
 
 
 - name: Install PHP for Amazon Linux 1
   when: aws_awslinux=="1"
-  yum: name={{ item }} state=latest
-  with_items:
-  - "{{php_version_yum}}"
-  - "{{php_version_yum}}-common"
-  - "{{php_version_yum}}-cli"
-  - "{{php_version_yum}}-devel"
-  - "{{php_version_yum}}-fpm"
-  - "{{php_version_yum}}-gd"
-  - "{{php_version_yum}}-intl"
-  - "{{php_version_yum}}-mbstring"
-  - "{{php_version_yum}}-mysqlnd"
-  - "{{php_version_yum}}-opcache"
-  - "{{php_version_yum}}-pdo"
-  - "{{php_version_yum}}-pecl-memcached"
-#  - "{{php_version_yum}}-pecl-redis" Not Available
-  - "{{php_version_yum}}-xml"
-  - "jq"
+  yum:
+    name:
+      - "{{php_version_yum}}"
+      - "{{php_version_yum}}-common"
+      - "{{php_version_yum}}-cli"
+      - "{{php_version_yum}}-devel"
+      - "{{php_version_yum}}-fpm"
+      - "{{php_version_yum}}-gd"
+      - "{{php_version_yum}}-intl"
+      - "{{php_version_yum}}-mbstring"
+      - "{{php_version_yum}}-mysqlnd"
+      - "{{php_version_yum}}-opcache"
+      - "{{php_version_yum}}-pdo"
+      - "{{php_version_yum}}-pecl-memcached"
+      #  - "{{php_version_yum}}-pecl-redis" Not Available
+      - "{{php_version_yum}}-xml"
+      - "jq"
+    state: latest
   register: NginxPHPResult
 - name: Install PHP mcrypt extension for Amazon Linux
   when:
     - aws_awslinux=="1"
     - php_version_yum in ["php56", "php70", "php71"]
-  yum: name={{item}} state=latest
-  with_items:
-  - "{{php_version_yum}}-mcrypt"
+  yum:
+    name:
+      - "{{php_version_yum}}-mcrypt"
+    state: latest
 
 - name: Install PHP for Amazon Linux 2
   when:
     - aws_awslinux=="2"
     - php_version_amznlinux2!="php56"
-  yum: name={{item}} state=latest enablerepo=amzn2extra-{{php_version_amznlinux2}} disablerepo=epel
-  with_items:
-  - "php"
-  - "php-bcmath"
-  - "php-cli"
-  - "php-common"
-  - "php-dba"
-  - "php-embedded"
-  - "php-enchant"
-  - "php-fpm"
-  - "php-gd"
-  - "php-gmp"
-  - "php-intl"
-  - "php-json"
-  - "php-ldap"
-  - "php-mbstring"
- # - "php-pecl-mcrypt"
-  - "php-mysqlnd"
-  - "php-odbc"
-  - "php-opcache"
-  - "php-pdo"
-  - "php-pecl-igbinary"
- # - "php-pecl-ssh2"
- # - "php-pecl-zip"
-  - "php-pgsql"
-  - "php-process"
-  - "php-pspell"
- # - "php-recode"
-  - "php-snmp"
-  - "php-soap"
-  - "php-xml"
-  - "php-xmlrpc"
+  yum:
+    name:
+      - "php"
+      - "php-bcmath"
+      - "php-cli"
+      - "php-common"
+      - "php-dba"
+      - "php-embedded"
+      - "php-enchant"
+      - "php-fpm"
+      - "php-gd"
+      - "php-gmp"
+      - "php-intl"
+      - "php-json"
+      - "php-ldap"
+      - "php-mbstring"
+      # - "php-pecl-mcrypt"
+      - "php-mysqlnd"
+      - "php-odbc"
+      - "php-opcache"
+      - "php-pdo"
+      - "php-pecl-igbinary"
+      # - "php-pecl-ssh2"
+      # - "php-pecl-zip"
+      - "php-pgsql"
+      - "php-process"
+      - "php-pspell"
+      # - "php-recode"
+      - "php-snmp"
+      - "php-soap"
+      - "php-xml"
+      - "php-xmlrpc"
+    state: latest
+    enablerepo: amzn2extra-{{php_version_amznlinux2}}
+    disablerepo: epel
   register: NginxPHPResult
 
 - name: Install PHP for Amazon Linux 2
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2 in ["php72", "php73"] 
-  yum: name={{item}} state=latest enablerepo=amzn2extra-{{php_version_amznlinux2}} disablerepo=epel
-  with_items:
-  - "php-pecl-mcrypt"
-  - "php-pecl-zip"
-  - "php-recode"
+    - php_version_amznlinux2 in ["php72", "php73"]
+  yum:
+    name:
+      - "php-pecl-mcrypt"
+      - "php-pecl-zip"
+      - "php-recode"
+    state: latest
+    enablerepo: amzn2extra-{{php_version_amznlinux2}}
+    disablerepo: epel
+
 
 - name: Install PHP Redis Extension for Amazon Linux 2
   when:
     - aws_awslinux=="2"
     - php_version_amznlinux2 not in ["php56", "php7.0", "php7.1"]
-  yum: name={{item}} state=latest enablerepo=amzn2extra-{{php_version_amznlinux2}} disablerepo=epel
-  with_items:
-  - "php-pecl-redis"
+  yum:
+    name:
+      - "php-pecl-redis"
+    state: latest
+    enablerepo: amzn2extra-{{php_version_amznlinux2}}
+    disablerepo: epel
 
 - name: Install PHP for CentOS7 (Remi)
   when:
     - aws_awslinux=="no"
     - centos_phprepo=="remi"
-  yum: name={{item}} state=latest enablerepo=epel,remi,remi-{{php_version_yum}}
-  with_items:
-  - "php"
-  - "php-common"
-  - "php-cli"
-  - "php-fpm"
-  - "php-gd"
-  - "php-mbstring"
-  - "php-mysql"
-  - "php-opcache"
-  - "php-pdo"
-  - "php-xml"
-  - "php-gmp"
-  - "php-pecl-zip"
-  - "php-pecl-memcached"
+  yum:
+    name:
+      - "php"
+      - "php-common"
+      - "php-cli"
+      - "php-fpm"
+      - "php-gd"
+      - "php-mbstring"
+      - "php-mysql"
+      - "php-opcache"
+      - "php-pdo"
+      - "php-xml"
+      - "php-gmp"
+      - "php-pecl-zip"
+      - "php-pecl-memcached"
+    state: latest
+    enablerepo: epel,remi,remi-{{php_version_yum}}
   register: NginxPHPResult
 - name: Install Nginx and PHP for CentOS7 (Remi)
   when:
     - aws_awslinux=="no"
     - centos_phprepo=="remi"
     - php_version_yum not in ["php72"]
-  yum: name={{item}} state=latest enablerepo=epel,remi,remi-{{php_version_yum}}
-  with_items:
-   - "php-mcrypt"
+  yum:
+    name:
+      - "php-mcrypt"
+    state: latest
+    enablerepo: epel,remi,remi-{{php_version_yum}}
 
 - name: Install Apache and PHP5.6 for Amazon Linux 2 Remi
   when:
     - aws_awslinux=="2"
     - php_version_amznlinux2=="php56"
-  yum: name={{item}} state=latest enablerepo=epel,remi,remi-{{php_version_yum}}
-  with_items:
-  - "php"
-  - "php-common"
-  - "php-cli"
-  - "php-fpm"
-  - "php-gd"
-  - "php-mbstring"
-  - "php-mysql"
-  - "php-opcache"
-  - "php-pdo"
-  - "php-xml"
-  - "php-gmp"
-  - "php-pecl-zip"
-  - "php-mcrypt"
+  yum:
+    name:
+      - "php"
+      - "php-common"
+      - "php-cli"
+      - "php-fpm"
+      - "php-gd"
+      - "php-mbstring"
+      - "php-mysql"
+      - "php-opcache"
+      - "php-pdo"
+      - "php-xml"
+      - "php-gmp"
+      - "php-pecl-zip"
+      - "php-mcrypt"
+    state: latest
+    enablerepo: epel,remi,remi-{{php_version_yum}}
 
 - name: Add User to Nginx-group
   user: name={{ item }} groups=nginx state=present

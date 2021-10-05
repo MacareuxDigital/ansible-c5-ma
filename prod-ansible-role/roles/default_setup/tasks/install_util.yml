@@ -1,50 +1,61 @@
 - name: Install utilities
-  yum: name={{item}} state=latest
-  with_items:
-  - "wget"
-  - "tcpdump"
-  - "sysstat"
-  - "nmap"
-  - "gcc"
-  - "make"
-  - "git"
-  - "openssl-devel"
-  - "vim-enhanced"
-  - "python-devel"
-  - "python-setuptools"
-  - "python-pip"
-  - "curl"
-  - "curl-devel"
-  - "zip"
-  - "unzip"
+  yum:
+    name:
+      - "wget"
+      - "tcpdump"
+      - "sysstat"
+      - "nmap"
+      - "gcc"
+      - "make"
+      - "git"
+      - "openssl-devel"
+      - "vim-enhanced"
+      - "python-devel"
+      - "python-setuptools"
+      - "python-pip"
+      - "curl"
+      - "curl-devel"
+      - "zip"
+      - "unzip"
+    state: latest
 - name: Install MySQL-Python for Amazon Linux
-  yum: name="MySQL-python" state=latest
+  yum:
+    name:
+      - "MySQL-python"
+    state: latest
   when: aws_awslinux in ["1","2"]
 - name: Install mail
-  yum: name="mail" state=latest
+  yum:
+    name:
+      - "mail"
+    state: latest
   when: centos_version=="6"
 - name: Install mailx
-  yum: name="mailx" state=latest
+  yum:
+    name:
+      - "mailx"
+    state: latest
   when: centos_version=="7"
 
 - name: Install utilities for PHP 5.6 on Amazon Linux 2
-  yum: name={{item}} state=latest
-  with_items:
-  - "alsa-lib"
-  - "automake"
-  - "fontconfig"
-  - "GConf2"
-  - "glib"
-  - "harfbuzz"
-  - "libedit-devel"
-  - "libtool-ltdl"
-  - "libXt"
-  - "libXScrnSaver"
-  - "libXpm"
-  - "libxml2-devel"
-  - "libxslt-devel"
-  - "ncurses-compat-libs"
-  - "t1lib"
+  yum:
+    name:
+      - "alsa-lib"
+      - "automake"
+      - "fontconfig"
+      - "GConf2"
+      - "glib"
+      - "harfbuzz"
+      - "libedit-devel"
+      - "libtool-ltdl"
+      - "libXt"
+      - "libXScrnSaver"
+      - "libXpm"
+      - "libxml2-devel"
+      - "libxslt-devel"
+      - "ncurses-compat-libs"
+      - "t1lib"
+    state: latest
   when:
     - aws_awslinux=="2"
     - php_version_amznlinux2=="php56"
