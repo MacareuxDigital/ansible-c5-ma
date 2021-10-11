@@ -7,7 +7,19 @@
   register: MariaDBServerResult
 
 - name: Install MariaDB Server
-  when: aws_awslinux=="2"
+  when:
+    - aws_awslinux=="2"
+    - mariadb_repo not in ["10.5"]
+  yum:
+    name:
+      - mariadb-server
+    state: installed
+  register: MariaDBServerResult
+
+- name: Install MariaDB Server
+  when:
+    - aws_awslinux=="2"
+    - mariadb_repo=="10.5"
   yum:
     name:
       - mariadb-server

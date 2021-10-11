@@ -9,6 +9,11 @@
   when:
     - webserver_handle=="nginx"
 
+- name: "Install MariaDB 10.5 for Amazon Linux 2"
+  shell: amazon-linux-extras install mariadb_repo -y
+  when:
+    - mariadb_repo=="10.5"
+
 - name: "Install Amazon Linux Extra {{php_version_amznlinux2}} for Amazon Linux 2"
   shell: amazon-linux-extras install {{ php_version_amznlinux2 }} -y
   when:
