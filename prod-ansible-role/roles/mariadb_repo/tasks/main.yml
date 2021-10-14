@@ -3,4 +3,9 @@
   # - aws_awslinux!="2" and webserver_handle!="apache"
   template: src=mariadb.repo.j2 dest=/etc/yum.repos.d/mariadb.repo
   when:
-    - mariadb_repo not in ["10.5"]
+    - mariadb_repo not in ["10.5"] and aws_awslinux not in ["2"]
+
+- name: "Install MariaDB 10.5 for Amazon Linux 2"
+  shell: amazon-linux-extras install mariadb_repo -y
+  when:
+    - mariadb_repo=="10.5" and aws_awslinux=="2"
