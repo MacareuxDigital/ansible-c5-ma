@@ -36,3 +36,4 @@
       - "cloud-init"
       - "aws-cli"
     state: latest
+    disablerepo: epel
