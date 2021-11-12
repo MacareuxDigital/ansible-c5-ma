@@ -152,9 +152,9 @@
 # concrete5 Settings
 ## concrete5 File upload (yes / no)
   - c5_upload:              "yes"
-  - c5_package_folder_name: "concrete5-8.5.6"
+  - c5_package_folder_name: "concrete5-8.5.7"
   ## This is version 8.5.6.
-  - c5_package_url:         "https://www.concretecms.com/download_file/61dab82f-fb01-47bc-8cf1-deffff890224"
+  - c5_package_url:         "https://www.concretecms.org/download_file/ae9cca19-d76c-458e-a63a-ce9b7b963e1d"
 ## concrete5 Installation (yes / no)
   - c5_installation:        "no" # It doesn't work these days.
 ## concrete5 Config Upload (yes / no)
