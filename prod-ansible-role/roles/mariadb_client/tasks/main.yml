@@ -5,6 +5,17 @@
       - MariaDB-client
     state: installed
   register: result
+  when:
+    - mariadb_repo not in ["10.5"]
+- name: Install MariaDB Client
+  yum:
+    name:
+      - mariadb
+      - mariadb-devel
+    state: installed
+  register: result
+  when:
+    - mariadb_repo=="10.5"
 - name: Install pip
   when: aws_awslinux not in ["1","2"]
   yum:
