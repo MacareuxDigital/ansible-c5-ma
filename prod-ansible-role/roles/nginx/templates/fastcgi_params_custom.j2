@@ -5,7 +5,7 @@ fastcgi_param URI $uri;
 fastcgi_param SERVER_NAME $host;
 fastcgi_param REQUEST_METHOD $request_method;
 # fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-fastcgi_param SCRIPT_FILENAME $request_filename;
+fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
 fastcgi_read_timeout 300;
 fastcgi_ignore_headers Expires Cache-Control;
 
