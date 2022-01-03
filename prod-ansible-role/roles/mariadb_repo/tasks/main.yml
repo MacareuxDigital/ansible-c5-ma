@@ -5,7 +5,7 @@
   when:
     - mariadb_repo not in ["10.5"] and aws_awslinux not in ["2"]
 
-- name: "Install MariaDB 10.5 for Amazon Linux 2"
-  shell: amazon-linux-extras install mariadb_repo -y
+- name: "Install MariaDB 10.5 Repo for Amazon Linux 2"
+  shell: amazon-linux-extras enable mariadb10.5 -y
   when:
     - mariadb_repo=="10.5" and aws_awslinux=="2"
