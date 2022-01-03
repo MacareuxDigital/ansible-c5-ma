@@ -1,4 +1,4 @@
-- name: Install epel repository
+- name: Install Amazon Linux Extra Epel repository
   shell: amazon-linux-extras enable epel -y
 
 - name: "Install Amazon Linux Extra Nginx for Amazon Linux 2"
