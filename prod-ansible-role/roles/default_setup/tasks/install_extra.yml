@@ -3,4 +3,4 @@
     name:
       - "etckeeper"
       #  - "monit"
-    enablerepo: epel
+    # enablerepo: epel

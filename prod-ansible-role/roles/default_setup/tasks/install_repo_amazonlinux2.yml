@@ -1,16 +1,13 @@
 - name: Install epel repository
-  yum:
-    name:
-      - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-    state: present
+  shell: amazon-linux-extras enable epel -y
 
 - name: "Install Amazon Linux Extra Nginx for Amazon Linux 2"
-  shell: amazon-linux-extras install nginx1 -y
+  shell: amazon-linux-extras enable nginx1 -y
   when:
     - webserver_handle=="nginx"
 
 - name: "Install Amazon Linux Extra {{php_version_amznlinux2}} for Amazon Linux 2"
-  shell: amazon-linux-extras install {{ php_version_amznlinux2 }} -y
+  shell: amazon-linux-extras enable {{ php_version_amznlinux2 }} -y
   when:
     - php_version_amznlinux2!="php56"
 
@@ -36,4 +33,3 @@
       - "cloud-init"
       - "aws-cli"
     state: latest
-    disablerepo: epel
