@@ -1,4 +1,10 @@
-- name: Install Amazon Linux Extra Epel repository
+- name: Install epel repository
+  yum:
+    name:
+      - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state: present
+
+- name: Install epel repository
   shell: amazon-linux-extras enable epel -y
 
 - name: "Install Amazon Linux Extra Nginx for Amazon Linux 2"
