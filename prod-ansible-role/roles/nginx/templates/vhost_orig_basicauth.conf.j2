@@ -54,10 +54,7 @@ server {
     if ($query_string != "") {
             set $skip_cache 1;
     }
-    if ($http_cookie ~ "CONCRETE5") {
-            set $skip_cache 1;
-    }
-    if ($http_cookie ~ "CONCRETE5_LOGIN") {
+    if ($http_cookie ^~ "CONCRETE") {
             set $skip_cache 1;
     }
 

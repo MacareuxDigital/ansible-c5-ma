@@ -45,12 +45,10 @@ server {
     if ($query_string != "") {
             set $skip_cache 1;
     }
-    if ($http_cookie ~ "CONCRETE5") {
+    if ($http_cookie ^~ "CONCRETE") {
             set $skip_cache 1;
     }
-    if ($http_cookie ~ "CONCRETE5_LOGIN") {
-            set $skip_cache 1;
-    }
+
     # WordPress: Skip FastCGI cache for API, admin request and pages
     # if ($request_uri ~* "/wp-admin/|/xmlrpc.php|wp-.*.php|/feed/|index.php|sitemap(_index)?.xml") {
     #     set $skip_cache 1;
