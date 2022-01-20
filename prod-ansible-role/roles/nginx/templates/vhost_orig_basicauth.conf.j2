@@ -95,7 +95,7 @@ server {
 
     }
 
-    # WIP: This is subdirectory config for future reference.
+    # This is subdirectory config sample.
     # location ^~ /subdirectory {
     #     alias {{ vhost_docroot }}/{{ vhost_domain }}{{ vhost_htdocs }};
     #     index  index.php index.html;
@@ -104,6 +104,7 @@ server {
     #         fastcgi_split_path_info ^(.+?\.php)(/.*)$;
     #         include       /etc/nginx/fastcgi_params;
     #         include       /etc/nginx/fastcgi_params_custom;
+    #         # Change to "fastcgi_param SCRIPT_FILENAME $request_filename" of fastcgi_params_custom;
     #         # WIP: Reverse Proxy
     #         # fastcgi_param HTTP_HOST $name;
     #     }
@@ -131,10 +132,11 @@ server {
     # location ~ /wp-login\.php {
     #     index index.php index.html index.htm;
     # 
-    #     ## 許可するIPアドレスを記述
+    #     ## IP Restriction
     #     #allow 192.168.0.1;
     #     #deny all;
     #     
+    #     ## You can add basic auth to Admin area
     #     # auth_basic "Please enter your ID and password";
     #     #     auth_basic_user_file {{ vhost_docroot }}{{ vhost_domain }}/.htpasswd;
     # 
@@ -145,10 +147,11 @@ server {
     # location ~ /wp-admin/((?!admin-ajax\.php).)*$ {
     #     index index.php index.html index.htm;
     # 
-    #     ## 許可するIPアドレスを記述
+    #     ## IP Restriction modify accordingly
     #     #allow 192.168.0.1;
     #     #deny all;
     #     
+    #     ## You can add basic auth to Admin area
     #     # auth_basic "Please enter your ID and password";
     #     #    auth_basic_user_file {{ vhost_docroot }}{{ vhost_domain }}/.htpasswd;
     #     
@@ -163,8 +166,10 @@ server {
     #     }
     # }
     # location = /xmlrpc.php {
+    #     ## Only allow access from WordPress.com IPs
     #     allow 192.0.64.0/18;
-    #     allow 153.120.171.20;
+    #     ## Add additional IP such as your IP to debug
+    #     allow 127.0.0.1;
     #     deny all;
     #     access_log off;
     #     log_not_found off;
