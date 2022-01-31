@@ -54,6 +54,7 @@
   with_items:
     - 127.0.0.1
     - localhost
-  when:
-    - MariaDBServerResult.changed == True
+  # @ToDo: Somehow it s no longer detecting server change
+  # when:
+  #  - MariaDBServerResult.changed == True
  
