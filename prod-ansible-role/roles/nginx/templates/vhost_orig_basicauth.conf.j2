@@ -54,7 +54,7 @@ server {
     if ($query_string != "") {
             set $skip_cache 1;
     }
-    if ($http_cookie ^~ "CONCRETE") {
+    if ($http_cookie ~ "CONCRETE") {
             set $skip_cache 1;
     }
 
