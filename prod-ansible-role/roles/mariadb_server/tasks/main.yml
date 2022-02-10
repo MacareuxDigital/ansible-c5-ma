@@ -48,8 +48,8 @@
 - name: Set root Password
   mysql_user:
     name: "root"
-    host: {{ item }}
-    password: {{ mysql_rootpass }}
+    host: "{{ item }}"
+    password: "{{ mysql_rootpass }}"
     state: present
   with_items:
     - 127.0.0.1
