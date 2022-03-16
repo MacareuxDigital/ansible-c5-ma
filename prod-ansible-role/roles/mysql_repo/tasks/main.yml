@@ -1,7 +1,7 @@
 - name: Remove MariaDB lib
   yum:
     name:
-      - mariadb-lib
+      - mariadb-libs
     state: absent
   when: centos_version=="7"
 
