@@ -86,7 +86,6 @@
     state: latest
     enablerepo: amzn2extra-{{php_version_amznlinux2}}
     disablerepo: epel
-    register: NginxPHPResult
 
 - name: Install PHP for Amazon Linux 2
   when:
