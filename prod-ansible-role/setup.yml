@@ -97,6 +97,12 @@
 
 ## Basic Auth (yes / no)
 ### ID/ password
+#    If you've set "yes" to basic auth, it is considered dev environment
+#    Therefore, we won't implement static file cache in Nginx config.
+#    If you would like Nginx static file cache setting, uncomment the config
+#    after the deployment.
+#    See Line 120-121 of
+#    prod-ansible-role/roles/nginx/templates/vhost_orig_basicauth.conf.j2
   - use_basic_auth:         "yes"
   - basicauth_ID :          "username"
   - basicauth_password :    "password!@"

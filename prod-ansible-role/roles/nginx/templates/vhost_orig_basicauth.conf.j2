@@ -117,7 +117,8 @@ server {
     location ~* \.(jpg|jpeg|gif|png|css|js|ico)$ {
         access_log        off;
         log_not_found     off;
-        expires           8d;
+        # We won't add cache for dev
+        # expires           8d;
     }
 
     # Don't output hidden files
