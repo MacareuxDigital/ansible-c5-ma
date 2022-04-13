@@ -6,7 +6,13 @@
   when: aws_awslinux =="1"
   register: mysqlresult
 
-## Amazon Linux 2 is not supported yet
+- name: Install MySQL Server for Amazon Linux 2
+  yum:
+    name:
+      -  mysql-community-server
+    state: latest
+  when: aws_awslinux =="2"
+  register: mysqlresult
 
 - name: Install MySQL Server for CentOS
   yum:
