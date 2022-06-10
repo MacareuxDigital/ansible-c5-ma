@@ -230,22 +230,23 @@ Currently we only have the following setting.
 
 - t2micro
 - t2small
+- m5.large
 
 ## PHP Variables
 
 Please enter which PHP version you want to install. Currently supports 4 types of repo: Amazon Linux, Remi, Webtactics and Amazon Linux 2 (beta). You may not be able to install certain types depends on the repos.
 
-For Amazon Linux 2, I've tested PHP5.6 (Apache only) 7.2 & 7.3. (as of May 2020)
+For Amazon Linux 2, I've tested PHP5.6 (Apache only) 7.2~7.4. (as of June 2022)
 
 ```
-## PHP version for yum (php56 / php70 / php71 / php72)
-  - php_version_yum:        "php72"
-## PHP version for Remi (php56 / php70 / php71 / php72)
-  - php_version_remi:       "php72"
+## PHP version for yum (php56 / php70 / php71 / php72 / php73 / php74)
+  - php_version_yum:        "php74"
+## PHP version for Remi (php56 / php70 / php71 / php72 / php73 / php74)
+  - php_version_remi:       "php74"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
   - php_version_amznlinux:  "7.2"
-## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3)
-  - php_version_amznlinux2:  "php7.3"
+## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3 / php7.3 / php7.4)
+  - php_version_amznlinux2:  "php7.4"
 ```
 
 
@@ -311,6 +312,12 @@ Please indicate user and group of Concrete CMS folder owner. Apache or Nginx wil
 
   With the setting above, it will set `example.com` & `www.example.com` as virtual host, and the document root of that domain will be "/var/www/vhosts/example.com/html"
 
+## Basic Auth
+
+- **[use_basic_auth]**     : "yes" will generate a .htpasswd file and set Basic Auth up in Nginx & Apache
+- **[basicauth_ID]**       : enter the desired Basic Auth ID
+- **[basicauth_password]** : enter the desired Basic Auth password
+
 ## DB Environment
 
 Choose your DB environment (mariadb / mariadb-client / mysql / mysql-client / none )
@@ -328,7 +335,7 @@ I have **NOT TESTED** yet for mariadb-client option.
   - db_environment:         "mariadb"
 ```
 
-## MySQL vesion for CentOS.
+## MySQL or MariaDB version.
 
 You can choose which MySQL version you want to install onto CentOS.
 For Amazon Linux, you can only specify MySQL 5.6 for now.
@@ -338,6 +345,12 @@ Available versions: 55 / 56 / 57 / 80.
 
 ```
   - mysql_repo:          "57"
+```
+
+Available versions: 10.1~5 (tested)
+
+```
+  - mariadb_repo:           "10.5"
 ```
 
 ## Create DB or not

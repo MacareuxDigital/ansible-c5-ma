@@ -99,9 +99,10 @@
 ### ID/ password
 #    If you've set "yes" to basic auth, it is considered dev environment
 #    Therefore, we won't implement static file cache in Nginx config.
-#    If you would like Nginx static file cache setting, uncomment the config
-#    after the deployment.
-#    See Line 120-121 of
+#    and, it will disable FastCGI cache..
+#    If you would like FastCGI cache & Nginx static file cache setting,
+#    uncomment the config after the deployment, and $skip_cache default to be "0".
+#    See Line 48-50, 122-123 of
 #    prod-ansible-role/roles/nginx/templates/vhost_orig_basicauth.conf.j2
   - use_basic_auth:         "yes"
   - basicauth_ID :          "username"
