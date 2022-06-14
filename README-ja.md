@@ -192,30 +192,31 @@ CentOS 向けのみ。追加 PHP レポジトリを指定します。
 AWS インスタンスに応じて最適化した Apache & Niginx 設定を行います。同じくらいのスペックの CentOS マシンでも同じです。
 
 ```
-  - aws_instance_type:       "t2small"
+  - aws_instance_type:       "small"
 ```
 
 ### 利用可能なインスタンス
 
 現時点では、下記の設定のみ利用可能です。
 
-- t2micro
-- t2small
+- micro (tx.micro 想定)
+- small (tx.small 想定)
+- large (mx.large 想定)
 
 ## PHP バージョン
 
 どの PHP バージョンを利用したいかを指定してください。現在、4つのレポジトリに対応しているはずです: Amazon Linux, Remi, Webtactics and Amazon Linux 2 (ベータ). 但しレポジトリによってはインストールできないバージョンもあるかもしれません。
 
-Amazon Linux 2 は、PHP5.6 (Apache のみ), PHP 7.2, PHP7.3 の動作確認をしています。 (as of May 2020)
+Amazon Linux 2 は、PHP5.6 (Apache のみ), PHP 7.2, 7.3, 7.4 の動作確認をしています。 (as of June 2022)
 
 ```
-## PHP version for yum (php56 / php70 / php71 / php72)
+## PHP version for yum (php56 / php70 / php71 / php72 / php73 / php74)
   - php_version_yum:        "php72"
-## PHP version for Remi (php56 / php70 / php71 / php72)
+## PHP version for Remi (php56 / php70 / php71 / php72 / php73 / php74)
   - php_version_remi:       "php72"
-## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
+## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2 / 7/3)
   - php_version_amznlinux:  "7.2"
-## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3)
+## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3 / php7.4)
   - php_version_amznlinux2:  "php7.3"
 ```
 

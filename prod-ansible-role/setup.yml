@@ -46,8 +46,8 @@
 ### This option is only used for CentOS instances NOT Amazon Linux OSs
   - centos_firewall_enable: "no"
 
-# Instance Type (t2micro / t2small / m5large (WIP)
-  - aws_instance_type:      "t2small"
+# Instance Type (micro / small / large (WIP))
+  - aws_instance_type:      "small"
 
 # PHP Variables
 ## PHP version for yum (php56 / php70 / php71 / php72 / php73 / php74)

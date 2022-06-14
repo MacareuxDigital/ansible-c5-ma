@@ -221,16 +221,16 @@ If set `yes`, it will install firewalld & set-up to open http & https port.
 We have a few templates that optimized for each instance types.
 
 ```
-  - aws_instance_type:       "t2small"
+  - aws_instance_type:       "small"
 ```
 
 ### Available Types
 
 Currently we only have the following setting.
 
-- t2micro
-- t2small
-- m5.large
+- micro (tX.micro)
+- small (tX.small)
+- large (mX.large)
 
 ## PHP Variables
 
@@ -243,7 +243,7 @@ For Amazon Linux 2, I've tested PHP5.6 (Apache only) 7.2~7.4. (as of June 2022)
   - php_version_yum:        "php74"
 ## PHP version for Remi (php56 / php70 / php71 / php72 / php73 / php74)
   - php_version_remi:       "php74"
-## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
+## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2 / 7.3)
   - php_version_amznlinux:  "7.2"
 ## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3 / php7.3 / php7.4)
   - php_version_amznlinux2:  "php7.4"
