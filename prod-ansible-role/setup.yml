@@ -77,6 +77,9 @@
 ## Directory & WebServer Owner Settings
   - c5dir_user:             "c5juser"  # (ssh username, apache, or nginx)
   - c5dir_group:            "nginx" # (apache or nginx)
+## Change user's primary groups to webserver's group? (apache or nginx)
+### It won't change primary group if "webserver_changeowner" parameter is yes
+  - user_change_primary:    "yes" # (yes or no)
 
 # WebServer Setting
 ## Use Webserver Apache or Nginx (apache / nginx)

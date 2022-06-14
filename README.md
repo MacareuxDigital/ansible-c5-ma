@@ -271,6 +271,8 @@ However, you also need to create additional SSH keys
       - "user02"
 ```
 
+- **[user_change_primary]** : Yes to set SSH user's primary group to be webserver's group which are apache or nginx.
+
 ## Name user and group
 
 Please indicate user and group of Concrete CMS folder owner. Apache or Nginx will run as this user and group as well.
