@@ -185,6 +185,7 @@ server {
         fastcgi_split_path_info ^(.+?\.php)(/.*)$;
         include       /etc/nginx/fastcgi_params;
         include       /etc/nginx/fastcgi_params_custom;
+        fastcgi_cache        fastcgi_cache;
         # WIP: Reverse Proxy
         # fastcgi_param HTTP_HOST $name;
     }

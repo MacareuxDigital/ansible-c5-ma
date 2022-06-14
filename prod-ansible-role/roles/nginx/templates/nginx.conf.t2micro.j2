@@ -58,11 +58,13 @@ http {
     fastcgi_buffers         100 8k;
     fastcgi_cache_key       "$scheme$request_method$host$request_uri";
     fastcgi_cache_path      /var/cache/nginx/fastcgi_cache levels=1:2 keys_zone=fastcgi_cache:15m inactive=7d max_size=1000m;
+    # If there is more than 1 vhost, uncomment the following line (and copy the lines as much as vhosts) and change the key_zone accordingly, then set the key_zone to that additional server
+    # fastcgi_cache_path      /var/cache/nginx/fast_cgi2 levels=1:2 keys_zone=fast_cgi2:15m inactive=7d max_size=1000m";
     fastcgi_temp_path       /var/cache/nginx/temp 1 2;
     fastcgi_connect_timeout 60;
     fastcgi_read_timeout    90;
     fastcgi_send_timeout    60;
-    fastcgi_cache_valid     any 5m;
+    fastcgi_cache_valid     1m;
 
     include /etc/nginx/conf.d/*.conf;
 }
