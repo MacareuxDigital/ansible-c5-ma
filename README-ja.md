@@ -493,13 +493,19 @@ Mackerel のエージェントもインストール可能です。
  ```
   roles:
   - role: default_setup
-  - role: add_users
+  - role: users_add
     when: if_add_users=="yes"
   - role: apache
     when: webserver_handle=="apache"
   - role: nginx
     when: webserver_handle=="nginx"
+  - role: users_group
+    when: if_add_users=="yes"
   - role: web_dummy
+  - role: mysql_repo
+    when:
+    - db_environment in ['mysql', 'mysql-client']
+    - aws_awslinux in ['no', '2']
   - role: mysql_client
     when: db_environment in ['mysql', 'mysql-client']
   - role: mysql_server
@@ -511,12 +517,14 @@ Mackerel のエージェントもインストール可能です。
   - role: mariadb_server
     when: db_environment=="mariadb"
   - role: mysql_appdb
-  - role: concrete5
-    when: c5_installation=="yes"
-  - role: concrete5_migration
-    when: c5_migration=="yes"
+    when: db_create=="yes"
   - role: basic_auth
     when: use_basic_auth=="yes"
+  - role: create_symlink_www
+  - role: concrete5
+    when: c5_upload=="yes" 
+  - role: concrete5_migration
+    when: c5_migration=="yes"
   - role: newrelic_repo
     when: use_newrelic=="yes" or use_newrelic_php=="yes"
   - role: newrelic
@@ -525,5 +533,4 @@ Mackerel のエージェントもインストール可能です。
     when: use_newrelic_php=="yes"
   - role: mackerel
     when: use_mackerel=="yes"
-  - role: create_symlink_www
   ```

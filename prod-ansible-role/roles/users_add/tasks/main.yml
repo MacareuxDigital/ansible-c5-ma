@@ -1,7 +1,6 @@
 - name: Add users
   user: name={{ item }} state=present
   with_items: "{{ add_users }}"
-  when: user_change_primary!="yes"
 - name: Add users
   user: name={{ item }} state=present group={{ webserver_handle }} groups={{ item }}
   with_items: "{{ add_users }}"

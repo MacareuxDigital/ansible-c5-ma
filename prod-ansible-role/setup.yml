@@ -211,12 +211,14 @@
 # Running roles
   roles:
   - role: default_setup
-  - role: add_users
+  - role: users_add
     when: if_add_users=="yes"
   - role: apache
     when: webserver_handle=="apache"
   - role: nginx
     when: webserver_handle=="nginx"
+  - role: users_group
+    when: if_add_users=="yes"
   - role: web_dummy
   - role: mysql_repo
     when:
