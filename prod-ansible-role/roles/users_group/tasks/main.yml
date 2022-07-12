@@ -2,3 +2,19 @@
   user: name={{ item }} state=present group={{ webserver_handle }} groups={{ item }}
   with_items: "{{ add_users }}"
   when: user_change_primary=="yes"
+- name: Create .ssh Dir
+  file: path=/home/{{item}}/.ssh state=directory mode=700 owner={{ item }} group={{ item }}
+  with_items: "{{ add_users }}"
+  when: user_change_primary!="yes"
+- name: Create .ssh Dir ({{ webserver_handle }} group)
+  file: path=/home/{{item}}/.ssh state=directory mode=700 owner={{ item }} group={{ webserver_handle }}
+  with_items: "{{ add_users }}"
+  when: user_change_primary=="yes"
+- name: Add SSH-Keyfiles
+  copy: src={{ item }}.pem.pub dest=/home/{{item}}/.ssh/authorized_keys mode=600 owner={{ item }} group={{ item }}
+  with_items: "{{ add_users }}"
+  when: isDocker=="no" and user_change_primary!="yes"
+- name: Add SSH-Keyfiles ({{ webserver_handle }} group)
+  copy: src={{ item }}.pem.pub dest=/home/{{item}}/.ssh/authorized_keys mode=600 owner={{ item }} group={{ webserver_handle }}}
+  with_items: "{{ add_users }}"
+  when: isDocker=="no" and user_change_primary=="yes"
