@@ -1,4 +1,9 @@
-- name: Set MariDB Repo
+- name: "Set MariDB Repo for non-Amazon Linux 2 server"
+  template: src=mariadb.repo.j2 dest=/etc/yum.repos.d/mariadb.repo
+  when:
+    - aws_awslinux not in ["2"]
+
+- name: "Set MariDB Repo (not 10.5) for Amazon Linux 2 server"
   # when:
   # - aws_awslinux!="2" and webserver_handle!="apache"
   template: src=mariadb.repo.j2 dest=/etc/yum.repos.d/mariadb.repo

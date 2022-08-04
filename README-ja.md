@@ -297,7 +297,7 @@ DB環境を設定します (mariadb / mariadb-client / mysql / mysql-client / no
   - db_environment:         "mariadb"
 ```
 
-## CentOS にインストールする MySQL バージョン
+## CentOS にインストールする MySQL や MariaDB のバージョン
 
 CentOS では、どの MySQL バージョンをインストールするか指定できます。
 Amazon Linux は MySQL 5.6 だけです。
@@ -307,6 +307,19 @@ Amazon Linux は MariaDB を使ってください。
 
 ```
   - mysql_repo:          "57"
+```
+
+利用可能バージョン: 10.1~5 (これらはテスト済み)
+
+```
+  - mariadb_repo:           "10.5"
+```
+
+利用可能CPUアーキテクチャ: aarch64/ ppc64 / ppc64le / ppc64 / amd64 (x86_64)
+aarch64 (ARM) と amd64 (Intel) はテスト済み
+
+```
+  - mariadb_arch:           "aarch64"
 ```
 
 ## DB の設定を行うか否か

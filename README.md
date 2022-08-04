@@ -355,6 +355,14 @@ Available versions: 10.1~5 (tested)
   - mariadb_repo:           "10.5"
 ```
 
+Available architecture: aarch64/ ppc64 / ppc64le / ppc64 / amd64 (x86_64)
+aarch64 (ARM) & amd64 (Intel) are tested
+
+```
+  - mariadb_arch:           "aarch64"
+```
+
+
 ## Create DB or not
 
 You can set whether to create DB and user from this ansible script. (Amazon Linux 2 doesn't work yet).

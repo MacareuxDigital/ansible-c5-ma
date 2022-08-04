@@ -124,11 +124,13 @@
 
 # ToDo: MySQL Server to support UTF8mb4 encoding
 
-## Select which MySQL or MariaDB version you want for CentOS.
+## Select which MySQL or MariaDB version, architecture you want for CentOS.
 ### 55 / 56 / 57 / 80
   - mysql_repo:             "57"
 ### 10.2 / 10.3 / 10.4 / 10.5
   - mariadb_repo:           "10.5"
+### aarch64 / ppc64 / ppc64le / ppc64 / amd64 (x86_64)
+  - mariadb_arch:           "aarch64"
 
 ## MySQL or MariaDB Setting
 ## Create DB or not  (yes / no)
