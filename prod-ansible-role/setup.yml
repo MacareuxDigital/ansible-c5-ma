@@ -1,6 +1,7 @@
 - hosts: all
+  # Set false if you're using docker or logging in as root user
   become: yes
-  # DEBUG: enable docker connection if you want to debug using Docker image
+  # DEBUG: uncomment below to enable docker connection if you want to debug using Docker image
   # connection: docker
 
   vars:
@@ -127,7 +128,7 @@
 ## Select which MySQL or MariaDB version, architecture you want for CentOS.
 ### 55 / 56 / 57 / 80
   - mysql_repo:             "57"
-### 10.2 / 10.3 / 10.4 / 10.5
+### 5.5 / 10.2 / 10.3 / 10.4 / 10.5
   - mariadb_repo:           "10.5"
 ### aarch64 / ppc64 / ppc64le / ppc64 / amd64 (x86_64)
   - mariadb_arch:           "aarch64"

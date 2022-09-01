@@ -194,17 +194,25 @@
 - include: set_htaccess.yml
 
 - name: Start httpd
-  when: centos_version=="6"
+  when:
+    - centos_version=="6"
+    - isDocker=="no"
   service: name=httpd state=started enabled=yes
 - name: Start php-fpm
-  when: centos_version=="6"
+  when:
+    - centos_version=="6"
+    - isDocker=="no"
   service: name=php-fpm state=started enabled=yes
 
 - name: Start httpd
-  when: centos_version=="7"
+  when:
+    - centos_version=="7"
+    - isDocker=="no"
   systemd: name=httpd state=started enabled=yes
 - name: Start php-fpm
-  when: centos_version=="7"
+  when:
+    - centos_version=="7"
+    - isDocker=="no"
   systemd: name=php-fpm state=started enabled=yes
 
 - name: Chenge Directory Permission -  Apache Log

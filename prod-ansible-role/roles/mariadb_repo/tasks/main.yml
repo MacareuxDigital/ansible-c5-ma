@@ -2,13 +2,14 @@
   template: src=mariadb.repo.j2 dest=/etc/yum.repos.d/mariadb.repo
   when:
     - aws_awslinux not in ["2"]
+    - mariadb_repo not in ["5.5"]
 
 - name: "Set MariDB Repo (not 10.5) for Amazon Linux 2 server"
   # when:
   # - aws_awslinux!="2" and webserver_handle!="apache"
   template: src=mariadb.repo.j2 dest=/etc/yum.repos.d/mariadb.repo
   when:
-    - mariadb_repo not in ["10.5"] and aws_awslinux=="2"
+    - mariadb_repo not in ["10.5","5.5"] and aws_awslinux=="2"
 
 - name: "Install MariaDB 10.5 Repo for Amazon Linux 2"
   shell: amazon-linux-extras enable mariadb10.5 -y
