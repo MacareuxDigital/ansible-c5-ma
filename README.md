@@ -349,7 +349,8 @@ Available versions: 55 / 56 / 57 / 80.
   - mysql_repo:          "57"
 ```
 
-Available versions: 10.1~5 (tested)
+Available versions: 5.5, 10.1~5 (tested)
+For MariaDB 5.5, it will install from CentOS's default repo.
 
 ```
   - mariadb_repo:           "10.5"
