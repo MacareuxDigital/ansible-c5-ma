@@ -44,14 +44,14 @@ If you want to create new user(s), and you will use this SSH key to login.
 
 **Please start naming user different from c5juser, such as client-name, such as `CLIENT-ssh`** as we kept having the many c5juser ssh users and we may get confused.
 
-Generate and save the SSH key inside of [./roles/add_users/files/]
+Generate and save the SSH key inside of [./roles/users_add_2/files/]
 
 File name must be `username`.pem. Default is c5juser.pem, but please change it so that it's easier to remember.
 
 - ssh-keygen command sample
 
 ```
-  ssh-keygen -f ./roles/add_users/files/"USERNAME".pem -C "USERNAME"@localhost
+  ssh-keygen -f ./roles/users_add_2/files/"USERNAME".pem -C "USERNAME"@localhost
 ```
 
   *It will generate [username.pem] [username.pen.pub] files.

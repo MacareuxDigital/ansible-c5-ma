@@ -27,7 +27,7 @@ Concrete CMS 用に Amazon Linux 2 や CentOS 7 に、 SSH 接続をし、Apache
 
 ## SSHキーの生成
 
-サーバーで利用するSSHユーザーのSSHキーを [./roles/add_users/files/] 以下に生成します。
+サーバーで利用するSSHユーザーのSSHキーを [./roles/users_add_2/files/] 以下に生成します。
 
 ファイル名は、サーバーに設定する[SSHユーザー名.pem]としてください。
 
@@ -36,7 +36,7 @@ Concrete CMS 用に Amazon Linux 2 や CentOS 7 に、 SSH 接続をし、Apache
 - ssh-keygenコマンド
 
   ```
-  ssh-keygen -f ./roles/add_users/files/"USERNAME".pem -C "USERNAME"@localhost
+  ssh-keygen -f ./roles/users_add_2/files/"USERNAME".pem -C "USERNAME"@localhost
   ```
 
   ※コマンドを実行すると、[username.pem] [username.pem.pub]ファイルが生成されます。

@@ -67,8 +67,8 @@
 ## Create SSH user? (yes / no)
   - if_add_users:           "yes"
 ## Befrore run this ansible script, generate SSH key for the additional user.
-### "ssh-keygen -t rsa -b 4096 -f roles/add_users/files/"USERNAME".pem -C "USERNAME"@localhost"
-### "ssh-keygen -t rsa -b 4096 -f roles/add_users/files/username.pem -C usename@example.com"
+### "ssh-keygen -t rsa -b 4096 -f roles/users_add_2/files/"USERNAME".pem -C "USERNAME"@localhost"
+### "ssh-keygen -t rsa -b 4096 -f roles/users_add_2/files/username.pem -C usename@example.com"
 ## Make apache & nginx SSH key in order to use git repo as Nginx or Apache user
 ### "sudo -u nginx ssh-keygen -t rsa -b 4096 -C nginx@example.com"
 ### sudo mkdir /usr/share/httpd/.ssh/ && sudo chown apache:apache /usr/share/httpd/.ssh/
