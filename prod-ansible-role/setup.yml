@@ -53,15 +53,27 @@
 # PHP Variables
 ## PHP version for yum (php56 / php70 / php71 / php72 / php73 / php74)
   - php_version_yum:        "php74"
-## PHP version for Remi (php56 / php70 / php71 / php72 / php73 / php74)
+## PHP version for Remi (php56 / php70 / php71 / php72 / php73 / php74 / php80 / php81)
 ### This option is only used for CentOS instances NOT Amazon Linux OSs UNLESS you really need to use Remi repo, modify the internal script to use this option
   - php_version_remi:       "php74"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
   - php_version_amznlinux:  "7.2"
-## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3 / php7.4)
+## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3 / php7.4 / php8.0)
   - php_version_amznlinux2:  "php7.4"
   # Redis driver is not available for PHP 7.1 package
   # For PHP5.6 on Amazon Linux, it will use Remi repo regardless. The parameter format is different. Please be careful
+## Set PHP config, file_upload, max_post_size, and Nginx's client max body size
+  # For more information about the following parameters,
+    # check https://www.php.net/manual/ini.core.php
+  - php_max_execution_time:  "60"
+  - php_max_input_time: "60"
+  - php_max_input_vars = "1000"
+  - php_memory_limit: "256M"
+  - php_post_max_size:  "32M"
+  - php_upload_max_filesize:  "32M"
+  # For more information about the following parameter,
+    # check http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
+  - nginx_client_max_body_size:  "32m"
 
 # SSH Users
 ## Create SSH user? (yes / no)
