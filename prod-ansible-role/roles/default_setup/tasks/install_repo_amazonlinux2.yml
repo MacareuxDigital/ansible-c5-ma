@@ -1,10 +1,10 @@
-- name: Install Fedora epel repository
+- name: Install Fedora EPEL repository
   yum:
     name:
       - https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
     state: present
 
-- name: Install Amazon Linux Extra  epel repository
+- name: Install Amazon Linux Extra EPEL repository
   shell: amazon-linux-extras enable epel -y
 
 - name: "Install Amazon Linux Extra Nginx for Amazon Linux 2"
@@ -20,25 +20,17 @@
 - name: Install Remi repository for Amazon Linux 2 PHP5.6 and PHP8.1
   yum:
     name:
-      - http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+      - https://rpms.remirepo.net/enterprise/remi-release-7.rpm
     state: present
   when: php_version_amznlinux2 in ["php56","php81"]
 
-- name: Enable remi-php56 repo
+- name: Disable remi-safe repo (ARM is not yet available)
   ini_file:
-    dest: /etc/yum.repos.d/remi.repo
-    section: remi-php56
+    dest: /etc/yum.repos.d/remi-safe.repo
+    section: remi-safe
     option: enabled
-    value: 1
-  when: php_version_amznlinux2=="php56"
-
-- name: Enable remi-php81 repo
-  ini_file:
-    dest: /etc/yum.repos.d/remi-php81.repo
-    section: remi-php81
-    option: enabled
-    value: 1
-  when: php_version_amznlinux2=="php81"
+    value: 0
+  when: php_version_amznlinux2 in ["php56","php81"]
 
 - name: Install utilities
   yum:

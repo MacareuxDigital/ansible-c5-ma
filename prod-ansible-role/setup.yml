@@ -55,14 +55,16 @@
     php_version_yum:        "php74"
 ## PHP version for Remi (php56 / php70 / php71 / php72 / php73 / php74 / php80 / php81)
 ### This option is only used for CentOS instances NOT Amazon Linux OSs UNLESS you really need to use Remi repo, modify the internal script to use this option
+### Remi repo DOES NOT support aarch64 yet as of Sep 2022.
     php_version_remi:       "php81"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
     php_version_amznlinux:  "7.2"
 ## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3 / php7.4 / php8.0 / php81)
     php_version_amznlinux2:  "php81"
   ### CAUTION!! php56 and php81 installed remi and text format DOES NOT have period (.)
+  ### Remi repo DOES NOT support aarch64 yet as of Sep 2022.
   ### Redis driver is not available for PHP 7.1 package
-  ### For PHP5.6 on Amazon Linux, it will use Remi repo regardless. The parameter format is different. Please be careful
+  ### For PHP5.6 and PHP8.1 on Amazon Linux, it will use Remi repo regardless. The parameter format is different. Please be careful
 ## Set PHP config, file_upload, max_post_size, and Nginx's client max body size
   # For more information about the following parameters,
     # check https://www.php.net/manual/ini.core.php
@@ -143,7 +145,8 @@
     mysql_repo:             "57"
 ### 5.5 / 10.2 / 10.3 / 10.4 / 10.5 / 10.6
     mariadb_repo:           "10.6"
-### aarch64 / ppc64 / ppc64le / ppc64 / amd64 (x86_64)
+### amd64 (x86_64) / aarch64 / ppc64 / ppc64le / ppc64 
+#### MariaDB official repo DOES NOT support aarch64 yet as of Sep 2022.
     mariadb_arch:           "aarch64"
 
 ## MySQL or MariaDB Setting
@@ -226,11 +229,11 @@
 
 # Running roles
   roles:
-#  - role: default_setup
-#  - role: users_add_1
-#    when: if_add_users=="yes"
-#  - role: apache
-#    when: webserver_handle=="apache"
+  - role: default_setup
+  - role: users_add_1
+    when: if_add_users=="yes"
+  - role: apache
+    when: webserver_handle=="apache"
   - role: nginx
     when: webserver_handle=="nginx"
   - role: users_add_2

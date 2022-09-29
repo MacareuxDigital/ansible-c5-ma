@@ -1,13 +1,13 @@
 - name: Uploading .gitconfig to add safe directory ({SSH user & {{ webserver_group }} group)
   template: src=gitconfig.j2 dest=/home/{{ item }}/.gitconfig owner={{ item }} group={{ webserver_group }} mode='0644'
   with_items: "{{ add_users }}"
-  when: user_change_primary="yes"
+  when: user_change_primary=="yes"
 
 - name: Uploading .gitconfig to add safe directory ( SSH User & group)
   template: src=gitconfig.j2 dest=/home/{{ item }}/.gitconfig owner={{ item }} group={{ item }} mode='0644'
   with_items: "{{ add_users }}"
-  when: user_change_primary="no"
+  when: user_change_primary=="no"
 
 - name: Setting git safe.directory to vhosts directory for {{webserver_user}} user
   template: src=gitconfig.j2 dest=/var/lib/{{webserver_user}}/.gitconfig  owner={{webserver_user}} group={{webserver_user}} mode='0644'
-  when: webserver_changeowner="no"
+  when: webserver_changeowner=="no"

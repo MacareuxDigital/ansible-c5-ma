@@ -18,12 +18,26 @@
       - "zip"
       - "unzip"
     state: latest
+
 - name: Install MySQL-Python for Amazon Linux
   yum:
     name:
       - "MySQL-python"
     state: latest
-  when: aws_awslinux in ["1", "2"]
+  when: aws_awslinux=="1"
+- name: Install MySQL-Python for Amazon Linux
+  yum:
+    name:
+      - "python3-pip"
+      - "MySQL-python"
+    state: latest
+  when: aws_awslinux=="2"
+
+- name: Install python3-mysqld
+  pip:
+    name: pymysql
+    state: present
+
 - name: Install mail
   yum:
     name:
