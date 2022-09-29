@@ -15,14 +15,14 @@
 - name: "Install Amazon Linux Extra {{php_version_amznlinux2}} for Amazon Linux 2"
   shell: amazon-linux-extras enable {{ php_version_amznlinux2 }} -y
   when:
-    - php_version_amznlinux2!="php56"
+    - php_version_amznlinux2 not in ["php56", "php81"]
 
-- name: Install Remi repository for Amazon Linux 2 PHP5.6
+- name: Install Remi repository for Amazon Linux 2 PHP5.6 and PHP8.1
   yum:
     name:
       - http://rpms.remirepo.net/enterprise/remi-release-7.rpm
     state: present
-  when: php_version_amznlinux2=="php56"
+  when: php_version_amznlinux2 in ["php56","php81"]
 
 - name: Enable remi-php56 repo
   ini_file:
@@ -31,6 +31,14 @@
     option: enabled
     value: 1
   when: php_version_amznlinux2=="php56"
+
+- name: Enable remi-php81 repo
+  ini_file:
+    dest: /etc/yum.repos.d/remi-php81.repo
+    section: remi-php81
+    option: enabled
+    value: 1
+  when: php_version_amznlinux2=="php81"
 
 - name: Install utilities
   yum:

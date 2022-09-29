@@ -38,37 +38,37 @@
 - name: Install PHP for Amazon Linux 2
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2!="php56"
+    - php_version_amznlinux2 not in ["php56", "php81"]
   yum:
     name:
       - "php"
-      - "php-bcmath"
+      # - "php-bcmath"
       - "php-cli"
       - "php-common"
-      - "php-dba"
-      - "php-embedded"
+      # - "php-dba"
+      # - "php-embedded"
       - "php-enchant"
       - "php-fpm"
       - "php-gd"
-      - "php-gmp"
+      # - "php-gmp"
       - "php-intl"
-      - "php-json"
+      # - "php-json"
       - "php-ldap"
       - "php-mbstring"
       # - "php-pecl-mcrypt"
       - "php-mysqlnd"
-      - "php-odbc"
+      # - "php-odbc"
       - "php-opcache"
       - "php-pdo"
-      - "php-pecl-igbinary"
+      # - "php-pecl-igbinary"
       # - "php-pecl-ssh2"
       # - "php-pecl-zip"
-      - "php-pgsql"
+      # - "php-pgsql"
       - "php-process"
-      - "php-pspell"
+      # - "php-pspell"
       # - "php-recode"
-      - "php-snmp"
-      - "php-soap"
+      # - "php-snmp"
+      # - "php-soap"
       - "php-xml"
       - "php-xmlrpc"
     state: latest
@@ -91,7 +91,7 @@
 - name: Install PHP Redis Extension for Amazon Linux 2
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2 not in ["php56", "php7.0", "php7.1"]
+    - php_version_amznlinux2 not in ["php56", "php7.0", "php7.1", "php81"]
   yum:
     name:
       - "php-pecl-redis"
@@ -131,10 +131,25 @@
     state: latest
     enablerepo: epel,remi,remi-{{php_version_yum}}
 
-- name: Install Apache and PHP5.6 for Amazon Linux 2 Remi
+- name: Install Necessary libraries before installing Remi PHP for Amazon Linux 2
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2=="php56"
+    - php_version_amznlinux2 in ["php56", "php81"]
+  yum:
+    name:
+      - httpd
+      - fontconfig-devel
+      - harfbuzz
+      - libxml2-devel
+      - libxslt-devel
+      - libX11
+      - libXpm
+      - ncurses-compat-libs
+
+- name: Install Remi PHP for Amazon Linux 2
+  when:
+    - aws_awslinux=="2"
+    - php_version_amznlinux2 in ["php56", "php81"]
   yum:
     name:
       - "php"
@@ -149,9 +164,30 @@
       - "php-xml"
       - "php-gmp"
       - "php-pecl-zip"
+    state: latest
+    enablerepo: epel,remi,remi-{{php_version_amznlinux2}}
+    disablerepo: amzn2-core
+
+- name: Install php-mcrypt of Remi PHP5.6 for Amazon Linux 2
+  when:
+    - aws_awslinux=="2"
+    - php_version_amznlinux2 in ["php56"]
+  yum:
+    name:
       - "php-mcrypt"
     state: latest
-    enablerepo: epel,remi,remi-{{php_version_yum}}
+    enablerepo: epel,remi,remi-{{php_version_amznlinux2}}
+
+- name: Install memcached & redis of Remi PHP8.1 for Amazon Linux 2 Remi
+  when:
+    - aws_awslinux=="2"
+    - php_version_amznlinux2 in ["php81"]
+  yum:
+    name:
+      - "php-pecl-memcached"
+      - "php-redis"
+    state: latest
+    enablerepo: epel,remi,remi-{{php_version_amznlinux2}}
 
 - name: Add User to Nginx-group
   user: name={{ item }} groups=nginx state=present

@@ -51,5 +51,5 @@
   replace: >
     dest=/etc/php.ini
     regexp="upload_max_filesize = 2M"
-    replace="upload_max_filesize = {{php_file_upload_size}}"
+    replace="upload_max_filesize = {{php_upload_max_filesize}}"
   notify: Restart php-fpm

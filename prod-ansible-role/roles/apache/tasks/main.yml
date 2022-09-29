@@ -49,7 +49,7 @@
 - name: Install Apache and PHP for Amazon Linux 2
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2!="php56"
+    - php_version_amznlinux2 not in ["php56", "php81"]
   yum:
     name:
       - "httpd"
@@ -147,31 +147,62 @@
     state: latest
     enablerepo: epel,remi,remi-{{php_version_yum}}
 
-- name: Install Apache and PHP5.6 for Amazon Linux 2 Remi
+- name: Install Necessary libraries before installing Remi PHP for Amazon Linux 2
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2=="php56"
+    - php_version_amznlinux2 in ["php56", "php81"]
+  yum:
+    name:
+      - fontconfig-devel
+      - harfbuzz
+      - libxml2-devel
+      - libxslt-devel
+      - libX11
+      - libXpm
+      - ncurses-compat-libs
+
+- name: Install Remi PHP for Amazon Linux 2
+  when:
+    - aws_awslinux=="2"
+    - php_version_amznlinux2 in ["php56", "php81"]
   yum:
     name:
       - "php"
       - "php-common"
-      - "php-devel"
       - "php-cli"
       - "php-fpm"
       - "php-gd"
-      - "php-intl"
       - "php-mbstring"
-      - "php-mysqlnd"
+      - "php-mysql"
       - "php-opcache"
       - "php-pdo"
-      - "php-gmp"
-      - "php-pecl-memcached"
-      - "php-pecl-redis"
-      - "php-pecl-zip"
       - "php-xml"
+      - "php-gmp"
+      - "php-pecl-zip"
+    state: latest
+    enablerepo: epel,remi,remi-{{php_version_amznlinux2}}
+    disablerepo: amzn2-core
+
+- name: Install php-mcrypt of Remi PHP5.6 for Amazon Linux 2
+  when:
+    - aws_awslinux=="2"
+    - php_version_amznlinux2 in ["php56"]
+  yum:
+    name:
       - "php-mcrypt"
     state: latest
-    enablerepo: epel,remi,remi-{{php_version_yum}}
+    enablerepo: epel,remi,remi-{{php_version_amznlinux2}}
+
+- name: Install memcached & redis of Remi PHP8.1 for Amazon Linux 2 Remi
+  when:
+    - aws_awslinux=="2"
+    - php_version_amznlinux2 in ["php81"]
+  yum:
+    name:
+      - "php-pecl-memcached"
+      - "php-redis"
+    state: latest
+    enablerepo: epel,remi,remi-{{php_version_amznlinux2}}
 
 
 - name: Add User to Apache-group

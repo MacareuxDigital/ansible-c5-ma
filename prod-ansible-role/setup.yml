@@ -1,6 +1,6 @@
 - hosts: all
   # Set false if you're using docker or logging in as root user
-  become: yes
+  become: true
   # DEBUG: uncomment below to enable docker connection if you want to debug using Docker image
   # connection: docker
 
@@ -10,74 +10,75 @@
 ## Change it to "yes" if you want to test your ansible using Docker.
 ## However, it won't test some changes in Docker
 ## Make sure to test on actual instance before using your script to production
-  - isDocker:               "no"
+    isDocker:               "no"
 
 # Server Locale (en_US.UTF8 / ja_JP.UTF8)
-  - locale:                 "en_US.UTF8"
+    locale:                 "en_US.UTF8"
 # Server Timezone (UTC / Asia/Tokyo)
-  - zone:                   "Asia/Tokyo"
+    zone:                   "Asia/Tokyo"
 # Logrotate
 ## How often you want to rotate the log (daily/weekly/monthly)
-  - logrotate_unit:         "weekly"
+    logrotate_unit:         "weekly"
 ## How many generations do you want to keep" (numbers)
-  - logrotate_generation:    "30"
+    logrotate_generation:    "30"
 
 # Swap (Only supports CentOS7 & Amazon Linux 2)
 ## Create swap file on EC2 server? (yes / no)
-  - swap_create:             "yes"
+    swap_create:             "yes"
 ## Define the location of swapfile
-  - swap_file:               "/swapfile"
+    swap_file:               "/swapfile"
 ## Define the size of swapfile
-  - swap_size:               "1024"
+    swap_size:               "1024"
 
 # Is this AmazonLinux? (1 / 2 / no)
 ## For Amazon Linux, type 1. For Amazon Linux 2, type 2. "no" if is's not Amazon Linux.
-  - aws_awslinux:           "2"
-  - aws_repo_upgrade:       "yes"
+    aws_awslinux:           "2"
+    aws_repo_upgrade:       "yes"
 
 # CentOS Version? (6 / 7)
 ## This option is also used for Amazon Linux and Amazon Linux 2
-  - centos_version:         "7"
+    centos_version:         "7"
 
 ## PHP Repo for CentOS (remi/none)
 ## This option is only used for CentOS instances NOT Amazon Linux OSs
-  - centos_phprepo:         "none"
+    centos_phprepo:         "none"
 
 ## CentOS Initialize Firewall? (yes / no)
 ### This option is only used for CentOS instances NOT Amazon Linux OSs
-  - centos_firewall_enable: "no"
+    centos_firewall_enable: "no"
 
 # Instance Type (micro / small / large (WIP))
-  - aws_instance_type:      "small"
+    aws_instance_type:      "small"
 
 # PHP Variables
 ## PHP version for yum (php56 / php70 / php71 / php72 / php73 / php74)
-  - php_version_yum:        "php74"
+    php_version_yum:        "php74"
 ## PHP version for Remi (php56 / php70 / php71 / php72 / php73 / php74 / php80 / php81)
 ### This option is only used for CentOS instances NOT Amazon Linux OSs UNLESS you really need to use Remi repo, modify the internal script to use this option
-  - php_version_remi:       "php74"
+    php_version_remi:       "php81"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
-  - php_version_amznlinux:  "7.2"
-## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3 / php7.4 / php8.0)
-  - php_version_amznlinux2:  "php7.4"
-  # Redis driver is not available for PHP 7.1 package
-  # For PHP5.6 on Amazon Linux, it will use Remi repo regardless. The parameter format is different. Please be careful
+    php_version_amznlinux:  "7.2"
+## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3 / php7.4 / php8.0 / php81)
+    php_version_amznlinux2:  "php81"
+  ### CAUTION!! php56 and php81 installed remi and text format DOES NOT have period (.)
+  ### Redis driver is not available for PHP 7.1 package
+  ### For PHP5.6 on Amazon Linux, it will use Remi repo regardless. The parameter format is different. Please be careful
 ## Set PHP config, file_upload, max_post_size, and Nginx's client max body size
   # For more information about the following parameters,
     # check https://www.php.net/manual/ini.core.php
-  - php_max_execution_time:  "60"
-  - php_max_input_time: "60"
-  - php_max_input_vars = "1000"
-  - php_memory_limit: "256M"
-  - php_post_max_size:  "32M"
-  - php_upload_max_filesize:  "32M"
+    php_max_execution_time:  "60"
+    php_max_input_time: "60"
+    php_max_input_vars: "1000"
+    php_memory_limit: "256M"
+    php_post_max_size:  "32M"
+    php_upload_max_filesize:  "32M"
   # For more information about the following parameter,
     # check http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
-  - nginx_client_max_body_size:  "32m"
+    nginx_client_max_body_size:  "32m"
 
 # SSH Users
 ## Create SSH user? (yes / no)
-  - if_add_users:           "yes"
+    if_add_users:           "yes"
 ## Befrore run this ansible script, generate SSH key for the additional user.
 ### "ssh-keygen -t rsa -b 4096 -f roles/users_add_2/files/"USERNAME".pem -C "USERNAME"@localhost"
 ### "ssh-keygen -t rsa -b 4096 -f roles/users_add_2/files/username.pem -C usename@example.com"
@@ -85,31 +86,31 @@
 ### "sudo -u nginx ssh-keygen -t rsa -b 4096 -C nginx@example.com"
 ### sudo mkdir /usr/share/httpd/.ssh/ && sudo chown apache:apache /usr/share/httpd/.ssh/
 ### "sudo -u apache ssh-keygen -t rsa -b 4096 -C apache@example.com"
-  - add_users:
+    add_users:
     - "c5juser"
 ## Directory & WebServer Owner Settings
-  - c5dir_user:             "c5juser"  # (ssh username, apache, or nginx)
-  - c5dir_group:            "nginx" # (apache or nginx)
+    c5dir_user:             "c5juser"  # (ssh username, apache, or nginx)
+    c5dir_group:            "nginx" # (apache or nginx)
 ## Change user's primary groups to webserver's group? (apache or nginx)
 ### It won't change primary group if "webserver_changeowner" parameter is yes
-  - user_change_primary:    "yes" # (yes or no)
+    user_change_primary:    "yes" # (yes or no)
 
 # WebServer Setting
 ## Use Webserver Apache or Nginx (apache / nginx)
-  - webserver_handle:       "nginx"
+    webserver_handle:       "nginx"
 
 ## Change Apache or Nginx owner to be SSH User? (no / yes) If yes, make sure to match username to SSH username
-  - webserver_changeowner:  "no"
-  - webserver_user:         "nginx"
-  - webserver_group:        "nginx"
+    webserver_changeowner:  "no"
+    webserver_user:         "nginx"
+    webserver_group:        "nginx"
 
 ## Virtual Host Setting
 #    The web root will be /vhost_docroot/vhost_domain/vhost_htdocs
 #    e.g.) /var/www/vhosts/example.com/html
 #    You could leave "vhost_htdocs" blank.
-  - vhost_domain:           "example.com"
-  - vhost_docroot:          "/var/www/vhosts/"
-  - vhost_htdocs:           "/html"
+    vhost_domain:           "example.com"
+    vhost_docroot:          "/var/www/vhosts/"
+    vhost_htdocs:           "/html"
 
 ## Basic Auth (yes / no)
 ### ID/ password
@@ -120,9 +121,9 @@
 #    uncomment the config after the deployment, and $skip_cache default to be "0".
 #    See Line 48-50, 122-123 of
 #    prod-ansible-role/roles/nginx/templates/vhost_orig_basicauth.conf.j2
-  - use_basic_auth:         "yes"
-  - basicauth_ID :          "username"
-  - basicauth_password :    "password!@"
+    use_basic_auth:         "yes"
+    basicauth_ID :          "username"
+    basicauth_password :    "password!@"
 
 # DB environment(mariadb / mariadb-client / mysql / mysql-client / none )
 #    - mariadb: Install MariaDB Server & Client
@@ -133,83 +134,83 @@
 #
 # Please use mysql for AWS Linux & Cent OS (Amazon Linux 2 doesn't support MySQL yet, please use MariaDB)
 #
-  - db_environment:         "mariadb"
+    db_environment:         "mariadb"
 
 # ToDo: MySQL Server to support UTF8mb4 encoding
 
 ## Select which MySQL or MariaDB version, architecture you want for CentOS.
 ### 55 / 56 / 57 / 80
-  - mysql_repo:             "57"
-### 5.5 / 10.2 / 10.3 / 10.4 / 10.5
-  - mariadb_repo:           "10.5"
+    mysql_repo:             "57"
+### 5.5 / 10.2 / 10.3 / 10.4 / 10.5 / 10.6
+    mariadb_repo:           "10.6"
 ### aarch64 / ppc64 / ppc64le / ppc64 / amd64 (x86_64)
-  - mariadb_arch:           "aarch64"
+    mariadb_arch:           "aarch64"
 
 ## MySQL or MariaDB Setting
 ## Create DB or not  (yes / no)
-  - db_create:              "yes"
+    db_create:              "yes"
 ## Create DB backup or not  (yes / no)
-  - db_create_bkup:         "yes"
+    db_create_bkup:         "yes"
 ## MySQL root
-  - mysql_rootpass:         "mysql_root_pass"
+    mysql_rootpass:         "mysql_root_pass"
 ## MySQL host
-  - mysql_loginhost:        "127.0.0.1"
+    mysql_loginhost:        "127.0.0.1"
 ## MySQL login Infomation
-  - mysql_loginuser:        "root"
-  - mysql_loginpass:        "mysql_root_pass"
+    mysql_loginuser:        "root"
+    mysql_loginpass:        "mysql_root_pass"
 ## MySQL ApplicationDB
-  - mysql_dbname:           "dev-c5db"
-  - mysql_username:         "dev-c5dbuser"
-  - mysql_userpass:         "db-password"
+    mysql_dbname:           "dev-c5db"
+    mysql_username:         "dev-c5dbuser"
+    mysql_userpass:         "db-password"
 ### Add your EC2 instance's private IP to mysql_userpermitedhost when connecting to RDS
-  - mysql_userpermitedhost:
+    mysql_userpermitedhost:
     - "127.0.0.1"
     - "localhost"
     #- "10.0.1.100" # Your EC Instance's Private IP If any
 
 # concrete5 Migration (yes / no ) + filename (without extension)
 ## Please prepare the concrete5 backup file using ALL option of https://github.com/katzueno/concrete5-backup-shell/
-  - c5_migration:           "no"
-  - c5_backup_zip_filename: "backup_202000000000" # filename without extension. Use Katz's concrete5 backup shell
+    c5_migration:           "no"
+    c5_backup_zip_filename: "backup_202000000000" # filename without extension. Use Katz's concrete5 backup shell
   # make sure to place a backup file under roles/concrete5_migratioin/files
 
 
 # concrete5 Settings
 ## concrete5 File upload (yes / no)
-  - c5_upload:              "yes"
-  - c5_package_folder_name: "concrete5-8.5.7"
+    c5_upload:              "yes"
+    c5_package_folder_name: "concrete5-8.5.7"
   ## This is version 8.5.6.
-  - c5_package_url:         "https://www.concretecms.org/download_file/ae9cca19-d76c-458e-a63a-ce9b7b963e1d"
+    c5_package_url:         "https://www.concretecms.org/download_file/ae9cca19-d76c-458e-a63a-ce9b7b963e1d"
 ## concrete5 Installation (yes / no)
-  - c5_installation:        "no" # It doesn't work these days.
+    c5_installation:        "no" # It doesn't work these days.
 ## concrete5 Config Upload (yes / no)
-  - c5_installation_config_upload: "yes"
+    c5_installation_config_upload: "yes"
 ## Site Name
-  - c5_sitename:            "Site Name"
+    c5_sitename:            "Site Name"
 ## Install Theme
 ## "elemental_blank" or "elemental_full"
-  - c5_starting_point:      "elemental_blank"
-  - c5_admin_email:         "info@example.com"
-  - c5_admin_user:          "admin" # This has nothing to do with. Just for your record purpose.
-  - c5_admin_pass:          "site_password"
-  - c5_locale:              "ja_JP"
-  - c5_from_email:          "info@example.com"
-  - c5_from_name:           "From Email Name"
+    c5_starting_point:      "elemental_blank"
+    c5_admin_email:         "info@example.com"
+    c5_admin_user:          "admin" # This has nothing to do with. Just for your record purpose.
+    c5_admin_pass:          "site_password"
+    c5_locale:              "ja_JP"
+    c5_from_email:          "info@example.com"
+    c5_from_name:           "From Email Name"
 ## Add trusted proxy IPs if c5 webserver is behind load balanceror proxy. 
-  - c5_load_balancer:       "no" # (yes / no)
-  - c5_trusted_proxy:
+    c5_load_balancer:       "no" # (yes / no)
+    c5_trusted_proxy:
     - "127.0.0.1/32"
     - "127.0.0.1/32"
 
 # NewRelic Setting
 ## Use NewRelic (yes / no)
-  - use_newrelic:           "no"
+    use_newrelic:           "no"
 ## Use NewRelic-PHP (yes / no)
-  - use_newrelic_php:       "no"
+    use_newrelic_php:       "no"
 ## NewRelic License
-  - newrelic_licensekey:    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    newrelic_licensekey:    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 ## NewRelic AppName
-  - newrelic_appname:       "PHP Application_name"
+    newrelic_appname:       "PHP Application_name"
 
 # You may get the following error and not getting the proper responce from New Relic PHP
 # warning: daemon connect(fd=XX uds=/tmp/.newrelic.sock) returned -1 errno=ENOENT. Failed to connect to the newrelic-daemon. Please make sure that there is a properly configured newrelic-daemon running. For additional assistance, please see: https://newrelic.com/docs/php/newrelic-daemon-startup-modes
@@ -219,17 +220,17 @@
 
 # Mackerel Setting
 ## Use Mackerel (yes / no)
-  - use_mackerel:           "no"
+    use_mackerel:           "no"
 ## Mackerel License
-  - mackerel_apikey:        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    mackerel_apikey:        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 # Running roles
   roles:
-  - role: default_setup
-  - role: users_add_1
-    when: if_add_users=="yes"
-  - role: apache
-    when: webserver_handle=="apache"
+#  - role: default_setup
+#  - role: users_add_1
+#    when: if_add_users=="yes"
+#  - role: apache
+#    when: webserver_handle=="apache"
   - role: nginx
     when: webserver_handle=="nginx"
   - role: users_add_2
@@ -254,6 +255,7 @@
   - role: basic_auth
     when: use_basic_auth=="yes"
   - role: create_symlink_www
+  - role: git_setup
   - role: concrete5
     when: c5_upload=="yes" 
   - role: concrete5_migration
