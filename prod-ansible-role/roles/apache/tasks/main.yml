@@ -82,7 +82,7 @@
       - "php-snmp"
       - "php-soap"
       - "php-xml"
-      - "php-xmlrpc"
+      # - "php-xmlrpc"
     state: latest
     enablerepo: amzn2extra-{{php_version_amznlinux2}}
     disablerepo: epel
