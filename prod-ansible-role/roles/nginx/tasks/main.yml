@@ -38,7 +38,7 @@
 - name: Install PHP for Amazon Linux 2
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2 not in ["php56", "php81"]
+    - php_version_amznlinux2 not in ["php56", "php80", "php81"]
   yum:
     name:
       - "php"
@@ -91,7 +91,7 @@
 - name: Install PHP Redis Extension for Amazon Linux 2
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2 not in ["php56", "php7.0", "php7.1", "php81"]
+    - php_version_amznlinux2 not in ["php56", "php7.0", "php7.1", "php80", "php81"]
   yum:
     name:
       - "php-pecl-redis"
@@ -134,7 +134,7 @@
 - name: Install Necessary libraries before installing Remi PHP for Amazon Linux 2
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2 in ["php56", "php81"]
+    - php_version_amznlinux2 in ["php56", "php80", "php81"]
   yum:
     name:
       - httpd
@@ -149,7 +149,7 @@
 - name: Install Remi PHP for Amazon Linux 2
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2 in ["php56", "php81"]
+    - php_version_amznlinux2 in ["php56", "php80", "php81"]
   yum:
     name:
       - "php"
@@ -181,7 +181,7 @@
 - name: Install memcached & redis of Remi PHP8.1 for Amazon Linux 2 Remi
   when:
     - aws_awslinux=="2"
-    - php_version_amznlinux2 in ["php81"]
+    - php_version_amznlinux2 in ["php80", "php81"]
   yum:
     name:
       - "php-pecl-memcached"
