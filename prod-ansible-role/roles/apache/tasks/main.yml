@@ -147,7 +147,7 @@
     state: latest
     enablerepo: epel,remi,remi-{{php_version_yum}}
 
-- name: Install Necessary libraries before installing Remi PHP for Amazon Linux 2
+- name: STEP 1 Install Necessary libraries before installing Remi PHP for Amazon Linux 2
   when:
     - aws_awslinux=="2"
     - php_version_amznlinux2 in ["php56", "php80", "php81"]
@@ -160,6 +160,15 @@
       - libX11
       - libXpm
       - ncurses-compat-libs
+
+- name: STEP 2 Install Necessary libraries before installing Remi PHP for Amazon Linux 2
+  when:
+    - aws_awslinux=="2"
+    - php_version_amznlinux2 in ["php81"]
+  yum:
+    name:
+      - libzip5
+    enablerepo: remi
 
 - name: Install Remi PHP for Amazon Linux 2
   when:
