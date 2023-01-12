@@ -1,0 +1,10 @@
+- name: Restart php-fpm
+  when:
+    - centos_version=="6"
+    - isDocker=="no"
+  service: name=php-fpm state=restarted
+- name: Restart php-fpm
+  when:
+    - centos_version=="7"
+    - isDocker=="no"
+  systemd: name=php-fpm state=restarted

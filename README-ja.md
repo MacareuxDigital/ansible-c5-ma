@@ -207,17 +207,33 @@ AWS インスタンスに応じて最適化した Apache & Niginx 設定を行�
 
 どの PHP バージョンを利用したいかを指定してください。現在、4つのレポジトリに対応しているはずです: Amazon Linux, Remi, Webtactics and Amazon Linux 2 (ベータ). 但しレポジトリによってはインストールできないバージョンもあるかもしれません。
 
-Amazon Linux 2 は、PHP5.6 (Apache のみ), PHP 7.2, 7.3, 7.4 の動作確認をしています。 (as of June 2022)
+Amazon Linux 2 は、PHP5.6 (Apache のみ), PHP 7.4 & PHP 8.1 の動作確認をしています。 (2023年1月現在)
 
 ```
+# PHP Variables
 ## PHP version for yum (php56 / php70 / php71 / php72 / php73 / php74)
-  - php_version_yum:        "php72"
-## PHP version for Remi (php56 / php70 / php71 / php72 / php73 / php74)
-  - php_version_remi:       "php72"
-## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2 / 7/3)
-  - php_version_amznlinux:  "7.2"
-## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3 / php7.4)
-  - php_version_amznlinux2:  "php7.3"
+    php_version_yum:        "php74"
+## PHP version for Remi (php56 / php70 / php71 / php72 / php73 / php74 / php80 / php81)
+### This option is only used for CentOS instances NOT Amazon Linux OSs UNLESS you really need to use Remi repo, modify the internal script to use this option
+### Remi repo DOES NOT support aarch64 yet as of Sep 2022.
+    php_version_remi:       "php81"
+## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
+    php_version_amznlinux:  "7.2"
+## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3 / php7.4 / php8.0 / php81 (Remi) / php8.1 (Amazon Linux Extras) )
+    php_version_amznlinux2:  "php8.1"
+  ### CAUTION!! php56 and php81 (without period) will install remi PHP.
+  ### Remi repo DOES NOT support aarch64 yet as of Sep 2022.
+  ### Redis driver is not available for PHP 7.1 package
+  ### For PHP5.6 on Amazon Linux, it will use Remi repo regardless. The parameter format is different. Please be careful
+## Set PHP config, file_upload, max_post_size, and Nginx's client max body size
+  # For more information about the following parameters,
+    # check https://www.php.net/manual/ini.core.php
+    php_max_execution_time:  "60"
+    php_max_input_time: "60"
+    php_max_input_vars: "1000"
+    php_memory_limit: "256M"
+    php_post_max_size:  "32M"
+    php_upload_max_filesize:  "32M"
 ```
 
 ## 追加するSSHユーザーの指定
@@ -504,16 +520,17 @@ Mackerel のエージェントもインストール可能です。
 ## 実行するロールの指定
 
 - **[roles]** : 通常はこのままで問題ありません。
- ```
-  roles:
+```
+   roles:
   - role: default_setup
-  - role: users_add
+  - role: users_add_1
     when: if_add_users=="yes"
   - role: apache
     when: webserver_handle=="apache"
   - role: nginx
     when: webserver_handle=="nginx"
-  - role: users_group
+  - role: php
+  - role: users_add_2
     when: if_add_users=="yes"
   - role: web_dummy
   - role: mysql_repo
@@ -535,6 +552,7 @@ Mackerel のエージェントもインストール可能です。
   - role: basic_auth
     when: use_basic_auth=="yes"
   - role: create_symlink_www
+  - role: git_setup
   - role: concrete5
     when: c5_upload=="yes" 
   - role: concrete5_migration

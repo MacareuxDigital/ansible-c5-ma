@@ -6,7 +6,7 @@
     login_password={{ mysql_loginpass }}
     login_host={{ mysql_loginhost }}
   when: isDocker=="no"
-- name: Create User for the DB
+- name: Grant a user for the DB
   mysql_user:
     name={{ mysql_username }}
     state=present
