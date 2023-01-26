@@ -261,6 +261,7 @@ For Amazon Linux 2, I've tested PHP5.6 (Apache only) and 7.4 & 8.1. (as of Jan 2
     php_max_input_time: "60"
     php_max_input_vars: "1000"
     php_memory_limit: "256M"
+    php_path_error_log: "/var/log/php_errors.log"
     php_post_max_size:  "32M"
     php_upload_max_filesize:  "32M"
 ```

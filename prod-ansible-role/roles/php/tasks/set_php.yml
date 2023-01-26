@@ -41,6 +41,12 @@
     regexp="memory_limit = 128M"
     replace="memory_limit = {{php_memory_limit}}"
   notify: Restart php-fpm
+- name: Set PHP error log
+  replace: >
+    dest=/etc/php.ini
+    regexp=";error_log = php_errors.log"
+    replace="error_log = {{php_path_error_log}}"
+  notify: Restart php-fpm
 - name: Change PHP post_max_size
   replace: >
     dest=/etc/php.ini
