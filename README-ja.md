@@ -232,6 +232,7 @@ Amazon Linux 2 は、PHP5.6 (Apache のみ), PHP 7.4 & PHP 8.1 の動作確認�
     php_max_input_time: "60"
     php_max_input_vars: "1000"
     php_memory_limit: "256M"
+    php_path_error_log: "/var/log/php_errors.log"
     php_post_max_size:  "32M"
     php_upload_max_filesize:  "32M"
 ```
