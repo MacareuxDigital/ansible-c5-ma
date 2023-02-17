@@ -14,6 +14,7 @@
       - "{{php_version_yum}}-opcache"
       - "{{php_version_yum}}-pdo"
       - "{{php_version_yum}}-pecl-memcached"
+      - "{{php_version_yum}}-bcmath"
       #  - "{{php_version_yum}}-pecl-redis" Not Available
       - "{{php_version_yum}}-xml"
       - "jq"
@@ -35,7 +36,7 @@
   yum:
     name:
       - "php"
-      # - "php-bcmath"
+      - "php-bcmath"
       - "php-cli"
       - "php-common"
       # - "php-dba"
@@ -108,6 +109,7 @@
       - "php-pdo"
       - "php-xml"
       - "php-gmp"
+      - "php-bcmath"
       - "php-pecl-zip"
       - "php-pecl-memcached"
     state: latest
@@ -165,6 +167,7 @@
       - "php-pdo"
       - "php-xml"
       - "php-gmp"
+      - "php-bcmath"
       - "php-pecl-zip"
     state: latest
     enablerepo: epel,remi,remi-{{php_version_amznlinux2}}
