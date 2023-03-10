@@ -103,9 +103,23 @@ server {
     #     }
     # }
 
-    location ~* \.(jpg|jpeg|gif|png|css|js|ico)$ {
+    # Allow to pass to php-fpm for Concrete CMS file manager search feature
+    location ~* ^/index.php/ccm/(.*\.(jpg|jpeg|gif|png|css|js|ico|svg|webp))$ {
+        if (!-e $request_filename) {
+            rewrite ^ /index.php last;
+        }
+    }
+    location ~* ^/ccm/(.*\.(jpg|jpeg|gif|png|css|js|ico|svg|webp))$ {
+        if (!-e $request_filename) {
+            rewrite ^ /index.php last;
+        }
+    }
+
+    # Images assets: don't log and won't pass it to PHP if 404
+    location ~* \.(jpg|jpeg|gif|png|css|js|ico|svg|webp)$ {
         access_log        off;
         log_not_found     off;
+        # Add 8 days expires to production
         expires           8d;
     }
 
