@@ -121,7 +121,7 @@ server {
         log_not_found     off;
         # Add 8 days expires to production
         # We won't add cache for dev
-        add_header Cache-Control "max-age=86400";
+        add_header Cache-Control "s-maxage=86400";
     }
 
     # Don't output hidden files
