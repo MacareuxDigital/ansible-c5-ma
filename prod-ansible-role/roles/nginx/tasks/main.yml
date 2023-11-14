@@ -15,14 +15,14 @@
 - name: Start Nginx
   when:
     - centos_version=="6"
-    - NginxPHPResult.changed == True
+    - NginxPHPResult.changed : "True"
     - isDocker=="no"
   service: name=nginx state=started enabled=yes
 - name: Start Nginx
   systemd: name=nginx state=started enabled=yes
   when:
     - centos_version=="7"
-    - NginxPHPResult.changed == True
+    - NginxPHPResult.changed : "True"
     - isDocker=="no"
 - include: set_nginx.yml
 - include: set_nginx-vhost.yml
