@@ -252,14 +252,14 @@ For Amazon Linux 2, I've tested PHP5.6 (Apache only) and 7.4 & 8.1. (as of Jan 2
 # PHP Variables
 ## PHP version for yum (php56 / php70 / php71 / php72 / php73 / php74)
     php_version_yum:        "php74"
-## PHP version for Remi (php56 / php70 / php71 / php72 / php73 / php74 / php80 / php81)
+## PHP version for Remi (php56 / php70 / php71 / php72 / php73 / php74 / php80 / php81 / php82)
 ### This option is only used for CentOS instances NOT Amazon Linux OSs UNLESS you really need to use Remi repo, modify the internal script to use this option
 ### Remi repo DOES NOT support aarch64 yet as of Sep 2022.
     php_version_remi:       "php81"
 ## PHP version for Amazon Linux (5.6 / 7.0 / 7.1 / 7.2)
     php_version_amznlinux:  "7.2"
-## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3 / php7.4 / php8.0 / php81 (Remi) / php8.1 (Amazon Linux Extras) )
-    php_version_amznlinux2:  "php8.1"
+## PHP version for Amazon Linux 2 (php56 / php7.1 / php7.2 / php7.3 / php7.4 / php8.0 / php81 (Remi) / php8.1 / php8.2 (Amazon Linux Extras) )
+    php_version_amznlinux2:  "php8.2"
   ### CAUTION!! php56 and php81 (without period) will install remi PHP.
   ### Remi repo DOES NOT support aarch64 yet as of Sep 2022.
   ### Redis driver is not available for PHP 7.1 package
