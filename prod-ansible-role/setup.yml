@@ -12,6 +12,11 @@
 ## Make sure to test on actual instance before using your script to production
     isDocker:               "no"
 
+# CPU Architecture
+# amd64 (x86_64) / aarch64 / ppc64 / ppc64le / ppc64 
+## MariaDB official repo DOES NOT support aarch64 yet as of Jan 2023.
+    cpu_arch:               "aarch64"
+
 # Server Locale (en_US.UTF8 / ja_JP.UTF8)
     locale:                 "en_US.UTF8"
 # Server Timezone (UTC / Asia/Tokyo)
@@ -140,15 +145,13 @@
     db_environment:         "mariadb"
 
 # ToDo: MySQL Server to support UTF8mb4 encoding
+## MariaDB official repo DOES NOT support aarch64 yet as of Jan 2023.
 
 ## Select which MySQL or MariaDB version, architecture you want for CentOS.
 ### 55 / 56 / 57 / 80
     mysql_repo:             "57"
 ### 5.5 / 10.2 / 10.3 / 10.4 / 10.5 / 10.6
     mariadb_repo:           "10.6"
-### amd64 (x86_64) / aarch64 / ppc64 / ppc64le / ppc64 
-#### MariaDB official repo DOES NOT support aarch64 yet as of Jan 2023.
-    mariadb_arch:           "aarch64"
 
 ## MySQL or MariaDB Setting
 ## Create DB or not  (yes / no)

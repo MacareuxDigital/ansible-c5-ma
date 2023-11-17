@@ -139,6 +139,17 @@ $ ansible-playbook -i host.yml setup.yml
 
 setup.yml の中に書いてあるコメントが一番最新です。ここの Readme の更新はよく遅れます。
 
+## CPU アーキテクチャ
+
+利用可能CPUアーキテクチャ: aarch64/ ppc64 / ppc64le / ppc64 / amd64 (x86_64)
+aarch64 (ARM) と amd64 (Intel) はテスト済み
+
+主に MariaDB & PHP の関数判定で使用している。
+
+```
+  - cpu_arch:           "aarch64"
+```
+
 ## サーバーの言語とタイムゾーンの設定
 
 サーバーの言語とローカルタイムを設定します。 `localectl list-locales` コマンドを使うと使用可能な言語のリストを取得でき、
@@ -331,13 +342,6 @@ MariaDB 5.5 は CentOS 7 レポジトリ付属のバージョンをインスト�
 
 ```
   - mariadb_repo:           "10.5"
-```
-
-利用可能CPUアーキテクチャ: aarch64/ ppc64 / ppc64le / ppc64 / amd64 (x86_64)
-aarch64 (ARM) と amd64 (Intel) はテスト済み
-
-```
-  - mariadb_arch:           "aarch64"
 ```
 
 ## DB の設定を行うか否か

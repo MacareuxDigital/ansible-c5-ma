@@ -85,6 +85,7 @@
 - name: Install PHP Redis Extension for Amazon Linux 2
   when:
     - aws_awslinux=="2"
+    - cpu_arch not in ["aarch64"]
     - php_version_amznlinux2 not in ["php56", "php7.0", "php7.1", "php80", "php81"]
   yum:
     name:

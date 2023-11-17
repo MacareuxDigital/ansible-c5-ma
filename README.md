@@ -167,6 +167,16 @@ Make sure to uncomment `connection: docker` on the 4th line
 ```
   connection: docker
 ```
+## CPU Architecutre
+
+利用可能CPUアーキテクチャ: aarch64/ ppc64 / ppc64le / ppc64 / amd64 (x86_64)
+aarch64 (ARM) と amd64 (Intel) はテスト済み
+
+主に MariaDB & PHP の関数判定で使用している。
+
+```
+  - cpu_arch:           "aarch64"
+```
 
 ## Server Locale
 
@@ -371,13 +381,6 @@ For MariaDB 5.5, it will install from CentOS's default repo.
 
 ```
   - mariadb_repo:           "10.5"
-```
-
-Available architecture: aarch64/ ppc64 / ppc64le / ppc64 / amd64 (x86_64)
-aarch64 (ARM) & amd64 (Intel) are tested
-
-```
-  - mariadb_arch:           "aarch64"
 ```
 
 
