@@ -10,7 +10,7 @@ You will connect to AWS Linux or CentOS7 and start sending commands to setup the
 
 THIS ANSIBLE IS VERY UGRY. KEEP CHANGING AS WE WORK. WE CANNOT GURANTEE ANYTHING. SO YOU MUST USE FOR DEV INSTANCE FIRST BEFORE APPLYING PRODUCTION. I WOULD NOT DEPLOY TO PRODUCTION EITHER.
 
-As of Oct, 2021, I've mainly tested on Amazon Linux 2 with Nginx, PHP7.4 and MariaDB 10.5
+As of April, 2024, I've mainly tested on Amazon Linux 2 with Nginx, PHP8.2 and MariaDB 10.11
 
 -----
 
@@ -169,10 +169,10 @@ Make sure to uncomment `connection: docker` on the 4th line
 ```
 ## CPU Architecutre
 
-利用可能CPUアーキテクチャ: aarch64/ ppc64 / ppc64le / ppc64 / amd64 (x86_64)
-aarch64 (ARM) と amd64 (Intel) はテスト済み
+Available CPU Architecutre: aarch64/ ppc64 / ppc64le / ppc64 / amd64 (x86_64)
+Tested with aarch64 (ARM) & amd64 (Intel)
 
-主に MariaDB & PHP の関数判定で使用している。
+Mainly used when installing MariaDB & PHP
 
 ```
   - cpu_arch:           "aarch64"
@@ -246,7 +246,16 @@ Currently we only have the following setting.
 
 Please enter which PHP version you want to install. Currently supports 4 types of repo: Amazon Linux, Remi, and Amazon Linux 2 (beta). You may not be able to install certain types depends on the repos. Please read the comment in setup.yml carefully.
 
-For Amazon Linux 2, I've tested PHP5.6 (Apache only) and 7.4 & 8.1. (as of Jan 2023)
+For Amazon Linux 2, I've tested PHP5.6 (Apache only) and 7.4, 8.1 & 8.2. (as of April 2024)
+
+You want to calculate PHP-FPM memory consumption based on available memory of the instance.
+
+- Check if MariaDB/MySQL server is running locally. (DB Server consumes more memory)
+- Check how much php_memory_limit is set
+- Check current available memory (you may launch an instance to check)
+- Calculate to optimize the number of php_pm_max_children process.
+  - Divide available memory by PHP memory_limit.
+  - If you exceed the physical memory consumption, you will face performance degration. 
 
 ```
 # PHP Variables
@@ -274,6 +283,37 @@ For Amazon Linux 2, I've tested PHP5.6 (Apache only) and 7.4 & 8.1. (as of Jan 2
     php_path_error_log: "/var/log/php_errors.log"
     php_post_max_size:  "32M"
     php_upload_max_filesize:  "32M"
+  # PHP-FPM Process
+    # Set php-fpm max children and request based on php_memory_limit and number of children
+    # For 1GB RAM, "2" (e.g. tX.micro)
+    # For 2GB RAM, "5" (e.g. tX.small / cX.medium)
+    # For 4GB RAM, "10" (e.g. tX.medium / cX-large)
+    # For 8GB RAM, "20" (e.g. tX. mX.large / cX.xlarge)
+    # For 16GB RAM, "50" (e.g. tX mX.xlarge)
+    php_pm_max_children: "10"
+    # For micro, "250"
+    # For small, "500"
+    # For large and above, "1000"
+    pm.max_requests : "1000"
+```
+
+## Nginx Variables
+
+Change the following config according to PHP variable, and use of FastCGI Cache.
+
+You want to set `nginx_client_max_body_size` as the same as php_post_max_size and php_upload_max_filesize
+You want to set `nginx_fastcgi_skip_cache` as 1, if you don't want to use FastCGI cache. You rather choose dynamic result over cache performance. It's ideal for the site which all users are logging in.
+
+```
+ # Nginx Variables
+  # Allowed Nginx request size
+    # set the same as php_post_max_size & php_upload_max_filesize
+    # check http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
+    nginx_client_max_body_size:  "32m"
+  # Enable or disable fastcgi cache
+    # "0" to use fastcgi
+    # "1" to disable fastcgi
+    nginx_fastcgi_skip_cache: "0"
 ```
 
 

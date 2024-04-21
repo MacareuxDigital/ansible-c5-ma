@@ -5,7 +5,7 @@ Concrete CMS 用に Amazon Linux 2 や CentOS 7 に、 SSH 接続をし、Apache
 
 このスクリプトは仕事をしながら常に更新しているので、 **完全な動作テストを全くしていません。** 必ず、テストインスタンスなどで試してから本番インスタンスで実行してください。
 
-2022年8月時点で、Amazon Linux 2, PHP7.4, Nginx, MariaDB 10.5 をメインに動作確認をしています。
+2024年4月時点で、Amazon Linux 2, PHP8.2, Nginx, MariaDB 10.11 をメインに動作確認をしています。
 
 ## 準備
 
@@ -214,11 +214,21 @@ AWS インスタンスに応じて最適化した Apache & Niginx 設定を行�
 - small (tx.small 想定)
 - large (mx.large 想定)
 
-## PHP バージョン
+## PHP バージョン、パラメータの設定
 
 どの PHP バージョンを利用したいかを指定してください。現在、4つのレポジトリに対応しているはずです: Amazon Linux, Remi, Webtactics and Amazon Linux 2 (ベータ). 但しレポジトリによってはインストールできないバージョンもあるかもしれません。
 
-Amazon Linux 2 は、PHP5.6 (Apache のみ), PHP 7.4 & PHP 8.1 の動作確認をしています。 (2023年1月現在)
+Amazon Linux 2 は、PHP5.6 (Apache のみ), PHP 7.4, 8.1, 8.2 の動作確認をしています。 (2024年4月現在)
+
+PHP-FPM のメモリ消費量を、インスタンスの空きメモリ容量から計算し、パラメーターを設定します。
+
+- MariaDB/MySQL サーバーを利用しているか（DB サーバーを利用していると空きメモリが減ります）
+- PHP の php_memory_limit の設定値を確認
+- インスタンスの物理空き容量を確認 (一度テストでインスタンスを立ててみる)
+- 最適な php_pm_max_children プロセス数を計算する
+  - 空き容量を php_memory_limit で割る
+  - PHPプロセス消費量が物理メモリ容量を超えないように気を付ける。（パフォーマンス低下になる）
+
 
 ```
 # PHP Variables
@@ -246,6 +256,40 @@ Amazon Linux 2 は、PHP5.6 (Apache のみ), PHP 7.4 & PHP 8.1 の動作確認�
     php_path_error_log: "/var/log/php_errors.log"
     php_post_max_size:  "32M"
     php_upload_max_filesize:  "32M"
+  # PHP-FPM Process
+    # Set php-fpm max children and request based on php_memory_limit and number of children
+    # For 1GB RAM, "2" (e.g. tX.micro)
+    # For 2GB RAM, "5" (e.g. tX.small / cX.medium)
+    # For 4GB RAM, "10" (e.g. tX.medium / cX-large)
+    # For 8GB RAM, "20" (e.g. tX. mX.large / cX.xlarge)
+    # For 16GB RAM, "50" (e.g. tX mX.xlarge)
+    php_pm_max_children: "10"
+    # For micro, "250"
+    # For small, "500"
+    # For large and above, "1000"
+    pm.max_requests : "1000"
+```
+
+## Nginx パラメーターの設定
+
+
+`nginx_client_max_body_size` は php_post_max_size や php_upload_max_filesize と同じ値にする
+
+FastCGI キャッシュを使うか使わないかを設定する。 `nginx_fastcgi_skip_cache` が「1」であれば使わない。
+
+サイトのキャッシュ利用による、パフォーマンスは低下するが、サイトの表示を完全ダイナミックにしたい場合は「1」にする。例：全ユーザーのログインが必要など。
+
+
+```
+ # Nginx Variables
+  # Allowed Nginx request size
+    # set the same as php_post_max_size & php_upload_max_filesize
+    # check http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
+    nginx_client_max_body_size:  "32m"
+  # Enable or disable fastcgi cache
+    # "0" to use fastcgi
+    # "1" to disable fastcgi
+    nginx_fastcgi_skip_cache: "0"
 ```
 
 ## 追加するSSHユーザーの指定
@@ -316,7 +360,7 @@ Concrete CMS が保存されるディレクトリの所有者ユーザー・グ�
 DB環境を設定します (mariadb / mariadb-client / mysql / mysql-client / none )
 
     - mariadb: MariaDB のサーバーとクライアントをインストールします
-    - mariadb-client: MariaDB のクライアントのみをインストールします。
+    - mariadb-client: MariaDB
     - mysql: MySQL のサーバーとクライアントをインストールします
     - mysql-client: MySQL のクライアントのみをインストールします。
     - none: DB のインストールは何も行いません。

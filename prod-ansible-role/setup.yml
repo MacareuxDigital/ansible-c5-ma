@@ -80,6 +80,20 @@
     php_path_error_log: "/var/log/php_errors.log"
     php_post_max_size:  "32M"
     php_upload_max_filesize:  "32M"
+  # PHP-FPM Process
+    # Set php-fpm max children and request based on php_memory_limit and number of children
+    # For 1GB RAM, "2" (e.g. tX.micro)
+    # For 2GB RAM, "5" (e.g. tX.small / cX.medium)
+    # For 4GB RAM, "10" (e.g. tX.medium / cX-large)
+    # For 8GB RAM, "20" (e.g. tX. mX.large / cX.xlarge)
+    # For 16GB RAM, "50" (e.g. tX mX.xlarge)
+    php_pm_max_children: "10"
+    # For micro, "250"
+    # For small, "500"
+    # For large and above, "1000"
+    pm.max_requests : "1000"
+
+ # Nginx Variables
   # Allowed Nginx request size
     # set the same as php_post_max_size & php_upload_max_filesize
     # check http://nginx.org/en/docs/http/ngx_http_core_module.html#client_max_body_size
