@@ -46,8 +46,7 @@ server {
     error_log    /var/log/nginx/{{ vhost_domain }}_error.log warn;
 
     # Don't use fastcgi cache at all if develop server
-    set $skip_cache 1;
-    # set $skip_cache 0;
+    set $skip_cache {{ nginx_fastcgi_skip_cache }};
 
     # POST requests and urls with a query string should always go to PHP
     if ($request_method = POST) {
