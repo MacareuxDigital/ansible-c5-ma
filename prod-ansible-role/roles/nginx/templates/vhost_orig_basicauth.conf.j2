@@ -55,8 +55,9 @@ server {
     if ($query_string != "") {
             set $skip_cache 1;
     }
-    if ($http_cookie ~ "CONCRETE") {
-            set $skip_cache 1;
+    # Skip cache for requests containing Concrete-specific cookies
+    if ($http_cookie ~* "CONCRETE|CONCRETE_LOGIN|CONCRETE5|CONCRETE5_LOGIN") {
+        set $skip_cache 1;
     }
 
     # WordPress: Skip FastCGI cache for API, admin request and pages
@@ -80,12 +81,13 @@ server {
         try_files $uri / index.php;
     }
 
+    gzip on;
     gzip_vary on;
     gzip_disable msie6;
-    gzip_static on;
-    gzip_comp_level 9;
+    gzip_static off; # Disable static file serving if no .gz files exist
+    gzip_comp_level 6; # Balanced compression level
     gzip_proxied any;
-    gzip_types text/plain text/css application/x-javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip_types text/plain text/css application/json application/javascript application/x-javascript text/xml application/xml application/xml+rss text/javascript;
 
     location / {
     	index index.php index.html index.htm;
@@ -130,9 +132,8 @@ server {
     location ~* \.(jpg|jpeg|gif|png|css|js|ico|svg|webp)$ {
         access_log        off;
         log_not_found     off;
-        # Add 8 days expires to production
-        # We won't add cache for dev
-        # add_header Cache-Control "s-maxage=86400";
+        # Add 7 days expires to production
+        add_header Cache-Control "public, max-age=31536000";
     }
 
     # Don't output hidden files
