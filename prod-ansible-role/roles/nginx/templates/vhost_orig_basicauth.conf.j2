@@ -132,7 +132,7 @@ server {
     location ~* \.(jpg|jpeg|gif|png|css|js|ico|svg|webp)$ {
         access_log        off;
         log_not_found     off;
-        # Add 7 days expires to production
+        # Add 365 days expires to production
         add_header Cache-Control "public, max-age=31536000";
     }
 
