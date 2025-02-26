@@ -34,7 +34,7 @@
     - isDocker=="no"
   systemd: name=mysqld state=started enabled=yes
 
-- include: set_mysqlroot.yml
+- include_tasks: set_mysqlroot.yml
   when: isDocker=="no"
 
 - name: Replace MySQL Config to disable performance schema

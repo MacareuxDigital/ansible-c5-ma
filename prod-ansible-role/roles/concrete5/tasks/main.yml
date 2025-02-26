@@ -10,17 +10,17 @@
 #  include_vars: vars_nginx.yml
 #  when: webserver_handle=="nginx"
 
-- include: 10_upload_concrete5.yml
+- include_tasks: 10_upload_concrete5.yml
   when: c5_upload=="yes"
-- include: 20_install_concrete5.yml
+- include_tasks: 20_install_concrete5.yml
   when: c5_installation=="yes"
-- include: 25_directory_permission.yml
-- include: 30_upload_concrete5_config.yml
-- include: 40_restart_nginx.yml
+- include_tasks: 25_directory_permission.yml
+- include_tasks: 30_upload_concrete5_config.yml
+- include_tasks: 40_restart_nginx.yml
   when:
     - webserver_handle=="nginx"
     - isDocker=="no"
-- include: 40_restart_apache.yml
+- include_tasks: 40_restart_apache.yml
   when:
     - webserver_handle=="apache"
     - isDocker=="no"

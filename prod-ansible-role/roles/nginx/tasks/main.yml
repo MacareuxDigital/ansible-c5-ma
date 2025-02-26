@@ -24,8 +24,8 @@
     - centos_version=="7"
     # - NginxPHPResult.changed == True
     - isDocker=="no"
-- include: set_nginx.yml
-- include: set_nginx-vhost.yml
+- include_tasks: set_nginx.yml
+- include_tasks: set_nginx-vhost.yml
 
 - name: Chenge Directory Permission -  Nginx Log
   file: path="/var/log/nginx/" state=directory recurse=yes mode=0755

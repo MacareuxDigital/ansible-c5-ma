@@ -227,12 +227,12 @@
     - centos_version=="7"
     - NginxPHPResult.changed == True
     - isDocker=="no"
-- include: set_php-fpm.yml
+- include_tasks: set_php-fpm.yml
   when: aws_awslinux !="1"
-- include: set_php-fpm-al-1.yml
+- include_tasks: set_php-fpm-al-1.yml
   when: aws_awslinux=="1"
 
-- include: set_php.yml
+- include_tasks: set_php.yml
 
 - name: Chenge Directory Permission - PHP-fpm
   file: path="/var/log/php-fpm/" state=directory recurse=yes mode=0755

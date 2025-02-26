@@ -2,11 +2,11 @@
   stat: path={{vhost_docroot}}{{vhost_domain}}/application/config/database.php
   register: result
 
-- include: 10_upload_concrete5_backup.yml
-- include: 20_import_mysql.yml
-- include: 30_upload_concrete5_config.yml
-- include: 40_restart_nginx.yml
+- include_tasks: 10_upload_concrete5_backup.yml
+- include_tasks: 20_import_mysql.yml
+- include_tasks: 30_upload_concrete5_config.yml
+- include_tasks: 40_restart_nginx.yml
   when: webserver_handle=="nginx"
-- include: 40_restart_apache.yml
+- include_tasks: 40_restart_apache.yml
   when: webserver_handle=="apache"
-- include: 50_delete_backup.yml
+- include_tasks: 50_delete_backup.yml
