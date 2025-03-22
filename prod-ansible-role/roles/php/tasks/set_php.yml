@@ -26,7 +26,7 @@
   replace: >
     dest=/etc/php.ini
     regexp="max_input_time = 60"
-    replace="max_execution_time = {{php_max_input_time}}"
+    replace="max_input_time = {{php_max_input_time}}"
   notify: Restart php-fpm
 - name: Change PHP max_input_vars
   replace: >
