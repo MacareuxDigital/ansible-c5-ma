@@ -1,27 +1,39 @@
-- name: Install MariaDB Client
-  yum:
+# Disable MariaDB repo for Amazon Linux 2023
+- name: Check if MariaDB repo is configured
+  stat:
+    path: /etc/yum.repos.d/mariadb.repo
+  register: mariadb_repo_exists
+
+- name: Disable MariaDB repo temporarily for Amazon Linux 2023
+  replace:
+    path: /etc/yum.repos.d/mariadb.repo
+    regexp: '^enabled=1'
+    replace: 'enabled=0'
+  when: aws_awslinux == "2023" and mariadb_repo_exists.stat.exists
+
+# Install MariaDB client for different OS versions
+- name: Install MariaDB Client for Amazon Linux 2023
+  dnf:
     name:
-      - MariaDB-devel
-      - MariaDB-client
-    state: installed
-  register: result
-  when:
-    - mariadb_repo not in ["10.5","5.5"]
-- name: Install MariaDB Client
-  yum:
-    name:
-      - mariadb
-      - mariadb-devel
-    state: installed
-  register: result
-  when:
-    - mariadb_repo in ["10.5","5.5"]
-- name: Install pip
-  when: aws_awslinux not in ["1","2"]
-  yum:
-    name:
-      - python-pip
+      - "mariadb105"  # Use native AL2023 package names
+      - "mariadb105-devel"
     state: latest
-- name: Install python mysqlmodule
-  when: aws_awslinux not in ["2"]
-  pip: name=mysql state=latest
+    disablerepo: "mariadb"  # Explicitly disable MariaDB repo
+  when: aws_awslinux == "2023"
+
+# Keep the existing MariaDB client installation tasks for other OS versions
+- name: Install MariaDB Client for non-AL2023
+  yum:
+    name:
+      - MariaDB-client
+      - MariaDB-devel
+    state: latest
+  when: aws_awslinux != "2023"
+
+# Re-enable MariaDB repo if it was disabled
+- name: Re-enable MariaDB repo for Amazon Linux 2023
+  replace:
+    path: /etc/yum.repos.d/mariadb.repo
+    regexp: '^enabled=0'
+    replace: 'enabled=1'
+  when: aws_awslinux == "2023" and mariadb_repo_exists.stat.exists

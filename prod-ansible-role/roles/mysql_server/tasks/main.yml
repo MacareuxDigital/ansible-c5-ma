@@ -1,42 +1,64 @@
 - name: Install MySQL Server for Amazon Linux
   yum:
     name:
-      -  mysql{{mysql_repo}}-server
+      - mysql{{ mysql_repo }}-server
     state: latest
-  when: aws_awslinux =="1"
+  when: aws_awslinux == "1"
   register: mysqlresult
 
 - name: Install MySQL Server for Amazon Linux 2
   yum:
     name:
-      -  mysql-community-server
+      - mysql-community-server
     state: latest
-  when: aws_awslinux =="2"
+  when: aws_awslinux == "2"
   register: mysqlresult
 
 - name: Install MySQL Server for CentOS
   yum:
     name:
       - mysql-community-server
-    enablerepo: mysql{{mysql_repo}}-community
+    enablerepo: mysql{{ mysql_repo }}-community
     state: latest
-  when: aws_awslinux =="no"
+  when: aws_awslinux == "no"
   register: mysqlresult
 
 - name: Start mysqld (CentOS6)
-  service: name=mysqld state=started enabled=yes
+  service: 
+    name: mysqld 
+    state: started 
+    enabled: yes
   when:
-    - centos_version=="6"
-    - isDocker=="no"
-- name: Start mysqld (CentOS7)
-  when:
-    - centos_version=="7"
-    - isDocker=="no"
-  systemd: name=mysqld state=started enabled=yes
+    - centos_version == "6"
+    - isDocker == "no"
 
-- include_tasks: set_mysqlroot.yml
-  when: isDocker=="no"
+- name: Start mysqld (CentOS7)
+  systemd: 
+    name: mysqld 
+    state: started 
+    enabled: yes
+  when:
+    - centos_version == "7"
+    - isDocker == "no"
+
+- name: Include MySQL root setup tasks
+  include_tasks: set_mysqlroot.yml
+  when: isDocker == "no"
 
 - name: Replace MySQL Config to disable performance schema
-  template: src=my.conf.j2 dest=/etc/my.conf
+  template: 
+    src: my.conf.j2 
+    dest: /etc/my.conf
+    mode: '0644'
   notify: Restart mysqld
+- include_tasks: 40_restart_nginx.yml
+  when:
+    - webserver_handle=="nginx"
+    - isDocker=="no"
+- include_tasks: 40_restart_apache.yml
+  when:
+    - webserver_handle=="apache"
+    - isDocker=="no"
+- include_tasks: 40_restart_php-fpm.yml
+  when:
+    - isDocker=="no"

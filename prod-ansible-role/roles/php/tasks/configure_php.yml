@@ -1,0 +1,18 @@
+# PHP configuration
+- name: Configure PHP-FPM
+  include_tasks: set_php-fpm.yml
+  when: aws_awslinux != "1"
+
+- name: Configure PHP-FPM for Amazon Linux 1
+  include_tasks: set_php-fpm-al-1.yml
+  when: aws_awslinux == "1"
+
+- name: Configure PHP settings
+  include_tasks: set_php.yml
+
+- name: Set PHP-FPM directory permissions
+  file:
+    path: "/var/log/php-fpm/"
+    state: directory
+    recurse: yes
+    mode: 0755

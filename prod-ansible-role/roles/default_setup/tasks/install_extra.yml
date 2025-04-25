@@ -1,6 +1,7 @@
-- name: Install extra packages
+- name: Install extra packages (non-AL2023)
   yum:
     name:
       - "etckeeper"
       #  - "monit"
     # enablerepo: epel
+  when: aws_awslinux != "2023"

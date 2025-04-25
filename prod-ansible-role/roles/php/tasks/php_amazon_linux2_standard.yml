@@ -1,0 +1,56 @@
+# Install PHP for Amazon Linux 2 (standard packages)
+- name: Install PHP for Amazon Linux 2 (standard packages)
+  yum:
+    name:
+      - "php"
+      - "php-bcmath"
+      - "php-cli"
+      - "php-common"
+      # - "php-dba"
+      # - "php-embedded"
+      - "php-enchant"
+      - "php-fpm"
+      - "php-gd"
+      # - "php-gmp"
+      - "php-intl"
+      # - "php-json"
+      - "php-ldap"
+      - "php-mbstring"
+      # - "php-pecl-mcrypt"
+      - "php-mysqlnd"
+      # - "php-odbc"
+      - "php-opcache"
+      - "php-pdo"
+      # - "php-pecl-igbinary"
+      # - "php-pecl-ssh2"
+      # - "php-pecl-zip"
+      # - "php-pgsql"
+      - "php-process"
+      # - "php-pspell"
+      # - "php-recode"
+      # - "php-snmp"
+      # - "php-soap"
+      - "php-xml"
+      # - "php-xmlrpc"
+    state: latest
+    enablerepo: "amzn2extra-{{php_version_amznlinux2}}"
+  register: php_installation_status
+
+- name: Install additional PHP packages (PHP 7.2-7.3)
+  yum:
+    name:
+      - "php-pecl-mcrypt"
+      - "php-pecl-zip"
+      - "php-recode"
+    state: latest
+    enablerepo: "amzn2extra-{{php_version_amznlinux2}}"
+  when: php_version_amznlinux2 in ["php72", "php73"]
+
+- name: Install PHP Redis Extension
+  yum:
+    name: "php-pecl-redis"
+    state: latest
+    enablerepo: "amzn2extra-{{php_version_amznlinux2}}"
+  when:
+    - cpu_arch not in ["aarch64"]
+    - php_version_amznlinux2 not in ["php56", "php7.0", "php7.1", "php80", "php81"]

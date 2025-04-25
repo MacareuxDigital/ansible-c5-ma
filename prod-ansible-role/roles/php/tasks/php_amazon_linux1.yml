@@ -1,0 +1,28 @@
+# Install PHP for Amazon Linux 1
+- name: Install PHP packages for Amazon Linux 1
+  yum:
+    name:
+      - "{{php_version_yum}}"
+      - "{{php_version_yum}}-common"
+      - "{{php_version_yum}}-cli"
+      - "{{php_version_yum}}-devel"
+      - "{{php_version_yum}}-fpm"
+      - "{{php_version_yum}}-gd"
+      - "{{php_version_yum}}-intl"
+      - "{{php_version_yum}}-mbstring"
+      - "{{php_version_yum}}-mysqlnd"
+      - "{{php_version_yum}}-opcache"
+      - "{{php_version_yum}}-pdo"
+      - "{{php_version_yum}}-pecl-memcached"
+      - "{{php_version_yum}}-bcmath"
+      #  - "{{php_version_yum}}-pecl-redis" Not Available
+      - "{{php_version_yum}}-xml"
+      - "jq"
+    state: latest
+  register: php_installation_status
+
+- name: Install PHP mcrypt extension (for older PHP versions)
+  yum:
+    name: "{{php_version_yum}}-mcrypt"
+    state: latest
+  when: php_version_yum in ["php56", "php70", "php71"]

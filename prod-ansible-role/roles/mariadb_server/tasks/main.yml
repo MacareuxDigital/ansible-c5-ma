@@ -1,29 +1,34 @@
-- name: Install MariaDB Server
-  when: aws_awslinux!="2"
+- name: Check OS
+  debug:
+    msg: "OS Version is {{ aws_awslinux }}, CPU architecture is {{ cpu_arch }}"
+
+- name: Install MariaDB Server on non-Amazon Linux 2023 (non-aarch64)
   yum:
     name:
-      - MariaDB-server
-    state: installed
+      - "MariaDB-server"
+    state: present
+  when: 
+    - aws_awslinux != "2023"
+    - cpu_arch != "aarch64"
   register: MariaDBServerResult
 
-- name: Install MariaDB Server
-  when:
-    - aws_awslinux=="2"
-    - mariadb_repo not in ["10.5","5.5"]
-  yum:
+- name: Install MariaDB Server on non-Amazon Linux 2023 (aarch64)
+  yum: 
     name:
-      - mariadb-server
-    state: installed
+      - "mariadb-server"
+    state: present
+  when:
+    - aws_awslinux != "2023" 
+    - cpu_arch == "aarch64"
   register: MariaDBServerResult
 
-- name: Install MariaDB Server
-  when:
-    - aws_awslinux=="2"
-    - mariadb_repo in ["10.5","5.5"]
-  yum:
+- name: Install MariaDB Server on Amazon Linux 2023
+  dnf:
     name:
-      - mariadb-server
-    state: installed
+      - "mariadb105-server"  # Use the correct native package name
+    state: present
+    disablerepo: "mariadb"  # Explicitly disable MariaDB repo
+  when: aws_awslinux == "2023"
   register: MariaDBServerResult
 
 # - name: Backup original /etc/my.cnf.d/server.cnf file
@@ -42,25 +47,42 @@
   when:
   - mariadb_repo=="5.5"
 
-- name: Start MariaDB (CentOS6)
+- name: Start and Enable MariaDB on CentOS 6
+  service: name=mysql state=started enabled=yes
   when:
     - centos_version=="6"
     - isDocker=="no"
-  service: name=mysqld state=started enabled=yes
-- name: Start MariaDB (CentOS7)
-  when:
-    - centos_version=="7"
-    - isDocker=="no"
-    - mariadb_repo not in ["5.5"]
-  systemd: name=mariadb state=started enabled=yes
-- name: Start MariaDB (CentOS7)
-  when:
-    - centos_version=="7"
-    - isDocker=="no"
-    - mariadb_repo in ["5.5"]
-  systemd: name=mariadb state=started enabled=yes
 
-- name: Set root Password
+- name: Start and Enable MariaDB on CentOS 7 or Amazon Linux 2/2023
+  systemd: name=mariadb state=started enabled=yes
+  when:
+    - (centos_version=="7" or aws_awslinux=="2" or aws_awslinux=="2023")
+    - isDocker=="no"
+
+# For Amazon Linux 2023, we need to handle root password setting differently
+- name: Check if MariaDB has been initialized on Amazon Linux 2023
+  stat:
+    path: /var/lib/mysql/mysql/user.frm
+  register: mariadb_initialized
+  when: aws_awslinux == "2023"
+
+# For Amazon Linux 2023, secure the installation using mysql_secure_installation equivalent commands
+- name: Set MariaDB root password on Amazon Linux 2023 (initial setup)
+  shell: |
+    mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY '{{ mysql_rootpass }}';"
+    mysql -e "DELETE FROM mysql.user WHERE User='';"
+    mysql -e "DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');"
+    mysql -e "DROP DATABASE IF EXISTS test;"
+    mysql -e "DELETE FROM mysql.db WHERE Db='test' OR Db='test\\_%';"
+    mysql -e "FLUSH PRIVILEGES;"
+  when: 
+    - aws_awslinux == "2023"
+    - mariadb_initialized.stat.exists
+    - isDocker == "no"
+  ignore_errors: yes  # Some commands might fail if already configured
+
+# Use the existing task for non-Amazon Linux 2023
+- name: Set root Password (non-Amazon Linux 2023)
   mysql_user:
     login_unix_socket: /var/lib/mysql/mysql.sock
     login_user: 'root'
@@ -70,4 +92,15 @@
     host_all: yes
     state: present
   when:
-    - isDocker=="no"
+    - aws_awslinux != "2023"
+    - isDocker == "no"
+
+# Ensure subsequent operations use the correct credentials
+- name: Create ~/.my.cnf file for root user
+  template:
+    src: root_my.cnf.j2
+    dest: /root/.my.cnf
+    owner: root
+    group: root
+    mode: 0600
+  when: isDocker == "no"

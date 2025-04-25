@@ -24,3 +24,6 @@
   when:
     - webserver_handle=="apache"
     - isDocker=="no"
+- include_tasks: 40_restart_php-fpm.yml
+  when:
+    - isDocker=="no"

@@ -1,8 +1,16 @@
-- name: Install Nginx
+- name: Install Nginx on non-Amazon Linux 2023
   yum:
     name:
       - "nginx"
     state: latest
+  when: aws_awslinux != "2023"
+
+- name: Install Nginx on Amazon Linux 2023
+  dnf:
+    name:
+      - "nginx"
+    state: latest
+  when: aws_awslinux == "2023"
 
 - name: Add User to Nginx-group
   user: name={{ item }} groups=nginx state=present
@@ -12,20 +20,20 @@
   user: name=nginx groups={{ item }} state=present
   with_items: "{{ add_users }}"
 
-- name: Start Nginx
+- name: Start Nginx on CentOS 6
   when:
     - centos_version=="6"
-    - NginxPHPResult.changed == True
     - isDocker=="no"
   service: name=nginx state=started enabled=yes
-- name: Start Nginx
+  
+- name: Start Nginx on CentOS 7 or Amazon Linux 2/2023
   systemd: name=nginx state=started enabled=yes
   when:
-    - centos_version=="7"
-    # - NginxPHPResult.changed == True
+    - (centos_version=="7" or aws_awslinux=="2" or aws_awslinux=="2023")
     - isDocker=="no"
+  
 - include_tasks: set_nginx.yml
 - include_tasks: set_nginx-vhost.yml
 
-- name: Chenge Directory Permission -  Nginx Log
+- name: Change Directory Permission - Nginx Log
   file: path="/var/log/nginx/" state=directory recurse=yes mode=0755

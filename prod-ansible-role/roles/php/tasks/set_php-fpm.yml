@@ -1,12 +1,136 @@
-# Amazon Linux 2 & CentOS
-- name: Set php-fpm config
-  template: src=www.conf.j2 dest=/etc/php-fpm.d/www.conf
+# Check PHP-FPM directory structure
+- name: Check if php-fpm.d directory exists
+  stat:
+    path: /etc/php-fpm.d
+  register: php_fpm_d_dir
+
+# For Amazon Linux 2023, PHP-FPM configuration directory is likely different
+- name: Find PHP-FPM configuration directories (AL2023)
+  find:
+    paths: /etc
+    patterns: "php*fpm*"
+    file_type: directory
+  register: php_fpm_dirs
+  when: aws_awslinux == "2023" and not php_fpm_d_dir.stat.exists
+
+- name: Display PHP-FPM configuration directories for AL2023
+  debug:
+    msg: "Found PHP-FPM directories: {{ php_fpm_dirs.files | map(attribute='path') | list }}"
+  when: aws_awslinux == "2023" and not php_fpm_d_dir.stat.exists and php_fpm_dirs.files is defined
+
+# Set configuration files for standard paths (AL1, AL2, CentOS)
+- name: Set php-fpm config (Standard paths)
+  template: 
+    src: www.conf.j2 
+    dest: /etc/php-fpm.d/www.conf
   notify: Restart php-fpm
+  when: php_fpm_d_dir.stat.exists
+
+# For Amazon Linux 2023, we need to find the correct www.conf file
+- name: Find www.conf for Amazon Linux 2023
+  find:
+    paths: "{{ php_fpm_dirs.files | map(attribute='path') | list }}"
+    patterns: 
+      - "www.conf" 
+      - "*.d/www.conf"
+    recurse: yes
+  register: www_conf_files
+  when: aws_awslinux == "2023" and not php_fpm_d_dir.stat.exists and php_fpm_dirs.files is defined and php_fpm_dirs.files | length > 0
+
+# Create php-fpm.d directory if needed (AL2023)
+- name: Create php-fpm.d directory for AL2023
+  file:
+    path: /etc/php-fpm.d
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: aws_awslinux == "2023" and not php_fpm_d_dir.stat.exists
+
+# Simple check for www_conf_files before using it
+- name: Check if www.conf files were found
+  set_fact:
+    www_conf_files_found: "{{ www_conf_files is defined and www_conf_files.files is defined and www_conf_files.files | length > 0 }}"
+
+# Apply configuration to found config files
+- name: Set php-fpm config for Amazon Linux 2023 (found files)
+  template:
+    src: www.conf.j2
+    dest: "{{ item.path }}"
+  with_items: "{{ www_conf_files.files }}"
+  notify: Restart php-fpm
+  when: aws_awslinux == "2023" and www_conf_files_found | bool
+
+# Create default www.conf if needed (fallback)
+- name: Create default www.conf (AL2023 fallback)
+  template:
+    src: www.conf.j2
+    dest: /etc/php-fpm.d/www.conf
+  notify: Restart php-fpm
+  when: aws_awslinux == "2023" and not php_fpm_d_dir.stat.exists and not www_conf_files_found | bool
+
+# Check directory structures for php lib directories
+- name: Check if php/opcache directory exists
+  stat:
+    path: /var/lib/php/opcache
+  register: php_opcache_dir
+
+- name: Check if php/session directory exists
+  stat:
+    path: /var/lib/php/session
+  register: php_session_dir
+
+- name: Check if php/wsdlcache directory exists
+  stat:
+    path: /var/lib/php/wsdlcache
+  register: php_wsdlcache_dir
 
 # CentOS7 with webtactics repo & Amazon Linux 2
 - name: Change Permission opcache dir
-  file: path=/var/lib/php/opcache owner=root group={{c5dir_group}}
+  file: 
+    path: /var/lib/php/opcache 
+    owner: root 
+    group: "{{c5dir_group}}"
+    state: directory
+  when: php_opcache_dir.stat.exists
+
 - name: Change Permission session dir
-  file: path=/var/lib/php/session owner=root group={{c5dir_group}}
+  file: 
+    path: /var/lib/php/session 
+    owner: root 
+    group: "{{c5dir_group}}"
+    state: directory
+  when: php_session_dir.stat.exists
+
 - name: Change Permission wsdlcache dir
-  file: path=/var/lib/php/wsdlcache owner=root group={{c5dir_group}}
+  file: 
+    path: /var/lib/php/wsdlcache 
+    owner: root 
+    group: "{{c5dir_group}}"
+    state: directory
+  when: php_wsdlcache_dir.stat.exists
+
+# Find php cache directories for AL2023
+- name: Find PHP cache directories for AL2023
+  find:
+    paths: /var/lib
+    patterns: "php*"
+    file_type: directory
+  register: php_cache_dirs
+  when: aws_awslinux == "2023" and (not php_opcache_dir.stat.exists or not php_session_dir.stat.exists or not php_wsdlcache_dir.stat.exists)
+
+# Check if php_cache_dirs exists and has files
+- name: Check if PHP cache directories were found
+  set_fact:
+    php_cache_dirs_found: "{{ php_cache_dirs is defined and php_cache_dirs.files is defined and php_cache_dirs.files | length > 0 }}"
+  when: aws_awslinux == "2023"
+
+# Set permissions for found cache directories
+- name: Set permissions for PHP cache directories in AL2023
+  file:
+    path: "{{ item.path }}"
+    owner: root
+    group: "{{ c5dir_group }}"
+    recurse: yes
+  with_items: "{{ php_cache_dirs.files }}"
+  when: aws_awslinux == "2023" and php_cache_dirs_found | bool

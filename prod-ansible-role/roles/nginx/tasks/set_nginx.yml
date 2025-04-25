@@ -11,16 +11,16 @@
   template: src=fastcgi_params_custom.j2 dest=/etc/nginx/fastcgi_params_custom
   notify: Restart Nginx
 
-# Change permission of Nginx temp directory
-- name: Change Permission Nginx temp directory
-  file: path=/var/lib/nginx/tmp/client_body owner={{webserver_user}} group={{webserver_group}}
-  when: webserver_changeowner=="yes"
-- name: Change Permission session dir
-  file: path=/var/lib/nginx/tmp/proxy owner={{webserver_user}} group={{webserver_group}}
-  when: webserver_changeowner=="yes"
-- name: Change Permission session dir
-  file: path=/var/lib/nginx/tmp/scgi owner={{webserver_user}} group={{webserver_group}}
-  when: webserver_changeowner=="yes"
-- name: Change Permission session dir
-  file: path=/var/lib/nginx/tmp/uwsgi owner={{webserver_user}} group={{webserver_group}}
-  when: webserver_changeowner=="yes"
+# Change permission of Nginx temp directories
+- name: Change Permission Nginx temp directories
+  file:
+    path: "/var/lib/nginx/tmp/{{ item }}"
+    owner: "{{ webserver_user }}"
+    group: "{{ webserver_group }}"
+    state: directory # Ensure the directory exists, although Nginx likely creates it
+  loop:
+    - client_body
+    - proxy
+    - scgi
+    - uwsgi
+  when: webserver_changeowner == "yes"

@@ -1,61 +1,133 @@
-- name: Set PHP TimeZone
-  replace: >
-    dest=/etc/php.ini
-    regexp="^;date\.timezone ="
-    replace="date.timezone = Asia/Tokyo"
-  notify: Restart php-fpm
-- name: Enable PHP short_open_tag
-  replace: >
-    dest=/etc/php.ini
-    regexp="short_open_tag = Off"
-    replace="short_open_tag = On"
-  notify: Restart php-fpm
-- name: Disabled PHP expose_php
-  replace: >
-    dest=/etc/php.ini
-    regexp="expose_php = On"
-    replace="expose_php = Off"
-  notify: Restart php-fpm
-- name: Change PHP max_execution_time
-  replace: >
-    dest=/etc/php.ini
-    regexp="max_execution_time = 60"
-    replace="max_execution_time = {{php_max_execution_time}}"
-  notify: Restart php-fpm
-- name: Change PHP max_input_time
-  replace: >
-    dest=/etc/php.ini
-    regexp="max_input_time = 60"
-    replace="max_execution_time = {{php_max_input_time}}"
-  notify: Restart php-fpm
-- name: Change PHP max_input_vars
-  replace: >
-    dest=/etc/php.ini
-    regexp="^; max_input_vars = 1000"
-    replace="max_input_vars = {{php_max_input_vars}}"
-  when: php_max_input_vars not in ['1000'] 
-  notify: Restart php-fpm
-- name: Change PHP memory_limit
-  replace: >
-    dest=/etc/php.ini
-    regexp="memory_limit = 128M"
-    replace="memory_limit = {{php_memory_limit}}"
-  notify: Restart php-fpm
-- name: Set PHP error log
-  replace: >
-    dest=/etc/php.ini
-    regexp=";error_log = php_errors.log"
-    replace="error_log = {{php_path_error_log}}"
-  notify: Restart php-fpm
-- name: Change PHP post_max_size
-  replace: >
-    dest=/etc/php.ini
-    regexp="post_max_size = 8M"
-    replace="post_max_size = {{php_post_max_size}}"
-  notify: Restart php-fpm
-- name: Change PHP upload_max_filesize
-  replace: >
-    dest=/etc/php.ini
-    regexp="upload_max_filesize = 2M"
-    replace="upload_max_filesize = {{php_upload_max_filesize}}"
-  notify: Restart php-fpm
+# Check if the standard php.ini exists
+- name: Check if standard php.ini exists
+  stat:
+    path: /etc/php.ini
+  register: php_ini_exists
+
+# For Amazon Linux 2023, find the PHP INI files
+- name: Find PHP INI files (AL2023)
+  find:
+    paths: /etc
+    patterns: "php*.ini"
+    recurse: yes
+  register: php_ini_files
+  when: aws_awslinux == "2023" and not php_ini_exists.stat.exists
+
+- name: Display found PHP INI files
+  debug:
+    msg: "Found PHP INI files: {{ php_ini_files.files | map(attribute='path') | list }}"
+  when: aws_awslinux == "2023" and not php_ini_exists.stat.exists and php_ini_files.files is defined
+
+# Define the PHP INI path based on OS version
+- name: Set PHP INI path variable
+  set_fact:
+    php_ini_path: "{{ '/etc/php.ini' if aws_awslinux != '2023' else '/etc/php/php.ini' }}"
+
+- name: Display PHP INI path
+  debug:
+    msg: "Using PHP INI path: {{ php_ini_path }}"
+
+# Apply changes to php.ini
+- block:
+    - name: Set PHP TimeZone
+      replace:
+        dest: "{{ php_ini_path }}"
+        regexp: "^;date\\.timezone ="
+        replace: "date.timezone = Asia/Tokyo"
+      notify: Restart php-fpm
+
+    - name: Enable PHP short_open_tag
+      replace:
+        dest: "{{ php_ini_path }}"
+        regexp: "short_open_tag = Off"
+        replace: "short_open_tag = On"
+      notify: Restart php-fpm
+
+    - name: Disable PHP expose_php
+      replace:
+        dest: "{{ php_ini_path }}"
+        regexp: "expose_php = On"
+        replace: "expose_php = Off"
+      notify: Restart php-fpm
+
+    - name: Change PHP max_execution_time
+      replace:
+        dest: "{{ php_ini_path }}"
+        regexp: "max_execution_time = 60"
+        replace: "max_execution_time = {{ php_max_execution_time | default(60) }}"
+      notify: Restart php-fpm
+
+    - name: Change PHP max_input_time
+      replace:
+        dest: "{{ php_ini_path }}"
+        regexp: "max_input_time = 60"
+        replace: "max_input_time = {{ php_max_input_time | default(60) }}"
+      notify: Restart php-fpm
+
+    - name: Change PHP max_input_vars
+      replace:
+        dest: "{{ php_ini_path }}"
+        regexp: "^; max_input_vars = 1000"
+        replace: "max_input_vars = {{ php_max_input_vars | default(1000) }}"
+      notify: Restart php-fpm
+      when: php_max_input_vars | default(1000) != 1000
+
+    - name: Change PHP memory_limit
+      replace:
+        dest: "{{ php_ini_path }}"
+        regexp: "memory_limit = 128M"
+        replace: "memory_limit = {{ php_memory_limit | default('128M') }}"
+      notify: Restart php-fpm
+
+    - name: Set PHP error log
+      replace:
+        dest: "{{ php_ini_path }}"
+        regexp: ";error_log = php_errors.log"
+        replace: "error_log = {{ php_path_error_log | default('/var/log/php_errors.log') }}"
+      notify: Restart php-fpm
+
+    - name: Change PHP post_max_size
+      replace:
+        dest: "{{ php_ini_path }}"
+        regexp: "post_max_size = 8M"
+        replace: "post_max_size = {{ php_post_max_size | default('8M') }}"
+      notify: Restart php-fpm
+
+    - name: Change PHP upload_max_filesize
+      replace:
+        dest: "{{ php_ini_path }}"
+        regexp: "upload_max_filesize = 2M"
+        replace: "upload_max_filesize = {{ php_upload_max_filesize | default('2M') }}"
+      notify: Restart php-fpm
+  when: php_ini_exists.stat.exists or (php_ini_files.files is defined and php_ini_files.files | length > 0)
+
+# For Amazon Linux 2023, create a minimal php.ini if none exists
+- block:
+    - name: Create PHP INI directory for AL2023 if needed
+      file:
+        path: "/etc/php"
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create basic php.ini for AL2023 if needed
+      copy:
+        content: |
+          [PHP]
+          engine = On
+          short_open_tag = On
+          expose_php = Off
+          max_execution_time = {{ php_max_execution_time | default(60) }}
+          max_input_time = {{ php_max_input_time | default(60) }}
+          max_input_vars = {{ php_max_input_vars | default(1000) }}
+          memory_limit = {{ php_memory_limit | default('128M') }}
+          post_max_size = {{ php_post_max_size | default('8M') }}
+          upload_max_filesize = {{ php_upload_max_filesize | default('2M') }}
+          date.timezone = Asia/Tokyo
+        dest: "/etc/php/php.ini"
+        owner: root
+        group: root
+        mode: '0644'
+      notify: Restart php-fpm
+  when: aws_awslinux == "2023" and not php_ini_exists.stat.exists and (php_ini_files.files is not defined or php_ini_files.files | length == 0)

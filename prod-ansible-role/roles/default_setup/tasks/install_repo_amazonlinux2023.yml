@@ -1,0 +1,27 @@
+# Configure repositories for Amazon Linux 2023
+- name: Update repository metadata (Amazon Linux 2023)
+  dnf:
+    update_cache: yes
+
+- name: Check if CodeReady Builder repository exists
+  stat:
+    path: /etc/yum.repos.d/amazonlinux-2023.repo
+  register: codeready_repo
+
+- name: Enable CodeReady Builder (equivalent to PowerTools)
+  ini_file:
+    path: /etc/yum.repos.d/amazonlinux-2023.repo
+    section: amazonlinux-2023-codeready-builder
+    option: enabled
+    value: "1"
+    backup: yes
+  when: codeready_repo.stat.exists
+  ignore_errors: yes
+
+- name: Install AWS utilities
+  dnf:
+    name:
+      - "aws-cfn-bootstrap"
+      - "cloud-init"
+      - "aws-cli"
+    state: latest

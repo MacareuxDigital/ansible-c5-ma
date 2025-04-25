@@ -1,0 +1,16 @@
+# Configure user permissions
+- name: Add users to Nginx group
+  user: 
+    name: "{{ item }}" 
+    groups: nginx 
+    append: yes
+    state: present
+  with_items: "{{ add_users }}"
+
+- name: Add Nginx to user groups
+  user: 
+    name: nginx 
+    groups: "{{ item }}" 
+    append: yes
+    state: present
+  with_items: "{{ add_users }}"

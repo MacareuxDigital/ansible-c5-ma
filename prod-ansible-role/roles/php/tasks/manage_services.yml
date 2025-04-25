@@ -1,0 +1,32 @@
+# Service management
+- name: Start and enable Nginx and PHP-FPM on CentOS 6
+  block:
+    - name: Start and enable Nginx (CentOS 6)
+      service: 
+        name: nginx 
+        state: started 
+        enabled: true
+    - name: Start and enable php-fpm (CentOS 6)
+      service: 
+        name: php-fpm 
+        state: started 
+        enabled: true
+  when:
+    - centos_version == "6"
+    - php_installation_status.changed | default(false)
+
+- name: Start and enable Nginx and PHP-FPM on CentOS 7
+  block:
+    - name: Start and enable Nginx (CentOS 7)
+      systemd: 
+        name: nginx 
+        state: started 
+        enabled: true
+    - name: Start and enable php-fpm (CentOS 7)
+      systemd: 
+        name: php-fpm 
+        state: started 
+        enabled: true
+  when:
+    - centos_version == "7"
+    - php_installation_status.changed | default(false)

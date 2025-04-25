@@ -1,4 +1,2 @@
 - name: Restart Apache
   service: name=httpd state=restarted enabled=yes
-- name: Restart php-fpm
-  service: name=php-fpm state=restarted

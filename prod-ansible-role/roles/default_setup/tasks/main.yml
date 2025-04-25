@@ -1,46 +1,89 @@
-- name: Set hostname to {{server_name}}
-  hostname: name={{server_name}}
-  when: isDocker=="no"
-- include_tasks: initialize_amazonlinux.yml
-  when: aws_awslinux in ["1", "2"]
-- name: Set locale to /etc/sysconfig/i18n
-  when: centos_version=="6"
-  replace: >
-    dest=/etc/sysconfig/i18n
-    regexp='^LANG=en_US\.UTF-8'
-    replace='LANG={{locale}}'
-- name: set locale to {{locale}}
-  when:
-    - centos_version=="7"
-    - isDocker=="no"
-  shell: localectl set-locale LANG={{locale}}
-  register: set_locale
-  changed_when: false
-- name: Set timezone to {{zone}}
-  changed_when: false
+# Server initialization tasks
+- name: Set hostname
+  hostname: name={{ server_name }}
+  when: isDocker == "no"
+
+# OS-specific initialization
+- name: Initialize Amazon Linux
+  include_tasks: initialize_amazonlinux.yml
+  when: aws_awslinux in ["1", "2", "2023"]
+
+# Locale configuration based on the OS version
+- name: Configure locale settings
+  block:
+    - name: Set locale in /etc/sysconfig/i18n (CentOS 6)
+      replace:
+        dest: /etc/sysconfig/i18n
+        regexp: '^LANG=en_US\.UTF-8'
+        replace: 'LANG={{ locale }}'
+      when: centos_version == "6"
+    
+    - name: Set locale using localectl (CentOS 7+/Amazon Linux 2+)
+      shell: localectl set-locale LANG={{ locale }}
+      register: set_locale
+      changed_when: false
+      when:
+        - centos_version == "7" or aws_awslinux in ["2", "2023"]
+        - isDocker == "no"
+
+# Timezone configuration
+- name: Set timezone
   timezone:
-    name: "{{zone}}"
-  when: isDocker=="no"
-- include_tasks: install_repo_centos6.yml
-  when: centos_version=="6" and aws_awslinux=="no"
-- include_tasks: install_repo_centos7.yml
-  when: centos_version=="7" and aws_awslinux=="no"
-- include_tasks: install_repo_amazonlinux2.yml
-  when: aws_awslinux=="2"
-- name: Apply All Updates
+    name: "{{ zone }}"
+  changed_when: false
+  when: isDocker == "no"
+
+# Repository setup based on OS
+- name: Configure repositories
+  include_tasks: "{{ repo_task_file }}"
+  vars:
+    repo_task_file: >-
+      {% if centos_version == "6" and aws_awslinux == "no" %}install_repo_centos6.yml
+      {% elif centos_version == "7" and aws_awslinux == "no" %}install_repo_centos7.yml
+      {% elif aws_awslinux == "2" %}install_repo_amazonlinux2.yml
+      {% elif aws_awslinux == "2023" %}install_repo_amazonlinux2023.yml{% else %}install_repo_default.yml
+      {% endif %}
+
+# Update packages
+- name: Apply all updates
   yum:
     name: '*'
     state: latest
-- include_tasks: install_util.yml
-- include_tasks: install_extra.yml
-- include_tasks: initialize_etckeeper.yml
-- include_tasks: initialize_logrorate.yml
-- include_tasks: initialize_firewall_centos7.yml
+  when: aws_awslinux != "2023"
+
+- name: Apply all updates (Amazon Linux 2023)
+  dnf:
+    name: '*'
+    state: latest
+  when: aws_awslinux == "2023"
+
+# Install utilities and extras
+- name: Install utilities
+  include_tasks: install_util.yml
+
+- name: Install extra packages
+  include_tasks: install_extra.yml
+
+# System initialization tasks
+- name: Initialize system components
+  block:
+    - name: Initialize etckeeper
+      include_tasks: initialize_etckeeper.yml
+      when: aws_awslinux != "2023"  # Skip for Amazon Linux 2023 entirely
+      
+    - name: Initialize logrotate
+      include_tasks: initialize_logrorate.yml
+
+# Conditional system components
+- name: Initialize firewall (CentOS 7)
+  include_tasks: initialize_firewall_centos7.yml
   when:
-    - centos_version=="7" and aws_awslinux=="no"
-    - centos_firewall_enable=="yes"
-    - isDocker=="no"
-- include_tasks: initialize_swapfile.yml
+    - centos_version == "7" and aws_awslinux == "no"
+    - centos_firewall_enable == "yes"
+    - isDocker == "no"
+
+- name: Initialize swap file
+  include_tasks: initialize_swapfile.yml
   when:
-    - centos_version=="7" or aws_awslinux=="2"
-    - isDocker=="no"
+    - (centos_version == "7" or aws_awslinux in ["2", "2023"])
+    - isDocker == "no"

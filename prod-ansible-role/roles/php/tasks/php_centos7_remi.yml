@@ -1,0 +1,37 @@
+# Install PHP for CentOS 7 (Remi)
+- name: Install PHP packages
+  yum:
+    name:
+      - "php"
+      - "php-common"
+      - "php-cli"
+      - "php-fpm"
+      - "php-gd"
+      - "php-mbstring"
+      - "php-mysql"
+      - "php-opcache"
+      - "php-pdo"
+      - "php-xml"
+      - "php-gmp"
+      - "php-bcmath"
+      - "php-pecl-zip"
+      - "php-pecl-memcached"
+    state: latest
+    enablerepo: "epel,remi,remi-{{ php_version_yum }}"
+  register: php_installation_status
+
+- name: Install PHP mcrypt
+  yum:
+    name: "php-mcrypt"
+    state: latest
+    enablerepo: "epel,remi,remi-{{ php_version_yum }}"
+  when: php_version_yum not in ["php72", "php80", "php81"]
+
+- name: Enable PHP-FPM service
+  systemd:
+    name: php-fpm
+    state: started
+    enabled: yes
+  when:
+    - isDocker == "no"
+  ignore_errors: yes

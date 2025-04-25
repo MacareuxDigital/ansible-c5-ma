@@ -1,0 +1,14 @@
+# Restart PHP-FPM depending on the system type
+- name: Restart PHP-FPM on Amazon Linux 2023
+  systemd:
+    name: "{{ 'php-fpm@' + (php_version_amznlinux2023 | replace('php', '')) if php_version_amznlinux2023 | replace('php', '') else 'php-fpm' }}"
+    state: restarted
+  when: aws_awslinux == "2023"
+  ignore_errors: true
+
+- name: Restart PHP-FPM on other systems
+  service: 
+    name: php-fpm 
+    state: restarted
+  when: aws_awslinux != "2023"
+  ignore_errors: true

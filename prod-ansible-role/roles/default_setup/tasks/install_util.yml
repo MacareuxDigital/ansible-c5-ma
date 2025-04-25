@@ -1,4 +1,4 @@
-- name: Install utilities
+- name: Install utilities (non-AL2023)
   yum:
     name:
       - "wget"
@@ -18,38 +18,86 @@
       - "zip"
       - "unzip"
     state: latest
+  when: aws_awslinux != "2023"
 
-- name: Install MySQL-Python for Amazon Linux
+- name: Install utilities (AL2023)
+  dnf:
+    name:
+      - "wget"
+      - "tcpdump"
+      - "sysstat"
+      - "nmap"
+      - "gcc"
+      - "make"
+      - "git"
+      - "openssl-devel"
+      - "vim-enhanced"
+      # AL2023 uses Python 3 by default
+      - "python3-devel"
+      - "python3-setuptools"
+      - "python3-pip"
+      # curl-minimal is already installed, avoid conflict
+      # - "curl"
+      - "zip"
+      - "unzip"
+    state: latest
+  when: aws_awslinux == "2023"
+
+- name: Install MySQL-Python for Amazon Linux 1
   yum:
     name:
       - "MySQL-python"
     state: latest
-  when: aws_awslinux=="1"
-- name: Install MySQL-Python for Amazon Linux
+  when: aws_awslinux == "1"
+
+- name: Install MySQL-Python for Amazon Linux 2
   yum:
     name:
       - "python3-pip"
       - "MySQL-python"
     state: latest
-  when: aws_awslinux=="2"
+  when: aws_awslinux == "2"
 
-- name: Install python3-mysqld
+- name: Install Python3 pip for Amazon Linux 2023
+  dnf:
+    name:
+      - "python3-pip"
+    state: latest
+  when: aws_awslinux == "2023"
+
+- name: Install PyMySQL with pip (non-AL2023)
   pip:
     name: pymysql
     state: present
+  when: aws_awslinux != "2023"
+
+- name: Install PyMySQL with pip3 (AL2023)
+  pip:
+    name: pymysql
+    executable: pip3
+    state: present
+  when: aws_awslinux == "2023"
 
 - name: Install mail
   yum:
     name:
       - "mail"
     state: latest
-  when: centos_version=="6"
-- name: Install mailx
+  when: centos_version == "6" and aws_awslinux != "2023"
+
+- name: Install mailx (CentOS 7 or Amazon Linux 2)
   yum:
     name:
       - "mailx"
     state: latest
-  when: centos_version=="7"
+  when: centos_version == "7" and aws_awslinux != "2023"
+
+- name: Install mailx (Amazon Linux 2023)
+  dnf:
+    name:
+      - "mailx"
+    state: latest
+  when: aws_awslinux == "2023"
 
 - name: Install utilities for PHP 5.6 on Amazon Linux 2
   yum:
@@ -71,5 +119,5 @@
       - "t1lib"
     state: latest
   when:
-    - aws_awslinux=="2"
-    - php_version_amznlinux2=="php56"
+    - aws_awslinux == "2"
+    - php_version_amznlinux2 == "php56"

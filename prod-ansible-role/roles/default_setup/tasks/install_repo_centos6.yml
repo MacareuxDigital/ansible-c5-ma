@@ -3,13 +3,22 @@
     name:
       - https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
     state: present
+  register: epel_installed
 
 - name: Install remi repository
   yum:
     name:
       - http://rpms.remirepo.net/enterprise/remi-release-6.rpm
     state: present
-  when: centos_phprepo=="remi"
+  when: centos_phprepo == "remi"
+  register: remi_installed
+
+- name: Enable remi repository in yum configuration
+  replace:
+    path: "/etc/yum.repos.d/remi.repo"
+    regexp: '^enabled=0$'
+    replace: 'enabled=1'
+  when: centos_phprepo == "remi" and remi_installed.changed
 
 #- name: Remove repository (and clean up left-over metadata)
 #  yum_repository:
