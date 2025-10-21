@@ -1,0 +1,28 @@
+- name: Set architecture variable for AL2023
+  set_fact:
+    arch_suffix: "{{ 'x86_64' if cpu_arch == 'amd64' else cpu_arch }}"
+
+- name: Install Fedora EPEL repository for AL2023
+  dnf:
+    name:
+      - epel-release
+    state: present
+
+- name: Install CodeReady Builder repository for AL2023
+  command: dnf config-manager --enable crb
+  args:
+    creates: /etc/yum.repos.d/almalinux-crb.repo
+  when: cpu_arch == "x86_64"
+
+- name: Install CodeReady Builder repository for AL2023 (ARM)
+  command: dnf config-manager --enable crb
+  args:
+    creates: /etc/yum.repos.d/almalinux-crb.repo
+  when: cpu_arch == "aarch64"
+
+- name: Install AWS utilities for AL2023
+  dnf:
+    name:
+      - cloud-init
+      - awscli
+    state: latest

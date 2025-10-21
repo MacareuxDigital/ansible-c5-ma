@@ -1,0 +1,48 @@
+# Install PHP for Amazon Linux 2023 based on the configured version
+- name: Extract PHP version number from config
+  set_fact:
+    php_version_number: "{{ php_version_amznlinux2023 | regex_replace('php', '') }}"
+
+- name: Set PHP package prefix
+  set_fact:
+    php_package_prefix: "php{{ php_version_number }}"
+
+- name: Update all packages to latest
+  dnf:
+    name: "*"
+    state: latest
+
+- name: Install PHP {{ php_version_number }} and required extensions from Amazon Linux 2023 repo
+  dnf:
+    name:
+      - "php{{ php_version_number }}"
+      - "php{{ php_version_number }}-common"
+      - "php{{ php_version_number }}-fpm"
+      - "php{{ php_version_number }}-xml"
+      - "php{{ php_version_number }}-cli"
+      - "php{{ php_version_number }}-mbstring"
+      - "php{{ php_version_number }}-opcache"
+      - "php{{ php_version_number }}-pdo"
+      - "php{{ php_version_number }}-bcmath"
+      - "php{{ php_version_number }}-enchant"
+      - "php{{ php_version_number }}-gd"
+      - "php{{ php_version_number }}-intl"
+      - "php{{ php_version_number }}-mysqlnd"
+      - "php{{ php_version_number }}-process"
+      - "php{{ php_version_number }}-ldap"
+      - "php{{ php_version_number }}-zip"
+    state: present
+  register: php_installation_status
+
+- name: Create symlink for PHP binary
+  file:
+    src: "/usr/bin/php8.3"
+    dest: "/usr/bin/php"
+    state: link
+    force: yes
+
+- name: Ensure php-fpm service is enabled and properly named
+  systemd:
+    name: "php-fpm"
+    enabled: yes
+  when: isDocker == "no"

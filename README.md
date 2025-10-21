@@ -10,7 +10,9 @@ You will connect to AWS Linux or CentOS7 and start sending commands to setup the
 
 THIS ANSIBLE IS VERY UGRY. KEEP CHANGING AS WE WORK. WE CANNOT GURANTEE ANYTHING. SO YOU MUST USE FOR DEV INSTANCE FIRST BEFORE APPLYING PRODUCTION. I WOULD NOT DEPLOY TO PRODUCTION EITHER.
 
-As of April, 2024, I've mainly tested on Amazon Linux 2 with Nginx, PHP8.2 and MariaDB 10.11
+As of October, 2025, I've tested on:
+- Amazon Linux 2 with Nginx, PHP8.2 and MariaDB 10.11
+- Amazon Linux 2023 with Nginx, PHP8.3 and MariaDB 10.5+
 
 -----
 
@@ -190,14 +192,23 @@ Use `ls -F /usr/share/zoneinfo` to list timezone on CentOS6/Amazon Linux, or `su
 ## Amazon Linux?
 
 Amazon Linux has its own repo and setup. So we want you to indicate.
-If you are using Amazon Linux, type "1". If you're using Amazon Linux 2, type "2". If this is not Amazon Linux, type "no".
+- If you are using Amazon Linux, type "1" 
+- If you're using Amazon Linux 2, type "2"
+- If you're using Amazon Linux 2023, type "2023"
+- If this is not Amazon Linux, type "no"
 
 ```
-  - aws_awslinux:           "1"
-  - aws_repo_upgrade:       "none"
-
-
+  - aws_awslinux:           "2023"
+  - aws_repo_upgrade:       "yes"
 ```
+
+### Amazon Linux 2023 Changes
+
+**Package Manager**: Amazon Linux 2023 uses `dnf` instead of `yum`
+**Amazon Linux Extras**: No longer available in AL2023. Native packages are used instead.
+**PHP Versions**: Supports PHP 8.1, 8.2, and 8.3 natively
+**MariaDB**: Native support for MariaDB 10.5+ without external repositories
+**Architecture**: Full support for both Intel (x86_64) and ARM (aarch64) architectures
 
 ## CentOS Version
 
@@ -246,7 +257,8 @@ Currently we only have the following setting.
 
 Please enter which PHP version you want to install. Currently supports 4 types of repo: Amazon Linux, Remi, and Amazon Linux 2 (beta). You may not be able to install certain types depends on the repos. Please read the comment in setup.yml carefully.
 
-For Amazon Linux 2, I've tested PHP5.6 (Apache only) and 7.4, 8.1 & 8.2. (as of April 2024)
+For Amazon Linux 2, I've tested PHP5.6 (Apache only) and 7.4, 8.1 & 8.2.
+For Amazon Linux 2023, I've tested PHP8.1, 8.2 & 8.3 natively. (as of October 2025)
 
 You want to calculate PHP-FPM memory consumption based on available memory of the instance.
 
@@ -273,6 +285,10 @@ You want to calculate PHP-FPM memory consumption based on available memory of th
   ### Remi repo DOES NOT support aarch64 yet as of Sep 2022.
   ### Redis driver is not available for PHP 7.1 package
   ### For PHP5.6 on Amazon Linux, it will use Remi repo regardless. The parameter format is different. Please be careful
+## PHP version for Amazon Linux 2023 (php8.1 / php8.2 / php8.3)
+    php_version_amznlinux2023: "php8.3"
+  ### Amazon Linux 2023 uses native repositories for PHP 8.x - no external repos needed
+  ### Supports both Intel (x86_64) and ARM (aarch64) architectures natively
 ## Set PHP config, file_upload, max_post_size, and Nginx's client max body size
   # For more information about the following parameters,
     # check https://www.php.net/manual/ini.core.php

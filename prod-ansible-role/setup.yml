@@ -27,7 +27,7 @@
 ## How many generations do you want to keep" (numbers)
     logrotate_generation:    "30"
 
-# Swap (Only supports CentOS7 & Amazon Linux 2)
+# Swap (Only supports CentOS7, Amazon Linux 2 & Amazon Linux 2023)
 ## Create swap file on EC2 server? (yes / no)
     swap_create:             "yes"
 ## Define the location of swapfile
@@ -35,13 +35,13 @@
 ## Define the size of swapfile
     swap_size:               "1024"
 
-# Is this AmazonLinux? (1 / 2 / no)
-## For Amazon Linux, type 1. For Amazon Linux 2, type 2. "no" if is's not Amazon Linux.
+# Is this AmazonLinux? (1 / 2 / 2023 / no)
+## For Amazon Linux, type 1. For Amazon Linux 2, type 2. For Amazon Linux 2023, type 2023. "no" if is's not Amazon Linux.
     aws_awslinux:           "2"
     aws_repo_upgrade:       "yes"
 
 # CentOS Version? (6 / 7)
-## This option is also used for Amazon Linux and Amazon Linux 2
+## This option is also used for Amazon Linux and Amazon Linux 2. Amazon Linux 2023 uses "7" for compatibility
     centos_version:         "7"
 
 ## PHP Repo for CentOS (remi/none)
@@ -70,6 +70,8 @@
   ### Remi repo DOES NOT support aarch64 yet as of Sep 2022.
   ### Redis driver is not available for PHP 7.1 package
   ### For PHP5.6 on Amazon Linux, it will use Remi repo regardless. The parameter format is different. Please be careful
+## PHP version for Amazon Linux 2023 (php8.1 / php8.2 / php8.3)
+    php_version_amznlinux2023: "php8.3"
 ## Set PHP config, file_upload, max_post_size, and Nginx's client max body size
   # For more information about the following parameters,
     # check https://www.php.net/manual/ini.core.php
@@ -91,7 +93,7 @@
     # For micro, "250"
     # For small, "500"
     # For large and above, "1000"
-    pm.max_requests : "1000"
+    php_pm_max_requests : "1000"
 
  # Nginx Variables
   # Allowed Nginx request size
@@ -267,7 +269,7 @@
   - role: mysql_repo
     when:
     - db_environment in ['mysql', 'mysql-client']
-    - aws_awslinux in ['no', '2']
+    - aws_awslinux in ['no', '2', '2023']
   - role: mysql_client
     when: db_environment in ['mysql', 'mysql-client']
   - role: mysql_server

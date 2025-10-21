@@ -1,21 +1,43 @@
-- name: Remove MariaDB lib
+- name: Remove MariaDB lib (yum)
   yum:
     name:
       - mariadb-libs
     state: absent
-  when: centos_version=="7"
+  when: centos_version=="7" and aws_awslinux != "2023"
 
-- name: Install MySQL Repo for CentOS {{centos_version}}
+- name: Remove MariaDB lib (dnf for AL2023)
+  dnf:
+    name:
+      - mariadb-libs
+    state: absent
+  when: aws_awslinux=="2023"
+
+- name: Install MySQL Repo for CentOS/AL2 {{centos_version}}
   yum:
     name:
-      - https://dev.mysql.com/get/mysql80-community-release-el{{centos_version}}-1.noarch.rpm
+      - https://dev.mysql.com/get/mysql84-community-release-el{{centos_version}}-1.noarch.rpm
     state: present
-  # As of Aug 2018, MySQL yum repo include MySQL 5.5.x through 5.7.x Experiment
+  when: aws_awslinux != "2023"
 
-- name: Disable MySQL8.0 Repo to Enable older version of MySQL
-  command: yum-config-manager --disable mysql80-community
-  when: mysql_repo!="80"
+- name: Install MySQL Repo for AL2023
+  dnf:
+    name:
+      - https://dev.mysql.com/get/mysql84-community-release-el9-1.noarch.rpm
+    state: present
+  when: aws_awslinux == "2023"
 
-- name: Enable older version of MySQL
+- name: Disable MySQL8.4 Repo to Enable older version of MySQL (yum)
+  command: yum-config-manager --disable mysql84-community
+  when: mysql_repo not in ["80", "84"] and aws_awslinux != "2023"
+
+- name: Disable MySQL8.4 Repo to Enable older version of MySQL (dnf)
+  command: dnf config-manager --set-disabled mysql84-community
+  when: mysql_repo not in ["80", "84"] and aws_awslinux == "2023"
+
+- name: Enable older version of MySQL (yum)
   command: yum-config-manager --enable mysql{{mysql_repo}}-community
-  when: mysql_repo!="80"
+  when: mysql_repo not in ["80", "84"] and aws_awslinux != "2023"
+
+- name: Enable older version of MySQL (dnf)
+  command: dnf config-manager --set-enabled mysql{{mysql_repo}}-community
+  when: mysql_repo not in ["80", "84"] and aws_awslinux == "2023"
