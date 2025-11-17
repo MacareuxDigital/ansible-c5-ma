@@ -14,16 +14,17 @@
   when:
     - mariadb_repo=="10.5" and aws_awslinux=="2"
 
-# Amazon Linux 2023 uses native MariaDB packages for 10.5+
-- name: "No additional repo needed for MariaDB 10.5+ on Amazon Linux 2023"
+# Amazon Linux 2023 uses native MariaDB packages for 10.5 only
+# For 10.6+, use official MariaDB repository
+- name: "No additional repo needed for MariaDB 10.5 on Amazon Linux 2023"
   debug:
-    msg: "Amazon Linux 2023 includes MariaDB 10.5+ in native repositories"
+    msg: "Amazon Linux 2023 includes MariaDB 10.5 in native repositories"
   when:
     - aws_awslinux=="2023"
-    - mariadb_repo in ["10.5", "10.6", "10.11"]
+    - mariadb_repo == "10.5"
 
-- name: "Set MariaDB Repo for older versions on Amazon Linux 2023"
+- name: "Set MariaDB Repo for 10.6+ on Amazon Linux 2023"
   template: src=mariadb.repo.j2 dest=/etc/yum.repos.d/mariadb.repo
   when:
     - aws_awslinux=="2023"
-    - mariadb_repo not in ["10.5", "10.6", "10.11", "5.5"]
+    - mariadb_repo not in ["10.5", "5.5"]

@@ -35,11 +35,10 @@
       - "python3-devel"
       - "python3-setuptools"
       - "python3-pip"
-      - "curl"
       - "libcurl-devel"
       - "zip"
       - "unzip"
-    state: latest
+    state: present
   when: aws_awslinux == "2023"
 
 - name: Install MySQL-Python for Amazon Linux
@@ -60,7 +59,6 @@
   dnf:
     name:
       - "python3-pip"
-      - "python3-PyMySQL"
     state: latest
   when: aws_awslinux=="2023"
 

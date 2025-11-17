@@ -197,26 +197,7 @@
 
 - name: Install PHP for Amazon Linux 2023
   when: aws_awslinux=="2023"
-  dnf:
-    name:
-      - "php"
-      - "php-bcmath"
-      - "php-cli"
-      - "php-common"
-      - "php-fpm"
-      - "php-gd"
-      - "php-intl"
-      - "php-mbstring"
-      - "php-mysqlnd"
-      - "php-opcache"
-      - "php-pdo"
-      - "php-process"
-      - "php-xml"
-      - "php-zip"
-      - "php-soap"
-      - "php-curl"
-    state: latest
-  register: NginxPHPResult
+  include_tasks: php_amazon_linux2023.yml
 
 - name: Add User to Nginx-group
   user: name={{ item }} groups=nginx state=present

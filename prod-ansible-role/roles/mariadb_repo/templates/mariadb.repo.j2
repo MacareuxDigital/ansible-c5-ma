@@ -1,6 +1,10 @@
 [mariadb]
 name = MariaDB
+{% if aws_awslinux == "2023" %}
+baseurl = https://yum.mariadb.org/{{mariadb_repo}}/fedora38-{{cpu_arch}}
+{% else %}
 baseurl = https://yum.mariadb.org/{{mariadb_repo}}/centos7-{{cpu_arch}}
+{% endif %}
 gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 enabled=1
 gpgcheck=1

@@ -20,18 +20,18 @@
     - mariadb_repo in ["10.5","5.5"]
     - aws_awslinux != "2023"
 
-- name: Install MariaDB Client (dnf - AL2023 native 10.5+)
+- name: Install MariaDB Client (dnf - AL2023 native 10.5 only)
   dnf:
     name:
-      - mariadb
-      - mariadb-devel
+      - mariadb105
+      - mariadb105-devel
     state: installed
   register: result
   when:
     - aws_awslinux=="2023"
-    - mariadb_repo in ["10.5", "10.6", "10.11"]
+    - mariadb_repo == "10.5"
 
-- name: Install MariaDB Client (dnf - AL2023 official repo)
+- name: Install MariaDB Client (dnf - AL2023 official repo for 10.6+)
   dnf:
     name:
       - MariaDB-devel
@@ -40,7 +40,7 @@
   register: result
   when:
     - aws_awslinux=="2023"
-    - mariadb_repo not in ["10.5", "10.6", "10.11", "5.5"]
+    - mariadb_repo not in ["10.5", "5.5"]
 - name: Install pip (yum)
   when: aws_awslinux not in ["1","2","2023"]
   yum:

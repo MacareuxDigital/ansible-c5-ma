@@ -32,14 +32,7 @@
       - "php{{ php_version_number }}-ldap"
       - "php{{ php_version_number }}-zip"
     state: present
-  register: php_installation_status
-
-- name: Create symlink for PHP binary
-  file:
-    src: "/usr/bin/php8.3"
-    dest: "/usr/bin/php"
-    state: link
-    force: yes
+  register: NginxPHPResult
 
 - name: Ensure php-fpm service is enabled and properly named
   systemd:
