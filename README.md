@@ -1,5 +1,7 @@
 # Concrete CMS Ansible to setup Apache/Nginx/PHP-FPM/MySQL/MariaDB on Amazon Linux or CentOS
 
+[![Ansible Tests](https://github.com/MacareuxDigital/ansible-c5-ma/actions/workflows/ansible-test.yml/badge.svg)](https://github.com/MacareuxDigital/ansible-c5-ma/actions/workflows/ansible-test.yml)
+
 **Work-in-Progress**: Your input is greatly appreciated.
 
 This was originally a simple Ansible script to setup Apache or Nginx, MariaDB or MySQL and Basic Auth into an Amazon Linux or CentOS instance.
@@ -80,9 +82,40 @@ OR prepare a CentOS7 server with public IP address.
     - If there is a new version of Concrete CMS, make sure to replace it
     - This package contains Concrete CMS package as a zip file. HOWEVER, the zip file which is distributed at Concrete CMS.org contains a folder with `Concrete CMS-[version]`. You must re-zip the package without the folder.
 
-## For Debug: you can use docker to test
+## Testing
+
+### Automated Testing with GitHub Actions
+
+This repository includes comprehensive automated testing using GitHub Actions. Every push and pull request automatically runs:
+
+- **Lint Tests** - YAML and Ansible best practices validation
+- **Syntax Tests** - Playbook syntax checking
+- **Matrix Tests** - Testing multiple PHP versions (8.1, 8.2, 8.3), web servers (nginx, apache), and databases (mariadb, mysql)
+- **Docker Integration Tests** - Full playbook execution in Amazon Linux 2023 containers
+- **Idempotence Tests** - Ensuring playbooks can run multiple times safely
+
+View test results in the [Actions tab](https://github.com/MacareuxDigital/ansible-c5-ma/actions) or see the status badge above.
+
+For detailed testing documentation, see [.github/TESTING.md](.github/TESTING.md).
+
+### Local Docker Testing
 
 There is optional setting that you can use Docker to test-run you ansible script. Please be ware that some tasks are skipped such as changing locale, making swap, making databases and db users due to the docker's restriction. It it highly recommended to test on actual server or VM instance before using it on production.
+
+#### Quick Start
+
+```bash
+$ cd prod-ansible-role
+$ ./docker-test.sh
+```
+
+This will automatically:
+1. Build Amazon Linux 2023 container
+2. Wait for SSH to be ready
+3. Test Ansible connectivity
+4. Display instructions for running playbook
+
+#### Manual Docker Testing
 
 - Edit host.docker.yml
   - Use it you want to test Ansible on your local docker before launching and executing on actual server
@@ -90,10 +123,13 @@ There is optional setting that you can use Docker to test-run you ansible script
   - `server_name` is optional
 - For "setup.yml", see setup.yml configuration below
 
+```bash
+$ cd prod-ansible-role
+$ docker-compose up -d --build
+$ ansible-playbook -i host.docker.local.yml setup.yml
 ```
-$ cd [path/to/ansible]
-$ ansible-playbook -i host.docker.yml setup.yml
-```
+
+For more details, see [DOCKER_TESTING.md](prod-ansible-role/DOCKER_TESTING.md).
 
 ## Execute ansible-playBook
 
