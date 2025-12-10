@@ -37,7 +37,7 @@
 
 # Is this AmazonLinux? (1 / 2 / 2023 / no)
 ## For Amazon Linux, type 1. For Amazon Linux 2, type 2. For Amazon Linux 2023, type 2023. "no" if is's not Amazon Linux.
-    aws_awslinux:           "2"
+    aws_awslinux:           "2023"
     aws_repo_upgrade:       "yes"
 
 # CentOS Version? (6 / 7)

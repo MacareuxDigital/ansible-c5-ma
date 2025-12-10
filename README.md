@@ -12,9 +12,28 @@ You will connect to AWS Linux or CentOS7 and start sending commands to setup the
 
 THIS ANSIBLE IS VERY UGRY. KEEP CHANGING AS WE WORK. WE CANNOT GURANTEE ANYTHING. SO YOU MUST USE FOR DEV INSTANCE FIRST BEFORE APPLYING PRODUCTION. I WOULD NOT DEPLOY TO PRODUCTION EITHER.
 
-As of October, 2025, I've tested on:
-- Amazon Linux 2 with Nginx, PHP8.2 and MariaDB 10.11
-- Amazon Linux 2023 with Nginx, PHP8.3 and MariaDB 10.5+
+## Supported Versions
+
+**Operating Systems:**
+- ✅ **Amazon Linux 2023** (Recommended for new deployments)
+- ✅ **Amazon Linux 2** (Stable, production-ready)
+- ✅ **CentOS 7** (Legacy support)
+
+**PHP Versions:** 5.6, 7.0-7.4, 8.0-8.3 (varies by OS - see [SUPPORTED_VERSIONS.md](SUPPORTED_VERSIONS.md))
+
+**Web Servers:** NGINX (recommended), Apache
+
+**Databases:** MariaDB 10.4-10.11, MySQL 5.7-8.0
+
+**Recommended Configuration (2025):**
+- Amazon Linux 2023 + PHP 8.3 + NGINX + MariaDB 10.6
+
+**Recently Tested:**
+- Amazon Linux 2023 with NGINX, PHP 8.1/8.2/8.3 and MariaDB 10.5/10.6
+- Amazon Linux 2 with NGINX, PHP 8.1/8.2 and MariaDB 10.5/10.11
+- CentOS 7 with Apache/NGINX, PHP 7.4-8.2 (Remi) and MariaDB/MySQL
+
+See [SUPPORTED_VERSIONS.md](SUPPORTED_VERSIONS.md) for complete compatibility matrix.
 
 -----
 

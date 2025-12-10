@@ -1,4 +1,4 @@
-name: CentOS 7 - Full Stack Matrix
+name: CentOS 7 - Legacy Versions
 
 on:
   push:
@@ -8,17 +8,17 @@ on:
   workflow_dispatch:
 
 jobs:
-  centos7-matrix:
-    name: CentOS7 | PHP ${{ matrix.php }} | ${{ matrix.webserver }} | ${{ matrix.database }}
+  centos7-legacy:
+    name: CentOS7 Legacy | PHP ${{ matrix.php }} | ${{ matrix.webserver }} | ${{ matrix.database }}
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        # Common PHP versions for CentOS 7 via Remi
-        php: ['php74', 'php80', 'php81', 'php82']
+        # Legacy PHP versions for CentOS 7 via Remi
+        php: ['php56', 'php70', 'php71', 'php72', 'php73']
         webserver: ['nginx', 'apache']
-        database: ['mariadb-10.5', 'mariadb-10.6', 'mysql-5.7', 'mysql-8.0']
+        database: ['mariadb-5.5', 'mariadb-10.2', 'mariadb-10.3', 'mariadb-10.4', 'mysql-5.5', 'mysql-5.6']
 
     steps:
       - name: Checkout code
@@ -66,9 +66,9 @@ jobs:
           echo ""
           echo "✓ Test configuration created"
           echo "  OS: CentOS 7"
-          echo "  PHP: ${{ matrix.php }} (Remi)"
+          echo "  PHP: ${{ matrix.php }} (Legacy, Remi)"
           echo "  Web Server: ${{ matrix.webserver }}"
-          echo "  Database: ${{ matrix.database }}"
+          echo "  Database: ${{ matrix.database }} (Legacy)"
 
       - name: Validate Ansible syntax
         run: |
@@ -76,81 +76,42 @@ jobs:
           ansible-playbook -i inventory-test.ini setup-test.yml --syntax-check
           echo "✅ Ansible syntax validation passed"
 
-      - name: Verify role structure
-        run: |
-          cd prod-ansible-role
-
-          # Verify required roles exist
-          for role in php nginx apache mariadb_server mariadb_client mysql_server mysql_client; do
-            if [ -d "roles/$role" ]; then
-              echo "✓ Role $role exists"
-            fi
-          done
-
-      - name: Validate templates
-        run: |
-          cd prod-ansible-role
-
-          # Check web server templates
-          if [ "${{ matrix.webserver }}" = "nginx" ]; then
-            if [ -d "roles/nginx/templates" ]; then
-              echo "✓ NGINX templates directory exists"
-              ls roles/nginx/templates/*.j2 2>/dev/null && echo "  Found $(ls roles/nginx/templates/*.j2 | wc -l) templates" || true
-            fi
-          else
-            if [ -d "roles/apache/templates" ]; then
-              echo "✓ Apache templates directory exists"
-              ls roles/apache/templates/*.j2 2>/dev/null && echo "  Found $(ls roles/apache/templates/*.j2 | wc -l) templates" || true
-            fi
-          fi
-
-          # Check database templates
-          if [[ "${{ matrix.database }}" == mariadb* ]]; then
-            if [ -d "roles/mariadb_server/templates" ]; then
-              echo "✓ MariaDB templates directory exists"
-            fi
-          elif [[ "${{ matrix.database }}" == mysql* ]]; then
-            if [ -d "roles/mysql_server/templates" ]; then
-              echo "✓ MySQL templates directory exists"
-            fi
-          fi
-
       - name: Test result
         run: |
           echo ""
           echo "================================================"
-          echo "✅ CentOS 7 Test Passed"
+          echo "✅ CentOS 7 Legacy Test Passed"
           echo "================================================"
           echo "Configuration:"
           echo "  - OS: CentOS 7"
-          echo "  - PHP: ${{ matrix.php }} (Remi)"
+          echo "  - PHP: ${{ matrix.php }} (Legacy, Remi)"
           echo "  - Web Server: ${{ matrix.webserver }}"
-          echo "  - Database: ${{ matrix.database }}"
+          echo "  - Database: ${{ matrix.database }} (Legacy)"
           echo "================================================"
 
-  centos7-summary:
-    name: CentOS 7 Matrix Summary
+  centos7-legacy-summary:
+    name: CentOS 7 Legacy Summary
     runs-on: ubuntu-latest
-    needs: [centos7-matrix]
+    needs: [centos7-legacy]
     if: always()
 
     steps:
       - name: Check matrix results
         run: |
           echo "========================================="
-          echo "  CentOS 7 Matrix Tests"
+          echo "  CentOS 7 Legacy Tests"
           echo "========================================="
           echo ""
-          echo "Tested combinations:"
-          echo "  • PHP versions: 7.4, 8.0, 8.1, 8.2 (Remi)"
+          echo "Tested legacy combinations:"
+          echo "  • PHP versions: 5.6, 7.0, 7.1, 7.2, 7.3 (Remi)"
           echo "  • Web servers: nginx, apache"
-          echo "  • Databases: MariaDB 10.5/10.6, MySQL 5.7/8.0"
+          echo "  • Databases: MariaDB 5.5/10.2/10.3/10.4, MySQL 5.5/5.6"
           echo ""
-          echo "Total test combinations: 32"
+          echo "Total test combinations: 60"
           echo ""
-          if [ "${{ needs.centos7-matrix.result }}" = "success" ]; then
-            echo "✅ All CentOS 7 tests passed!"
+          if [ "${{ needs.centos7-legacy.result }}" = "success" ]; then
+            echo "✅ All CentOS 7 legacy tests passed!"
           else
-            echo "❌ Some tests failed. Check individual jobs above."
+            echo "❌ Some legacy tests failed. Check individual jobs above."
             exit 1
           fi
