@@ -1,6 +1,7 @@
 - name: Install extra packages (yum)
   yum:
     name:
+      - "git"  # etckeeper requires git
       - "etckeeper"
       #  - "monit"
     # enablerepo: epel
@@ -9,7 +10,7 @@
 - name: Install extra packages (dnf for AL2023)
   dnf:
     name:
+      - "git"  # etckeeper requires git
       - "etckeeper"
       #  - "monit"
-    # enablerepo: epel
   when: aws_awslinux == "2023"

@@ -1,7 +1,8 @@
 [mariadb]
 name = MariaDB
 {% if aws_awslinux == "2023" %}
-baseurl = https://yum.mariadb.org/{{mariadb_repo}}/fedora38-{{cpu_arch}}
+# Amazon Linux 2023 uses rhel9 repositories
+baseurl = https://yum.mariadb.org/{{mariadb_repo}}/rhel9-{{cpu_arch}}
 {% else %}
 baseurl = https://yum.mariadb.org/{{mariadb_repo}}/centos7-{{cpu_arch}}
 {% endif %}

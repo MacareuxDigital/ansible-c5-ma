@@ -29,14 +29,14 @@
 - name: Install MariaDB Server (dnf - AL2023 native 10.5 only)
   when:
     - aws_awslinux=="2023"
-    - mariadb_repo in ["10.5", "10.6", "10.11"]
+    - mariadb_repo == "10.5"
   dnf:
     name:
       - mariadb-server
     state: installed
   register: MariaDBServerResult
 
-- name: Install MariaDB Server (dnf - AL2023 official repo)
+- name: Install MariaDB Server (dnf - AL2023 official repo for 10.6+)
   when:
     - aws_awslinux=="2023"
     - mariadb_repo not in ["10.5", "5.5"]
