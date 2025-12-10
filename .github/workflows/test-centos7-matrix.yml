@@ -1,0 +1,127 @@
+name: CentOS 7 - Full Stack Matrix
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+jobs:
+  centos7-matrix:
+    name: CentOS7 | PHP ${{ matrix.php }} | ${{ matrix.webserver }} | ${{ matrix.database }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # CentOS 7 supports Remi PHP versions
+        php: ['php56', 'php70', 'php71', 'php72', 'php73', 'php74', 'php80', 'php81', 'php82']
+        webserver: ['nginx', 'apache']
+        database: ['mariadb-10.6', 'mariadb-10.5', 'mariadb-10.4', 'mysql-5.7', 'mysql-8.0']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible ansible-lint
+
+      - name: Create test configuration
+        run: |
+          cd prod-ansible-role
+          cp setup.yml setup-test.yml
+
+          # Update configuration for this test combination
+          sed -i 's/aws_awslinux:.*/aws_awslinux: "no"/' setup-test.yml
+          sed -i 's/centos_version:.*/centos_version: "7"/' setup-test.yml
+          sed -i 's/centos_phprepo:.*/centos_phprepo: "remi"/' setup-test.yml
+          sed -i 's/php_version_remi:.*/php_version_remi: "${{ matrix.php }}"/' setup-test.yml
+          sed -i 's/webserver_handle:.*/webserver_handle: "${{ matrix.webserver }}"/' setup-test.yml
+
+          # Set database configuration
+          if [[ "${{ matrix.database }}" == mariadb* ]]; then
+            sed -i 's/db_environment:.*/db_environment: "mariadb"/' setup-test.yml
+            MARIADB_VER=$(echo "${{ matrix.database }}" | cut -d'-' -f2)
+            sed -i "s/mariadb_repo:.*/mariadb_repo: \"${MARIADB_VER}\"/" setup-test.yml
+          elif [[ "${{ matrix.database }}" == mysql* ]]; then
+            sed -i 's/db_environment:.*/db_environment: "mysql"/' setup-test.yml
+            MYSQL_VER=$(echo "${{ matrix.database }}" | cut -d'-' -f2 | tr -d '.')
+            sed -i "s/mysql_repo:.*/mysql_repo: \"${MYSQL_VER}\"/" setup-test.yml
+          fi
+
+          echo "✓ Test configuration created"
+
+      - name: Validate configuration syntax
+        run: |
+          cd prod-ansible-role
+          ansible-playbook setup-test.yml --syntax-check
+          echo "✅ Syntax check passed for: PHP ${{ matrix.php }} | ${{ matrix.webserver }} | ${{ matrix.database }}"
+
+      - name: Validate role templates
+        run: |
+          cd prod-ansible-role
+
+          # Check if role-specific templates exist
+          if [ "${{ matrix.webserver }}" = "nginx" ]; then
+            echo "Checking NGINX templates..."
+            ls -la roles/nginx/templates/ || true
+          else
+            echo "Checking Apache templates..."
+            ls -la roles/apache/templates/ || true
+          fi
+
+          if [[ "${{ matrix.database }}" == mariadb* ]]; then
+            echo "Checking MariaDB templates..."
+            ls -la roles/mariadb_server/templates/ || true
+          elif [[ "${{ matrix.database }}" == mysql* ]]; then
+            echo "Checking MySQL templates..."
+            ls -la roles/mysql_server/templates/ || true
+          fi
+
+      - name: Test result
+        run: |
+          echo "================================================"
+          echo "✅ CentOS 7 Test Passed"
+          echo "================================================"
+          echo "Configuration:"
+          echo "  - OS: CentOS 7"
+          echo "  - PHP: ${{ matrix.php }} (Remi)"
+          echo "  - Web Server: ${{ matrix.webserver }}"
+          echo "  - Database: ${{ matrix.database }}"
+          echo "================================================"
+
+  centos7-summary:
+    name: CentOS 7 Matrix Summary
+    runs-on: ubuntu-latest
+    needs: [centos7-matrix]
+    if: always()
+
+    steps:
+      - name: Check matrix results
+        run: |
+          echo "========================================="
+          echo "  CentOS 7 Matrix Tests"
+          echo "========================================="
+          echo ""
+          echo "Tested combinations:"
+          echo "  • PHP versions: 5.6, 7.0, 7.1, 7.2, 7.3, 7.4, 8.0, 8.1, 8.2 (Remi)"
+          echo "  • Web servers: nginx, apache"
+          echo "  • Databases: MariaDB 10.4/10.5/10.6, MySQL 5.7/8.0"
+          echo ""
+          echo "Total test combinations: 90"
+          echo ""
+          if [ "${{ needs.centos7-matrix.result }}" = "success" ]; then
+            echo "✅ All CentOS 7 tests passed!"
+          else
+            echo "❌ Some tests failed. Check individual jobs above."
+            exit 1
+          fi

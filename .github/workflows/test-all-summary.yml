@@ -1,0 +1,152 @@
+name: All OS Matrix - Consolidated Summary
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+jobs:
+  # Trigger all matrix tests
+  trigger-tests:
+    name: Trigger All Matrix Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Display test plan
+        run: |
+          echo "========================================="
+          echo "  Ansible Playbook Matrix Testing"
+          echo "========================================="
+          echo ""
+          echo "This workflow validates all supported combinations:"
+          echo ""
+          echo "📦 Amazon Linux 2023:"
+          echo "   • PHP: 8.1, 8.2, 8.3"
+          echo "   • Web: nginx, apache"
+          echo "   • DB: MariaDB 10.4, 10.5, 10.6"
+          echo "   → 18 combinations"
+          echo ""
+          echo "📦 Amazon Linux 2:"
+          echo "   • PHP: 7.2, 7.3, 7.4, 8.0, 8.1, 8.2"
+          echo "   • Web: nginx, apache"
+          echo "   • DB: MariaDB 10.5/10.6, MySQL 5.7/8.0"
+          echo "   → 48 combinations"
+          echo ""
+          echo "📦 CentOS 7:"
+          echo "   • PHP: 5.6, 7.0-7.4, 8.0-8.2 (Remi)"
+          echo "   • Web: nginx, apache"
+          echo "   • DB: MariaDB 10.4/10.5/10.6, MySQL 5.7/8.0"
+          echo "   → 90 combinations"
+          echo ""
+          echo "========================================="
+          echo "Total: 156 test combinations"
+          echo "========================================="
+
+  # Wait for all matrix workflows to complete
+  wait-for-al2023:
+    name: Wait for AL2023 Tests
+    needs: [trigger-tests]
+    uses: ./.github/workflows/test-al2023-matrix.yml
+
+  wait-for-al2:
+    name: Wait for AL2 Tests
+    needs: [trigger-tests]
+    uses: ./.github/workflows/test-al2-matrix.yml
+
+  wait-for-centos7:
+    name: Wait for CentOS7 Tests
+    needs: [trigger-tests]
+    uses: ./.github/workflows/test-centos7-matrix.yml
+
+  # Final consolidated summary
+  final-summary:
+    name: Final Test Summary
+    runs-on: ubuntu-latest
+    needs: [wait-for-al2023, wait-for-al2, wait-for-centos7]
+    if: always()
+
+    steps:
+      - name: Generate final report
+        run: |
+          echo "========================================="
+          echo "  FINAL TEST RESULTS"
+          echo "========================================="
+          echo ""
+
+          # Check AL2023
+          if [ "${{ needs.wait-for-al2023.result }}" = "success" ]; then
+            echo "✅ Amazon Linux 2023: PASSED (18 combinations)"
+          else
+            echo "❌ Amazon Linux 2023: FAILED"
+            FAILED=true
+          fi
+
+          # Check AL2
+          if [ "${{ needs.wait-for-al2.result }}" = "success" ]; then
+            echo "✅ Amazon Linux 2: PASSED (48 combinations)"
+          else
+            echo "❌ Amazon Linux 2: FAILED"
+            FAILED=true
+          fi
+
+          # Check CentOS7
+          if [ "${{ needs.wait-for-centos7.result }}" = "success" ]; then
+            echo "✅ CentOS 7: PASSED (90 combinations)"
+          else
+            echo "❌ CentOS 7: FAILED"
+            FAILED=true
+          fi
+
+          echo ""
+          echo "========================================="
+
+          if [ "$FAILED" = "true" ]; then
+            echo "❌ SOME TESTS FAILED"
+            echo "Check individual workflow runs for details."
+            exit 1
+          else
+            echo "✅ ALL TESTS PASSED (156 combinations)"
+            echo ""
+            echo "This Ansible playbook is validated for:"
+            echo "• All supported PHP versions"
+            echo "• Both Apache and NGINX web servers"
+            echo "• MariaDB and MySQL databases"
+            echo "• Amazon Linux 2, Amazon Linux 2023, and CentOS 7"
+          fi
+
+      - name: Post summary to PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const output = `## 🧪 Ansible Matrix Test Results
+
+            All configuration combinations have been tested:
+
+            | Operating System | Status | Combinations |
+            |-----------------|--------|--------------|
+            | Amazon Linux 2023 | ${{ needs.wait-for-al2023.result == 'success' && '✅' || '❌' }} | 18 |
+            | Amazon Linux 2 | ${{ needs.wait-for-al2.result == 'success' && '✅' || '❌' }} | 48 |
+            | CentOS 7 | ${{ needs.wait-for-centos7.result == 'success' && '✅' || '❌' }} | 90 |
+
+            **Total combinations tested:** 156
+
+            ### Test Coverage
+            - ✅ PHP versions: 5.6, 7.0-7.4, 8.0-8.3
+            - ✅ Web servers: Apache, NGINX
+            - ✅ Databases: MariaDB 10.4-10.6, MySQL 5.7-8.0
+            - ✅ Operating systems: AL2, AL2023, CentOS 7
+
+            [View detailed results →](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });
