@@ -1,0 +1,8 @@
+[servers]
+127.0.0.1 ansible_port=2222 server_name="test.local"
+
+[all:vars]
+ansible_ssh_user=ec2-user
+ansible_ssh_pass=testpassword
+ansible_become_pass=testpassword
+ansible_host_key_checking=False

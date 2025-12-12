@@ -27,7 +27,7 @@
 ## How many generations do you want to keep" (numbers)
     logrotate_generation:    "30"
 
-# Swap (Only supports CentOS7 & Amazon Linux 2)
+# Swap (Only supports CentOS7, Amazon Linux 2 & Amazon Linux 2023)
 ## Create swap file on EC2 server? (yes / no)
     swap_create:             "yes"
 ## Define the location of swapfile
@@ -35,13 +35,13 @@
 ## Define the size of swapfile
     swap_size:               "1024"
 
-# Is this AmazonLinux? (1 / 2 / no)
-## For Amazon Linux, type 1. For Amazon Linux 2, type 2. "no" if is's not Amazon Linux.
-    aws_awslinux:           "2"
+# Is this AmazonLinux? (1 / 2 / 2023 / no)
+## For Amazon Linux, type 1. For Amazon Linux 2, type 2. For Amazon Linux 2023, type 2023. "no" if is's not Amazon Linux.
+    aws_awslinux:           "2023"
     aws_repo_upgrade:       "yes"
 
 # CentOS Version? (6 / 7)
-## This option is also used for Amazon Linux and Amazon Linux 2
+## This option is also used for Amazon Linux and Amazon Linux 2. Amazon Linux 2023 uses "7" for compatibility
     centos_version:         "7"
 
 ## PHP Repo for CentOS (remi/none)
@@ -70,6 +70,8 @@
   ### Remi repo DOES NOT support aarch64 yet as of Sep 2022.
   ### Redis driver is not available for PHP 7.1 package
   ### For PHP5.6 on Amazon Linux, it will use Remi repo regardless. The parameter format is different. Please be careful
+## PHP version for Amazon Linux 2023 (php8.1 / php8.2 / php8.3 / php8.4 / php8.5)
+    php_version_amznlinux2023: "php8.3"
 ## Set PHP config, file_upload, max_post_size, and Nginx's client max body size
   # For more information about the following parameters,
     # check https://www.php.net/manual/ini.core.php
@@ -91,7 +93,7 @@
     # For micro, "250"
     # For small, "500"
     # For large and above, "1000"
-    pm.max_requests : "1000"
+    php_pm_max_requests : "1000"
 
  # Nginx Variables
   # Allowed Nginx request size
@@ -169,7 +171,7 @@
 ## Select which MySQL or MariaDB version, architecture you want for CentOS.
 ### 55 / 56 / 57 / 80
     mysql_repo:             "57"
-### 5.5 / 10.2 / 10.3 / 10.4 / 10.5 / 10.6
+### 5.5 / 10.2 / 10.3 / 10.4 / 10.5 / 10.6 / 10.11 / 11.4 / 11.5
     mariadb_repo:           "10.6"
 
 ## MySQL or MariaDB Setting
@@ -205,9 +207,10 @@
 # concrete5 Settings
 ## concrete5 File upload (yes / no)
     c5_upload:              "yes"
-    c5_package_folder_name: "concrete5-8.5.7"
-  ## This is version 8.5.6.
-    c5_package_url:         "https://www.concretecms.org/download_file/ae9cca19-d76c-458e-a63a-ce9b7b963e1d"
+    c5_package_folder_name: "concrete-cms-9.4.5"
+  ## Concrete CMS 9.4.5 - Compatible with PHP 7.4-8.4
+  ## PHP 8.5 is NOT yet supported by Concrete CMS
+    c5_package_url:         "https://www.concretecms.org/download_file/7da4cc9c-0633-4edf-b97b-7ad3e3ab276a/2658"
 ## concrete5 Installation (yes / no)
     c5_installation:        "no" # It doesn't work these days.
 ## concrete5 Config Upload (yes / no)
@@ -267,7 +270,7 @@
   - role: mysql_repo
     when:
     - db_environment in ['mysql', 'mysql-client']
-    - aws_awslinux in ['no', '2']
+    - aws_awslinux in ['no', '2', '2023']
   - role: mysql_client
     when: db_environment in ['mysql', 'mysql-client']
   - role: mysql_server

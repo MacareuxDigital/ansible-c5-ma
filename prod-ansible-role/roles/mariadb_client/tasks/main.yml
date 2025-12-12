@@ -1,4 +1,4 @@
-- name: Install MariaDB Client
+- name: Install MariaDB Client (yum - official repo)
   yum:
     name:
       - MariaDB-devel
@@ -7,7 +7,9 @@
   register: result
   when:
     - mariadb_repo not in ["10.5","5.5"]
-- name: Install MariaDB Client
+    - aws_awslinux != "2023"
+    
+- name: Install MariaDB Client (yum - Amazon Linux native)
   yum:
     name:
       - mariadb
@@ -16,11 +18,41 @@
   register: result
   when:
     - mariadb_repo in ["10.5","5.5"]
-- name: Install pip
-  when: aws_awslinux not in ["1","2"]
+    - aws_awslinux != "2023"
+
+- name: Install MariaDB Client (dnf - AL2023 native 10.5 only)
+  dnf:
+    name:
+      - mariadb105
+      - mariadb105-devel
+    state: installed
+  register: result
+  when:
+    - aws_awslinux=="2023"
+    - mariadb_repo == "10.5"
+
+- name: Install MariaDB Client (dnf - AL2023 official repo for 10.6+)
+  dnf:
+    name:
+      - MariaDB-devel
+      - MariaDB-client
+    state: installed
+  register: result
+  when:
+    - aws_awslinux=="2023"
+    - mariadb_repo not in ["10.5", "5.5"]
+- name: Install pip (yum)
+  when: aws_awslinux not in ["1","2","2023"]
   yum:
     name:
       - python-pip
+    state: latest
+    
+- name: Install pip (dnf for AL2023)
+  when: aws_awslinux == "2023"
+  dnf:
+    name:
+      - python3-pip
     state: latest
 - name: Install python mysqlmodule
   when: aws_awslinux not in ["2"]

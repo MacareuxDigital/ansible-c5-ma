@@ -1,12 +1,12 @@
-- name: Install MariaDB Server
-  when: aws_awslinux!="2"
+- name: Install MariaDB Server (yum - non-AL2/AL2023)
+  when: aws_awslinux not in ["2", "2023"]
   yum:
     name:
       - MariaDB-server
     state: installed
   register: MariaDBServerResult
 
-- name: Install MariaDB Server
+- name: Install MariaDB Server (yum - AL2 official repo)
   when:
     - aws_awslinux=="2"
     - mariadb_repo not in ["10.5","5.5"]
@@ -16,13 +16,33 @@
     state: installed
   register: MariaDBServerResult
 
-- name: Install MariaDB Server
+- name: Install MariaDB Server (yum - AL2 native)
   when:
     - aws_awslinux=="2"
     - mariadb_repo in ["10.5","5.5"]
   yum:
     name:
       - mariadb-server
+    state: installed
+  register: MariaDBServerResult
+
+- name: Install MariaDB Server (dnf - AL2023 native 10.5 only)
+  when:
+    - aws_awslinux=="2023"
+    - mariadb_repo == "10.5"
+  dnf:
+    name:
+      - mariadb-server
+    state: installed
+  register: MariaDBServerResult
+
+- name: Install MariaDB Server (dnf - AL2023 official repo for 10.6+)
+  when:
+    - aws_awslinux=="2023"
+    - mariadb_repo not in ["10.5", "5.5"]
+  dnf:
+    name:
+      - MariaDB-server
     state: installed
   register: MariaDBServerResult
 
@@ -47,17 +67,24 @@
     - centos_version=="6"
     - isDocker=="no"
   service: name=mysqld state=started enabled=yes
-- name: Start MariaDB (CentOS7)
+- name: Start MariaDB (CentOS7/AL2)
   when:
     - centos_version=="7"
     - isDocker=="no"
+    - aws_awslinux != "2023"
     - mariadb_repo not in ["5.5"]
   systemd: name=mariadb state=started enabled=yes
-- name: Start MariaDB (CentOS7)
+- name: Start MariaDB (CentOS7/AL2 - v5.5)
   when:
     - centos_version=="7"
     - isDocker=="no"
+    - aws_awslinux != "2023"
     - mariadb_repo in ["5.5"]
+  systemd: name=mariadb state=started enabled=yes
+- name: Start MariaDB (AL2023)
+  when:
+    - aws_awslinux=="2023"
+    - isDocker=="no"
   systemd: name=mariadb state=started enabled=yes
 
 - name: Set root Password

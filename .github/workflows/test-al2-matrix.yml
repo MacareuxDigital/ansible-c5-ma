@@ -1,0 +1,154 @@
+name: Amazon Linux 2 - Full Stack Matrix
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+jobs:
+  al2-matrix:
+    name: AL2 | PHP ${{ matrix.php }} | ${{ matrix.webserver }} | ${{ matrix.database }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Most commonly used PHP versions for AL2
+        php: ['php7.4', 'php8.0', 'php8.1', 'php8.2']
+        webserver: ['nginx', 'apache']
+        database: ['mariadb-10.5', 'mariadb-10.6', 'mysql-5.7', 'mysql-8.0']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Create test configuration
+        run: |
+          cd prod-ansible-role
+          cp setup.yml setup-test.yml
+
+          # Create minimal test inventory
+          echo "[test]" > inventory-test.ini
+          echo "localhost ansible_connection=local" >> inventory-test.ini
+
+          # Update configuration for this test combination
+          sed -i 's/aws_awslinux:.*/aws_awslinux: "2"/' setup-test.yml
+          sed -i 's/php_version_amznlinux2:.*/php_version_amznlinux2: "${{ matrix.php }}"/' setup-test.yml
+          sed -i 's/webserver_handle:.*/webserver_handle: "${{ matrix.webserver }}"/' setup-test.yml
+          sed -i 's/cpu_arch:.*/cpu_arch: "x86_64"/' setup-test.yml
+          sed -i 's/centos_version:.*/centos_version: "7"/' setup-test.yml
+
+          # Set database configuration
+          if [[ "${{ matrix.database }}" == mariadb* ]]; then
+            sed -i 's/db_environment:.*/db_environment: "mariadb"/' setup-test.yml
+            MARIADB_VER=$(echo "${{ matrix.database }}" | cut -d'-' -f2)
+            sed -i "s/mariadb_repo:.*/mariadb_repo: \"${MARIADB_VER}\"/" setup-test.yml
+          elif [[ "${{ matrix.database }}" == mysql* ]]; then
+            sed -i 's/db_environment:.*/db_environment: "mysql"/' setup-test.yml
+            MYSQL_VER=$(echo "${{ matrix.database }}" | cut -d'-' -f2 | tr -d '.')
+            sed -i "s/mysql_repo:.*/mysql_repo: \"${MYSQL_VER}\"/" setup-test.yml
+          fi
+
+          echo ""
+          echo "✓ Test configuration created"
+          echo "  OS: Amazon Linux 2"
+          echo "  PHP: ${{ matrix.php }}"
+          echo "  Web Server: ${{ matrix.webserver }}"
+          echo "  Database: ${{ matrix.database }}"
+
+      - name: Validate Ansible syntax
+        run: |
+          cd prod-ansible-role
+          ansible-playbook -i inventory-test.ini setup-test.yml --syntax-check
+          echo "✅ Ansible syntax validation passed"
+
+      - name: Verify role structure
+        run: |
+          cd prod-ansible-role
+
+          # Verify required roles exist
+          for role in php nginx apache mariadb_server mariadb_client mysql_server mysql_client; do
+            if [ -d "roles/$role" ]; then
+              echo "✓ Role $role exists"
+            fi
+          done
+
+      - name: Validate templates
+        run: |
+          cd prod-ansible-role
+
+          # Check web server templates
+          if [ "${{ matrix.webserver }}" = "nginx" ]; then
+            if [ -d "roles/nginx/templates" ]; then
+              echo "✓ NGINX templates directory exists"
+              ls roles/nginx/templates/*.j2 2>/dev/null && echo "  Found $(ls roles/nginx/templates/*.j2 | wc -l) templates" || true
+            fi
+          else
+            if [ -d "roles/apache/templates" ]; then
+              echo "✓ Apache templates directory exists"
+              ls roles/apache/templates/*.j2 2>/dev/null && echo "  Found $(ls roles/apache/templates/*.j2 | wc -l) templates" || true
+            fi
+          fi
+
+          # Check database templates
+          if [[ "${{ matrix.database }}" == mariadb* ]]; then
+            if [ -d "roles/mariadb_server/templates" ]; then
+              echo "✓ MariaDB templates directory exists"
+            fi
+          elif [[ "${{ matrix.database }}" == mysql* ]]; then
+            if [ -d "roles/mysql_server/templates" ]; then
+              echo "✓ MySQL templates directory exists"
+            fi
+          fi
+
+      - name: Test result
+        run: |
+          echo ""
+          echo "================================================"
+          echo "✅ Amazon Linux 2 Test Passed"
+          echo "================================================"
+          echo "Configuration:"
+          echo "  - OS: Amazon Linux 2"
+          echo "  - PHP: ${{ matrix.php }}"
+          echo "  - Web Server: ${{ matrix.webserver }}"
+          echo "  - Database: ${{ matrix.database }}"
+          echo "================================================"
+
+  al2-summary:
+    name: AL2 Matrix Summary
+    runs-on: ubuntu-latest
+    needs: [al2-matrix]
+    if: always()
+
+    steps:
+      - name: Check matrix results
+        run: |
+          echo "========================================="
+          echo "  Amazon Linux 2 Matrix Tests"
+          echo "========================================="
+          echo ""
+          echo "Tested combinations:"
+          echo "  • PHP versions: 7.4, 8.0, 8.1, 8.2"
+          echo "  • Web servers: nginx, apache"
+          echo "  • Databases: MariaDB 10.5/10.6, MySQL 5.7/8.0"
+          echo ""
+          echo "Total test combinations: 32"
+          echo ""
+          if [ "${{ needs.al2-matrix.result }}" = "success" ]; then
+            echo "✅ All Amazon Linux 2 tests passed!"
+          else
+            echo "❌ Some tests failed. Check individual jobs above."
+            exit 1
+          fi

@@ -2,7 +2,7 @@
   hostname: name={{server_name}}
   when: isDocker=="no"
 - include_tasks: initialize_amazonlinux.yml
-  when: aws_awslinux in ["1", "2"]
+  when: aws_awslinux in ["1", "2", "2023"]
 - name: Set locale to /etc/sysconfig/i18n
   when: centos_version=="6"
   replace: >
@@ -27,10 +27,18 @@
   when: centos_version=="7" and aws_awslinux=="no"
 - include_tasks: install_repo_amazonlinux2.yml
   when: aws_awslinux=="2"
-- name: Apply All Updates
+- include_tasks: install_repo_amazonlinux2023.yml
+  when: aws_awslinux=="2023"
+- name: Apply All Updates (yum)
   yum:
     name: '*'
     state: latest
+  when: aws_awslinux in ["1", "2"] or aws_awslinux=="no"
+- name: Apply All Updates (dnf)
+  dnf:
+    name: '*'
+    state: latest
+  when: aws_awslinux=="2023"
 - include_tasks: install_util.yml
 - include_tasks: install_extra.yml
 - include_tasks: initialize_etckeeper.yml
@@ -42,5 +50,5 @@
     - isDocker=="no"
 - include_tasks: initialize_swapfile.yml
   when:
-    - centos_version=="7" or aws_awslinux=="2"
+    - centos_version=="7" or aws_awslinux in ["2", "2023"]
     - isDocker=="no"

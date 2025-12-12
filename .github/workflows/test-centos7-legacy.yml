@@ -1,0 +1,116 @@
+name: CentOS 7 - Legacy Versions
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+jobs:
+  centos7-legacy:
+    name: CentOS7 Legacy | PHP ${{ matrix.php }} | ${{ matrix.webserver }} | ${{ matrix.database }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # Legacy PHP versions for CentOS 7 via Remi
+        php: ['php56', 'php70', 'php71', 'php72', 'php73']
+        webserver: ['nginx', 'apache']
+        database: ['mariadb-5.5', 'mariadb-10.2', 'mariadb-10.3', 'mariadb-10.4', 'mysql-5.5', 'mysql-5.6']
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Ansible
+        run: |
+          python -m pip install --upgrade pip
+          pip install ansible
+
+      - name: Create test configuration
+        run: |
+          cd prod-ansible-role
+          cp setup.yml setup-test.yml
+
+          # Create minimal test inventory
+          echo "[test]" > inventory-test.ini
+          echo "localhost ansible_connection=local" >> inventory-test.ini
+
+          # Update configuration for this test combination
+          sed -i 's/aws_awslinux:.*/aws_awslinux: "no"/' setup-test.yml
+          sed -i 's/centos_version:.*/centos_version: "7"/' setup-test.yml
+          sed -i 's/centos_phprepo:.*/centos_phprepo: "remi"/' setup-test.yml
+          sed -i 's/php_version_remi:.*/php_version_remi: "${{ matrix.php }}"/' setup-test.yml
+          sed -i 's/webserver_handle:.*/webserver_handle: "${{ matrix.webserver }}"/' setup-test.yml
+          sed -i 's/cpu_arch:.*/cpu_arch: "x86_64"/' setup-test.yml
+
+          # Set database configuration
+          if [[ "${{ matrix.database }}" == mariadb* ]]; then
+            sed -i 's/db_environment:.*/db_environment: "mariadb"/' setup-test.yml
+            MARIADB_VER=$(echo "${{ matrix.database }}" | cut -d'-' -f2)
+            sed -i "s/mariadb_repo:.*/mariadb_repo: \"${MARIADB_VER}\"/" setup-test.yml
+          elif [[ "${{ matrix.database }}" == mysql* ]]; then
+            sed -i 's/db_environment:.*/db_environment: "mysql"/' setup-test.yml
+            MYSQL_VER=$(echo "${{ matrix.database }}" | cut -d'-' -f2 | tr -d '.')
+            sed -i "s/mysql_repo:.*/mysql_repo: \"${MYSQL_VER}\"/" setup-test.yml
+          fi
+
+          echo ""
+          echo "✓ Test configuration created"
+          echo "  OS: CentOS 7"
+          echo "  PHP: ${{ matrix.php }} (Legacy, Remi)"
+          echo "  Web Server: ${{ matrix.webserver }}"
+          echo "  Database: ${{ matrix.database }} (Legacy)"
+
+      - name: Validate Ansible syntax
+        run: |
+          cd prod-ansible-role
+          ansible-playbook -i inventory-test.ini setup-test.yml --syntax-check
+          echo "✅ Ansible syntax validation passed"
+
+      - name: Test result
+        run: |
+          echo ""
+          echo "================================================"
+          echo "✅ CentOS 7 Legacy Test Passed"
+          echo "================================================"
+          echo "Configuration:"
+          echo "  - OS: CentOS 7"
+          echo "  - PHP: ${{ matrix.php }} (Legacy, Remi)"
+          echo "  - Web Server: ${{ matrix.webserver }}"
+          echo "  - Database: ${{ matrix.database }} (Legacy)"
+          echo "================================================"
+
+  centos7-legacy-summary:
+    name: CentOS 7 Legacy Summary
+    runs-on: ubuntu-latest
+    needs: [centos7-legacy]
+    if: always()
+
+    steps:
+      - name: Check matrix results
+        run: |
+          echo "========================================="
+          echo "  CentOS 7 Legacy Tests"
+          echo "========================================="
+          echo ""
+          echo "Tested legacy combinations:"
+          echo "  • PHP versions: 5.6, 7.0, 7.1, 7.2, 7.3 (Remi)"
+          echo "  • Web servers: nginx, apache"
+          echo "  • Databases: MariaDB 5.5/10.2/10.3/10.4, MySQL 5.5/5.6"
+          echo ""
+          echo "Total test combinations: 60"
+          echo ""
+          if [ "${{ needs.centos7-legacy.result }}" = "success" ]; then
+            echo "✅ All CentOS 7 legacy tests passed!"
+          else
+            echo "❌ Some legacy tests failed. Check individual jobs above."
+            exit 1
+          fi

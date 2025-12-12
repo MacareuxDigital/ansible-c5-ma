@@ -1,0 +1,17 @@
+services:
+  al2023-test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: al2023-ansible-test
+    hostname: test.local
+    volumes:
+      - ./:/ansible:ro
+    ports:
+      - "2222:22"
+    networks:
+      - ansible-test-net
+
+networks:
+  ansible-test-net:
+    driver: bridge

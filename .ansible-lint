@@ -1,0 +1,47 @@
+# Ansible-lint configuration
+---
+# See https://ansible-lint.readthedocs.io/
+
+# Exclude paths from linting
+exclude_paths:
+  - .github/
+  - .cache/
+  - test-playbook.yml
+  - inventory.ci.ini
+
+# Enable checking of loop variable prefixes
+loop_var_prefix: "{role}_"
+
+# Enforce variable naming pattern
+var_naming_pattern: "^[a-z_][a-z0-9_]*$"
+
+# Skip specific rules that may not apply to this playbook
+skip_list:
+  - yaml[line-length]  # Lines longer than 160 chars (we handle this with yamllint)
+  - name[casing]       # Allow flexible task naming
+  - role-name          # Allow flexible role names
+  - fqcn[action-core]  # Don't require fully qualified collection names for core modules
+  - var-naming[no-role-prefix]  # Allow variables without role prefix
+
+# Warn instead of error for these rules
+warn_list:
+  - experimental  # Experimental rules
+  - command-instead-of-module  # Suggest using modules instead of command
+  - no-changed-when  # Tasks should have changed_when
+  - package-latest  # Discourage using latest for packages
+
+# Enable offline mode (don't check for updates)
+offline: false
+
+# Set path to collections
+# collections_paths:
+#   - ~/.ansible/collections
+
+# Use default rules
+use_default_rules: true
+
+# Enable progressive mode (only new violations)
+# progressive: true
+
+# Configure specific rules
+# Note: line-length is handled by yamllint instead

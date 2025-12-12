@@ -195,6 +195,10 @@
     state: latest
     enablerepo: epel,remi,remi-{{php_version_amznlinux2}}
 
+- name: Install PHP for Amazon Linux 2023
+  when: aws_awslinux=="2023"
+  include_tasks: php_amazon_linux2023.yml
+
 - name: Add User to Nginx-group
   user: name={{ item }} groups=nginx state=present
   with_items: "{{ add_users }}"
@@ -225,6 +229,13 @@
   systemd: name=php-fpm state=started enabled=yes
   when:
     - centos_version=="7"
+    - NginxPHPResult.changed == True
+    - isDocker=="no"
+    - aws_awslinux != "2023"
+- name: Start php-fpm (AL2023)
+  systemd: name=php-fpm state=started enabled=yes
+  when:
+    - aws_awslinux=="2023"
     - NginxPHPResult.changed == True
     - isDocker=="no"
 - include_tasks: set_php-fpm.yml

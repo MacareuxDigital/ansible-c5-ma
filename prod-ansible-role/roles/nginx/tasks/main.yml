@@ -1,8 +1,16 @@
-- name: Install Nginx
+- name: Install Nginx (yum)
   yum:
     name:
       - "nginx"
     state: latest
+  when: aws_awslinux != "2023"
+
+- name: Install Nginx (dnf for AL2023)
+  dnf:
+    name:
+      - "nginx"
+    state: latest
+  when: aws_awslinux == "2023"
 
 - name: Add User to Nginx-group
   user: name={{ item }} groups=nginx state=present
@@ -18,11 +26,17 @@
     - NginxPHPResult.changed == True
     - isDocker=="no"
   service: name=nginx state=started enabled=yes
-- name: Start Nginx
+- name: Start Nginx (CentOS7/AL2)
   systemd: name=nginx state=started enabled=yes
   when:
     - centos_version=="7"
+    - aws_awslinux != "2023"
     # - NginxPHPResult.changed == True
+    - isDocker=="no"
+- name: Start Nginx (AL2023)
+  systemd: name=nginx state=started enabled=yes
+  when:
+    - aws_awslinux=="2023"
     - isDocker=="no"
 - include_tasks: set_nginx.yml
 - include_tasks: set_nginx-vhost.yml

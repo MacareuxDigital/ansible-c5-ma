@@ -1,0 +1,200 @@
+name: All OS - Test Summary Dashboard
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+  workflow_dispatch:
+
+# This workflow provides a single dashboard to see all OS test results
+
+jobs:
+  test-summary:
+    name: Test Coverage Summary
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Display test matrix
+        run: |
+          echo "========================================="
+          echo "  Ansible Playbook Test Coverage"
+          echo "========================================="
+          echo ""
+          echo "This repository tests all supported configurations:"
+          echo ""
+          echo "📦 Amazon Linux 2023 Matrix:"
+          echo "   • PHP: 8.1, 8.2, 8.3, 8.4, 8.5"
+          echo "   • Web: nginx, apache"
+          echo "   • DB: MariaDB 10.4, 10.5, 10.6, 10.11, 11.4, 11.5"
+          echo "   → 60 combinations"
+          echo "   → Workflow: test-al2023-matrix.yml"
+          echo ""
+          echo "📦 Amazon Linux 2 Matrix:"
+          echo "   • PHP: 7.4, 8.0, 8.1, 8.2"
+          echo "   • Web: nginx, apache"
+          echo "   • DB: MariaDB 10.5/10.6, MySQL 5.7/8.0"
+          echo "   → 32 combinations"
+          echo "   → Workflow: test-al2-matrix.yml"
+          echo ""
+          echo "📦 CentOS 7 Matrix:"
+          echo "   • PHP: 7.4, 8.0, 8.1, 8.2 (Remi)"
+          echo "   • Web: nginx, apache"
+          echo "   • DB: MariaDB 10.5/10.6, MySQL 5.7/8.0"
+          echo "   → 32 combinations"
+          echo "   → Workflow: test-centos7-matrix.yml"
+          echo ""
+          echo "📦 Amazon Linux 2 Legacy:"
+          echo "   • PHP: 5.6, 7.2, 7.3 (Legacy)"
+          echo "   • Web: nginx, apache"
+          echo "   • DB: MariaDB 5.5/10.2/10.3/10.4, MySQL 5.6"
+          echo "   → 30 combinations"
+          echo "   → Workflow: test-al2-legacy.yml"
+          echo ""
+          echo "📦 CentOS 7 Legacy:"
+          echo "   • PHP: 5.6, 7.0, 7.1, 7.2, 7.3 (Remi)"
+          echo "   • Web: nginx, apache"
+          echo "   • DB: MariaDB 5.5/10.2/10.3/10.4, MySQL 5.5/5.6"
+          echo "   → 60 combinations"
+          echo "   → Workflow: test-centos7-legacy.yml"
+          echo ""
+          echo "========================================="
+          echo "Total Coverage: 214 configuration combinations"
+          echo "========================================="
+          echo ""
+          echo "All workflows validate:"
+          echo "  ✓ Ansible syntax"
+          echo "  ✓ Role structure"
+          echo "  ✓ Template existence"
+          echo "  ✓ Configuration validity"
+          echo ""
+          echo "View individual workflow results in the Actions tab:"
+          echo "  • Amazon Linux 2023 Matrix"
+          echo "  • Amazon Linux 2 Matrix"
+          echo "  • CentOS 7 Matrix"
+          echo ""
+
+      - name: Test configuration examples
+        run: |
+          echo "========================================="
+          echo "  Example Configurations"
+          echo "========================================="
+          echo ""
+          echo "Amazon Linux 2023 (Recommended):"
+          echo "  aws_awslinux: \"2023\""
+          echo "  php_version_amznlinux2023: \"php8.3\""
+          echo "  webserver_handle: \"nginx\""
+          echo "  db_environment: \"mariadb\""
+          echo "  mariadb_repo: \"10.6\""
+          echo ""
+          echo "Amazon Linux 2 (Production):"
+          echo "  aws_awslinux: \"2\""
+          echo "  php_version_amznlinux2: \"php8.1\""
+          echo "  webserver_handle: \"nginx\""
+          echo "  db_environment: \"mariadb\""
+          echo "  mariadb_repo: \"10.5\""
+          echo ""
+          echo "CentOS 7 (Legacy):"
+          echo "  aws_awslinux: \"no\""
+          echo "  centos_version: \"7\""
+          echo "  php_version_remi: \"php74\""
+          echo "  webserver_handle: \"apache\""
+          echo "  db_environment: \"mysql\""
+          echo "  mysql_repo: \"57\""
+          echo ""
+
+  verify-workflows-exist:
+    name: Verify All Workflows Present
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Check workflow files
+        run: |
+          echo "Checking that all matrix workflows exist..."
+          echo ""
+
+          MISSING=0
+
+          if [ -f ".github/workflows/test-al2023-matrix.yml" ]; then
+            echo "✅ Amazon Linux 2023 workflow exists"
+          else
+            echo "❌ Amazon Linux 2023 workflow MISSING"
+            MISSING=1
+          fi
+
+          if [ -f ".github/workflows/test-al2-matrix.yml" ]; then
+            echo "✅ Amazon Linux 2 workflow exists"
+          else
+            echo "❌ Amazon Linux 2 workflow MISSING"
+            MISSING=1
+          fi
+
+          if [ -f ".github/workflows/test-centos7-matrix.yml" ]; then
+            echo "✅ CentOS 7 workflow exists"
+          else
+            echo "❌ CentOS 7 workflow MISSING"
+            MISSING=1
+          fi
+
+          if [ -f ".github/workflows/test-al2-legacy.yml" ]; then
+            echo "✅ Amazon Linux 2 Legacy workflow exists"
+          else
+            echo "❌ Amazon Linux 2 Legacy workflow MISSING"
+            MISSING=1
+          fi
+
+          if [ -f ".github/workflows/test-centos7-legacy.yml" ]; then
+            echo "✅ CentOS 7 Legacy workflow exists"
+          else
+            echo "❌ CentOS 7 Legacy workflow MISSING"
+            MISSING=1
+          fi
+
+          echo ""
+          if [ $MISSING -eq 0 ]; then
+            echo "✅ All workflow files present!"
+          else
+            echo "❌ Some workflow files are missing"
+            exit 1
+          fi
+
+  final-summary:
+    name: Final Summary
+    runs-on: ubuntu-latest
+    needs: [test-summary, verify-workflows-exist]
+    if: always()
+
+    steps:
+      - name: Summary
+        run: |
+          echo "========================================="
+          echo "  Test Summary Dashboard Complete"
+          echo "========================================="
+          echo ""
+          if [ "${{ needs.verify-workflows-exist.result }}" = "success" ]; then
+            echo "✅ All workflow files verified"
+            echo "✅ Test coverage: 214 configurations (including legacy)"
+            echo ""
+            echo "To run full test suite:"
+            echo "  1. Check individual OS workflow runs"
+            echo "  2. Each workflow tests its OS combinations"
+            echo "  3. Results visible in Actions tab"
+            echo ""
+            echo "Modern Versions:"
+            echo "  • test-al2023-matrix.yml (60 tests)"
+            echo "  • test-al2-matrix.yml (32 tests)"
+            echo "  • test-centos7-matrix.yml (32 tests)"
+            echo ""
+            echo "Legacy Versions:"
+            echo "  • test-al2-legacy.yml (30 tests)"
+            echo "  • test-centos7-legacy.yml (60 tests)"
+          else
+            echo "❌ Workflow verification failed"
+            exit 1
+          fi

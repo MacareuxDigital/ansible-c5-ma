@@ -1,5 +1,7 @@
 # Concrete CMS Ansible to setup Apache/Nginx/PHP-FPM/MySQL/MariaDB on Amazon Linux or CentOS
 
+[![Ansible Tests](https://github.com/MacareuxDigital/ansible-c5-ma/actions/workflows/ansible-test.yml/badge.svg)](https://github.com/MacareuxDigital/ansible-c5-ma/actions/workflows/ansible-test.yml)
+
 **Work-in-Progress**: Your input is greatly appreciated.
 
 This was originally a simple Ansible script to setup Apache or Nginx, MariaDB or MySQL and Basic Auth into an Amazon Linux or CentOS instance.
@@ -10,7 +12,32 @@ You will connect to AWS Linux or CentOS7 and start sending commands to setup the
 
 THIS ANSIBLE IS VERY UGRY. KEEP CHANGING AS WE WORK. WE CANNOT GURANTEE ANYTHING. SO YOU MUST USE FOR DEV INSTANCE FIRST BEFORE APPLYING PRODUCTION. I WOULD NOT DEPLOY TO PRODUCTION EITHER.
 
-As of April, 2024, I've mainly tested on Amazon Linux 2 with Nginx, PHP8.2 and MariaDB 10.11
+## Supported Versions
+
+**Operating Systems:**
+- ✅ **Amazon Linux 2023** (Recommended for new deployments)
+- ✅ **Amazon Linux 2** (Stable, production-ready)
+- ✅ **CentOS 7** (Legacy support)
+
+**PHP Versions:** 5.6, 7.0-7.4, 8.0-8.5 (varies by OS - see [SUPPORTED_VERSIONS.md](SUPPORTED_VERSIONS.md))
+
+**Web Servers:** NGINX (recommended), Apache
+
+**Databases:** MariaDB 10.4-11.5, MySQL 5.7-8.0
+
+**Concrete CMS 9.x:** Supports PHP 7.4-8.4 only (PHP 8.5 not yet supported)
+
+**Recommended Configuration (2025):**
+- Amazon Linux 2023 + PHP 8.4 + NGINX + MariaDB 10.6
+
+**Recently Tested:**
+- Amazon Linux 2023 with NGINX, PHP 8.1-8.5 and MariaDB 10.5/10.6/10.11/11.4/11.5
+- Amazon Linux 2 with NGINX, PHP 8.1/8.2 and MariaDB 10.5/10.11
+- CentOS 7 with Apache/NGINX, PHP 7.4-8.2 (Remi) and MariaDB/MySQL
+
+⚠️ **Important:** PHP 8.5 is supported for general web servers but NOT for Concrete CMS installations. The playbook includes automatic validation to prevent incompatible configurations.
+
+See [SUPPORTED_VERSIONS.md](SUPPORTED_VERSIONS.md) for complete compatibility matrix.
 
 -----
 
@@ -78,9 +105,40 @@ OR prepare a CentOS7 server with public IP address.
     - If there is a new version of Concrete CMS, make sure to replace it
     - This package contains Concrete CMS package as a zip file. HOWEVER, the zip file which is distributed at Concrete CMS.org contains a folder with `Concrete CMS-[version]`. You must re-zip the package without the folder.
 
-## For Debug: you can use docker to test
+## Testing
+
+### Automated Testing with GitHub Actions
+
+This repository includes comprehensive automated testing using GitHub Actions. Every push and pull request automatically runs:
+
+- **Lint Tests** - YAML and Ansible best practices validation
+- **Syntax Tests** - Playbook syntax checking
+- **Matrix Tests** - Testing multiple PHP versions (8.1, 8.2, 8.3), web servers (nginx, apache), and databases (mariadb, mysql)
+- **Docker Integration Tests** - Full playbook execution in Amazon Linux 2023 containers
+- **Idempotence Tests** - Ensuring playbooks can run multiple times safely
+
+View test results in the [Actions tab](https://github.com/MacareuxDigital/ansible-c5-ma/actions) or see the status badge above.
+
+For detailed testing documentation, see [.github/TESTING.md](.github/TESTING.md).
+
+### Local Docker Testing
 
 There is optional setting that you can use Docker to test-run you ansible script. Please be ware that some tasks are skipped such as changing locale, making swap, making databases and db users due to the docker's restriction. It it highly recommended to test on actual server or VM instance before using it on production.
+
+#### Quick Start
+
+```bash
+$ cd prod-ansible-role
+$ ./docker-test.sh
+```
+
+This will automatically:
+1. Build Amazon Linux 2023 container
+2. Wait for SSH to be ready
+3. Test Ansible connectivity
+4. Display instructions for running playbook
+
+#### Manual Docker Testing
 
 - Edit host.docker.yml
   - Use it you want to test Ansible on your local docker before launching and executing on actual server
@@ -88,10 +146,13 @@ There is optional setting that you can use Docker to test-run you ansible script
   - `server_name` is optional
 - For "setup.yml", see setup.yml configuration below
 
+```bash
+$ cd prod-ansible-role
+$ docker-compose up -d --build
+$ ansible-playbook -i host.docker.local.yml setup.yml
 ```
-$ cd [path/to/ansible]
-$ ansible-playbook -i host.docker.yml setup.yml
-```
+
+For more details, see [DOCKER_TESTING.md](prod-ansible-role/DOCKER_TESTING.md).
 
 ## Execute ansible-playBook
 
@@ -190,14 +251,23 @@ Use `ls -F /usr/share/zoneinfo` to list timezone on CentOS6/Amazon Linux, or `su
 ## Amazon Linux?
 
 Amazon Linux has its own repo and setup. So we want you to indicate.
-If you are using Amazon Linux, type "1". If you're using Amazon Linux 2, type "2". If this is not Amazon Linux, type "no".
+- If you are using Amazon Linux, type "1" 
+- If you're using Amazon Linux 2, type "2"
+- If you're using Amazon Linux 2023, type "2023"
+- If this is not Amazon Linux, type "no"
 
 ```
-  - aws_awslinux:           "1"
-  - aws_repo_upgrade:       "none"
-
-
+  - aws_awslinux:           "2023"
+  - aws_repo_upgrade:       "yes"
 ```
+
+### Amazon Linux 2023 Changes
+
+**Package Manager**: Amazon Linux 2023 uses `dnf` instead of `yum`
+**Amazon Linux Extras**: No longer available in AL2023. Native packages are used instead.
+**PHP Versions**: Supports PHP 8.1, 8.2, and 8.3 natively
+**MariaDB**: Native support for MariaDB 10.5+ without external repositories
+**Architecture**: Full support for both Intel (x86_64) and ARM (aarch64) architectures
 
 ## CentOS Version
 
@@ -246,7 +316,8 @@ Currently we only have the following setting.
 
 Please enter which PHP version you want to install. Currently supports 4 types of repo: Amazon Linux, Remi, and Amazon Linux 2 (beta). You may not be able to install certain types depends on the repos. Please read the comment in setup.yml carefully.
 
-For Amazon Linux 2, I've tested PHP5.6 (Apache only) and 7.4, 8.1 & 8.2. (as of April 2024)
+For Amazon Linux 2, I've tested PHP5.6 (Apache only) and 7.4, 8.1 & 8.2.
+For Amazon Linux 2023, I've tested PHP8.1, 8.2 & 8.3 natively. (as of October 2025)
 
 You want to calculate PHP-FPM memory consumption based on available memory of the instance.
 
@@ -273,6 +344,10 @@ You want to calculate PHP-FPM memory consumption based on available memory of th
   ### Remi repo DOES NOT support aarch64 yet as of Sep 2022.
   ### Redis driver is not available for PHP 7.1 package
   ### For PHP5.6 on Amazon Linux, it will use Remi repo regardless. The parameter format is different. Please be careful
+## PHP version for Amazon Linux 2023 (php8.1 / php8.2 / php8.3)
+    php_version_amznlinux2023: "php8.3"
+  ### Amazon Linux 2023 uses native repositories for PHP 8.x - no external repos needed
+  ### Supports both Intel (x86_64) and ARM (aarch64) architectures natively
 ## Set PHP config, file_upload, max_post_size, and Nginx's client max body size
   # For more information about the following parameters,
     # check https://www.php.net/manual/ini.core.php

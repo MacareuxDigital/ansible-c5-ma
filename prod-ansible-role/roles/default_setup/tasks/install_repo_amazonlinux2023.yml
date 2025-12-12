@@ -1,0 +1,10 @@
+- name: Set architecture variable for AL2023
+  set_fact:
+    arch_suffix: "{{ 'x86_64' if cpu_arch == 'amd64' else cpu_arch }}"
+
+- name: Install AWS utilities for AL2023
+  dnf:
+    name:
+      - cloud-init
+      - awscli
+    state: latest
