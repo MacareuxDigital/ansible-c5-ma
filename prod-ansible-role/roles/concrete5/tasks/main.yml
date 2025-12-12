@@ -1,3 +1,6 @@
+- name: Check PHP compatibility for Concrete CMS
+  include_tasks: 00_check_php_compatibility.yml
+
 - name: Check concrete5 Installed
   stat: path={{vhost_docroot}}{{vhost_domain}}/application/config/database.php
   register: result

@@ -189,8 +189,29 @@ mariadb_repo: "10.5"
 
 | Concrete CMS | PHP Requirement | Recommended Stack |
 |-------------|----------------|-------------------|
-| **9.x** | PHP 7.3 - 8.3 | AL2023 + PHP 8.3 + MariaDB 10.6 |
+| **9.x (9.4.5)** | PHP 7.4 - 8.4 | AL2023 + PHP 8.4 + MariaDB 10.6 |
 | **8.x** | PHP 7.2 - 8.1 | AL2 + PHP 8.1 + MariaDB 10.5 |
+
+### Important PHP 8.5 Note
+
+**⚠️ PHP 8.5 is NOT yet supported by Concrete CMS 9.x**
+
+While this Ansible playbook supports PHP 8.5 for general web server setups, Concrete CMS 9.4.5 does **not yet support PHP 8.5**.
+
+- ✅ **Supported PHP versions for Concrete CMS 9.x:** 7.4, 8.0, 8.1, 8.2, 8.3, 8.4
+- ❌ **Not supported for Concrete CMS:** PHP 8.5
+
+**Automatic Validation:**
+The playbook includes an automatic compatibility check that will prevent installation if you try to use PHP 8.5 with Concrete CMS. The check validates PHP versions across all supported operating systems (AL2023, AL2, CentOS7).
+
+**For PHP 8.5 testing:**
+If you want to test PHP 8.5 for non-Concrete CMS applications, set:
+```yaml
+c5_upload: "no"
+c5_migration: "no"
+```
+
+Reference: [Concrete CMS System Requirements](https://documentation.concretecms.org/developers/introduction/system-requirements)
 
 ---
 

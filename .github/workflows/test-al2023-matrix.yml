@@ -56,6 +56,12 @@ jobs:
             sed -i "s/mariadb_repo:.*/mariadb_repo: \"${MARIADB_VER}\"/" setup-test.yml
           fi
 
+          # Disable Concrete CMS upload for PHP 8.5 (not yet supported)
+          if [[ "${{ matrix.php }}" == "8.5" ]]; then
+            sed -i 's/c5_upload:.*/c5_upload: "no"/' setup-test.yml
+            echo "⚠️  PHP 8.5 detected - Concrete CMS upload disabled (not yet supported)"
+          fi
+
           echo ""
           echo "✓ Test configuration created"
           echo "  OS: Amazon Linux 2023"

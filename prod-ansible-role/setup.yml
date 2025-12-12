@@ -207,9 +207,10 @@
 # concrete5 Settings
 ## concrete5 File upload (yes / no)
     c5_upload:              "yes"
-    c5_package_folder_name: "concrete5-8.5.7"
-  ## This is version 8.5.6.
-    c5_package_url:         "https://www.concretecms.org/download_file/ae9cca19-d76c-458e-a63a-ce9b7b963e1d"
+    c5_package_folder_name: "concrete-cms-9.4.5"
+  ## Concrete CMS 9.4.5 - Compatible with PHP 7.4-8.4
+  ## PHP 8.5 is NOT yet supported by Concrete CMS
+    c5_package_url:         "https://www.concretecms.org/download_file/7da4cc9c-0633-4edf-b97b-7ad3e3ab276a/2658"
 ## concrete5 Installation (yes / no)
     c5_installation:        "no" # It doesn't work these days.
 ## concrete5 Config Upload (yes / no)

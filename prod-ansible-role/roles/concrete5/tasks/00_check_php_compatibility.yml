@@ -1,0 +1,104 @@
+# Check PHP version compatibility for Concrete CMS
+# Concrete CMS 9.x supports PHP 7.4 - 8.4
+# PHP 8.5 is NOT yet supported
+
+- name: Check if Concrete CMS will be installed
+  set_fact:
+    installing_concrete: "{{ c5_upload == 'yes' or c5_migration == 'yes' }}"
+
+- name: Extract PHP version for AL2023
+  set_fact:
+    php_major_minor: "{{ php_version_amznlinux2023 | regex_replace('php', '') }}"
+  when:
+    - installing_concrete
+    - aws_awslinux == "2023"
+    - php_version_amznlinux2023 is defined
+
+- name: Extract PHP version for AL2
+  set_fact:
+    php_major_minor: "{{ php_version_amznlinux2 | regex_replace('php', '') }}"
+  when:
+    - installing_concrete
+    - aws_awslinux == "2"
+    - php_version_amznlinux2 is defined
+
+- name: Extract PHP version for CentOS7 (Remi)
+  set_fact:
+    php_major_minor: "{{ php_version_remi | regex_replace('php', '') }}"
+  when:
+    - installing_concrete
+    - aws_awslinux == "no"
+    - centos_version == "7"
+    - centos_phprepo == "remi"
+    - php_version_remi is defined
+
+- name: Check PHP 8.5 compatibility for Concrete CMS (AL2023)
+  fail:
+    msg: |
+      ❌ INCOMPATIBLE PHP VERSION DETECTED ❌
+
+      Concrete CMS 9.x does NOT support PHP 8.5 yet.
+
+      Supported PHP versions: 7.4, 8.0, 8.1, 8.2, 8.3, 8.4
+      Your configuration: PHP {{ php_major_minor }}
+
+      Please update setup.yml:
+        php_version_amznlinux2023: "php8.4"  # or php8.3, php8.2, etc.
+
+      See: https://documentation.concretecms.org/developers/introduction/system-requirements
+  when:
+    - installing_concrete
+    - aws_awslinux == "2023"
+    - php_version_amznlinux2023 is defined
+    - php_version_amznlinux2023 == "php8.5"
+
+- name: Check PHP 8.5 compatibility for Concrete CMS (AL2)
+  fail:
+    msg: |
+      ❌ INCOMPATIBLE PHP VERSION DETECTED ❌
+
+      Concrete CMS 9.x does NOT support PHP 8.5 yet.
+
+      Supported PHP versions: 7.4, 8.0, 8.1, 8.2, 8.3, 8.4
+      Your configuration: PHP {{ php_major_minor }}
+
+      Please update setup.yml:
+        php_version_amznlinux2: "php8.4"  # or php8.3, php8.2, etc.
+
+      See: https://documentation.concretecms.org/developers/introduction/system-requirements
+  when:
+    - installing_concrete
+    - aws_awslinux == "2"
+    - php_version_amznlinux2 is defined
+    - php_version_amznlinux2 in ["php8.5", "php85"]
+
+- name: Check PHP 8.5 compatibility for Concrete CMS (CentOS7)
+  fail:
+    msg: |
+      ❌ INCOMPATIBLE PHP VERSION DETECTED ❌
+
+      Concrete CMS 9.x does NOT support PHP 8.5 yet.
+
+      Supported PHP versions: 7.4, 8.0, 8.1, 8.2, 8.3, 8.4
+      Your configuration: PHP {{ php_major_minor }}
+
+      Please update setup.yml:
+        php_version_remi: "php84"  # or php83, php82, etc.
+
+      See: https://documentation.concretecms.org/developers/introduction/system-requirements
+  when:
+    - installing_concrete
+    - aws_awslinux == "no"
+    - centos_version == "7"
+    - centos_phprepo == "remi"
+    - php_version_remi is defined
+    - php_version_remi in ["php85", "php8.5"]
+
+- name: Display Concrete CMS PHP compatibility notice
+  debug:
+    msg: |
+      ✅ PHP {{ php_major_minor | default('version') }} is compatible with Concrete CMS 9.x
+      Concrete CMS 9.x supports: PHP 7.4, 8.0, 8.1, 8.2, 8.3, 8.4
+  when:
+    - installing_concrete
+    - php_major_minor is defined

@@ -19,19 +19,23 @@ THIS ANSIBLE IS VERY UGRY. KEEP CHANGING AS WE WORK. WE CANNOT GURANTEE ANYTHING
 - ✅ **Amazon Linux 2** (Stable, production-ready)
 - ✅ **CentOS 7** (Legacy support)
 
-**PHP Versions:** 5.6, 7.0-7.4, 8.0-8.3 (varies by OS - see [SUPPORTED_VERSIONS.md](SUPPORTED_VERSIONS.md))
+**PHP Versions:** 5.6, 7.0-7.4, 8.0-8.5 (varies by OS - see [SUPPORTED_VERSIONS.md](SUPPORTED_VERSIONS.md))
 
 **Web Servers:** NGINX (recommended), Apache
 
 **Databases:** MariaDB 10.4-11.5, MySQL 5.7-8.0
 
+**Concrete CMS 9.x:** Supports PHP 7.4-8.4 only (PHP 8.5 not yet supported)
+
 **Recommended Configuration (2025):**
-- Amazon Linux 2023 + PHP 8.3 + NGINX + MariaDB 10.6
+- Amazon Linux 2023 + PHP 8.4 + NGINX + MariaDB 10.6
 
 **Recently Tested:**
-- Amazon Linux 2023 with NGINX, PHP 8.1-8.5 and MariaDB 10.5/10.6
+- Amazon Linux 2023 with NGINX, PHP 8.1-8.5 and MariaDB 10.5/10.6/10.11/11.4/11.5
 - Amazon Linux 2 with NGINX, PHP 8.1/8.2 and MariaDB 10.5/10.11
 - CentOS 7 with Apache/NGINX, PHP 7.4-8.2 (Remi) and MariaDB/MySQL
+
+⚠️ **Important:** PHP 8.5 is supported for general web servers but NOT for Concrete CMS installations. The playbook includes automatic validation to prevent incompatible configurations.
 
 See [SUPPORTED_VERSIONS.md](SUPPORTED_VERSIONS.md) for complete compatibility matrix.
 
