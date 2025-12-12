@@ -70,7 +70,7 @@
   ### Remi repo DOES NOT support aarch64 yet as of Sep 2022.
   ### Redis driver is not available for PHP 7.1 package
   ### For PHP5.6 on Amazon Linux, it will use Remi repo regardless. The parameter format is different. Please be careful
-## PHP version for Amazon Linux 2023 (php8.1 / php8.2 / php8.3)
+## PHP version for Amazon Linux 2023 (php8.1 / php8.2 / php8.3 / php8.4 / php8.5)
     php_version_amznlinux2023: "php8.3"
 ## Set PHP config, file_upload, max_post_size, and Nginx's client max body size
   # For more information about the following parameters,
@@ -171,7 +171,7 @@
 ## Select which MySQL or MariaDB version, architecture you want for CentOS.
 ### 55 / 56 / 57 / 80
     mysql_repo:             "57"
-### 5.5 / 10.2 / 10.3 / 10.4 / 10.5 / 10.6
+### 5.5 / 10.2 / 10.3 / 10.4 / 10.5 / 10.6 / 10.11 / 11.4 / 11.5
     mariadb_repo:           "10.6"
 
 ## MySQL or MariaDB Setting

@@ -23,13 +23,13 @@ THIS ANSIBLE IS VERY UGRY. KEEP CHANGING AS WE WORK. WE CANNOT GURANTEE ANYTHING
 
 **Web Servers:** NGINX (recommended), Apache
 
-**Databases:** MariaDB 10.4-10.11, MySQL 5.7-8.0
+**Databases:** MariaDB 10.4-11.5, MySQL 5.7-8.0
 
 **Recommended Configuration (2025):**
 - Amazon Linux 2023 + PHP 8.3 + NGINX + MariaDB 10.6
 
 **Recently Tested:**
-- Amazon Linux 2023 with NGINX, PHP 8.1/8.2/8.3 and MariaDB 10.5/10.6
+- Amazon Linux 2023 with NGINX, PHP 8.1-8.5 and MariaDB 10.5/10.6
 - Amazon Linux 2 with NGINX, PHP 8.1/8.2 and MariaDB 10.5/10.11
 - CentOS 7 with Apache/NGINX, PHP 7.4-8.2 (Remi) and MariaDB/MySQL
 

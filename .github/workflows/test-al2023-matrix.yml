@@ -15,9 +15,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.1', '8.2', '8.3']
+        php: ['8.1', '8.2', '8.3', '8.4', '8.5']
         webserver: ['nginx', 'apache']
-        database: ['mariadb-10.6', 'mariadb-10.5', 'mariadb-10.4']
+        database: ['mariadb-10.4', 'mariadb-10.5', 'mariadb-10.6', 'mariadb-10.11', 'mariadb-11.4', 'mariadb-11.5']
 
     steps:
       - name: Checkout code
@@ -134,11 +134,11 @@ jobs:
           echo "========================================="
           echo ""
           echo "Tested combinations:"
-          echo "  • PHP versions: 8.1, 8.2, 8.3"
+          echo "  • PHP versions: 8.1, 8.2, 8.3, 8.4, 8.5"
           echo "  • Web servers: nginx, apache"
-          echo "  • Databases: MariaDB 10.4, 10.5, 10.6"
+          echo "  • Databases: MariaDB 10.4, 10.5, 10.6, 10.11, 11.4, 11.5"
           echo ""
-          echo "Total test combinations: 18"
+          echo "Total test combinations: 60"
           echo ""
           if [ "${{ needs.al2023-matrix.result }}" = "success" ]; then
             echo "✅ All Amazon Linux 2023 tests passed!"

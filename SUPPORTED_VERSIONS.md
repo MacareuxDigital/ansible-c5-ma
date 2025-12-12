@@ -20,11 +20,13 @@ This document lists all supported combinations of operating systems, PHP version
 
 | PHP Version | Status | Package Manager | Notes |
 |------------|--------|-----------------|-------|
-| **8.3** | ✅ Recommended | dnf (native) | Latest stable |
+| **8.5** | ✅ Supported | dnf (native) | Latest (if available) |
+| **8.4** | ✅ Supported | dnf (native) | Latest stable |
+| **8.3** | ✅ Recommended | dnf (native) | Current stable |
 | **8.2** | ✅ Supported | dnf (native) | Stable |
 | **8.1** | ✅ Supported | dnf (native) | LTS |
 
-**Configuration:** Set `php_version_amznlinux2023: "php8.3"` in `setup.yml`
+**Configuration:** Set `php_version_amznlinux2023: "php8.4"` in `setup.yml`
 
 ### Amazon Linux 2
 
@@ -79,7 +81,9 @@ This document lists all supported combinations of operating systems, PHP version
 
 | Version | AL2023 | AL2 | CentOS7 | Notes |
 |---------|--------|-----|---------|-------|
-| **10.11** | ✅ | ✅ | ✅ | Latest stable |
+| **11.5** | ✅ | ✅ | ✅ | Latest LTS |
+| **11.4** | ✅ | ✅ | ✅ | LTS |
+| **10.11** | ✅ | ✅ | ✅ | Stable LTS |
 | **10.6** | ✅ | ✅ | ✅ | LTS, recommended |
 | **10.5** | ✅ Native | ✅ Native | ✅ | LTS |
 | **10.4** | ✅ | ✅ | ✅ | Older LTS |
@@ -94,7 +98,7 @@ This document lists all supported combinations of operating systems, PHP version
 - **10.6+:** Official MariaDB repository
   ```yaml
   db_environment: "mariadb"
-  mariadb_repo: "10.6"
+  mariadb_repo: "11.4"
   ```
 
 **Note:** MariaDB official repository does not support ARM64 (aarch64) architecture yet.
@@ -121,19 +125,19 @@ mysql_repo: "80"  # for MySQL 8.0
 
 **Production:**
 ```yaml
-# Amazon Linux 2023 + PHP 8.3 + NGINX + MariaDB 10.6
+# Amazon Linux 2023 + PHP 8.4 + NGINX + MariaDB 11.4
 aws_awslinux: "2023"
-php_version_amznlinux2023: "php8.3"
+php_version_amznlinux2023: "php8.4"
 webserver_handle: "nginx"
 db_environment: "mariadb"
-mariadb_repo: "10.6"
+mariadb_repo: "11.4"
 ```
 
 **Alternative (MySQL):**
 ```yaml
 # Amazon Linux 2023 + PHP 8.3 + NGINX + MySQL 8.0
 aws_awslinux: "2023"
-php_version_amznlinux2023: "php8.3"
+php_version_amznlinux2023: "php8.4"
 webserver_handle: "nginx"
 db_environment: "mysql"
 mysql_repo: "80"
@@ -214,7 +218,7 @@ View test results: [GitHub Actions](https://github.com/MacareuxDigital/ansible-c
 ### From Amazon Linux 2 to 2023
 
 1. Update `aws_awslinux: "2023"` in setup.yml
-2. Update `php_version_amznlinux2023: "php8.3"`
+2. Update `php_version_amznlinux2023: "php8.4"`
 3. Test on new instance first
 4. Migrate using standard process
 

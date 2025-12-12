@@ -199,7 +199,7 @@ jobs:
           echo "📊 All OS Summary Dashboard"
           echo "   → .github/workflows/test-all-summary.yml"
           echo ""
-          echo "Total: 172 configuration combinations tested!"
+          echo "Total: 214 configuration combinations tested!"
           echo "  (82 modern + 90 legacy versions)"
           echo ""
           echo "View all workflows in the GitHub Actions tab!"

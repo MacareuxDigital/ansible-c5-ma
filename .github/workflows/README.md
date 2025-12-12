@@ -105,10 +105,10 @@ Provides a dashboard summary showing:
 
 | Operating System | PHP Versions | Web Servers | Databases | Total Tests |
 |-----------------|-------------|-------------|-----------|-------------|
-| Amazon Linux 2023 | 3 (8.1-8.3) | 2 | 3 (MariaDB) | **18** |
+| Amazon Linux 2023 | 5 (8.1-8.5) | 2 | 6 (MariaDB) | **60** |
 | Amazon Linux 2 | 4 (7.4, 8.0-8.2) | 2 | 4 (MariaDB+MySQL) | **32** |
 | CentOS 7 | 4 (7.4, 8.0-8.2) | 2 | 4 (MariaDB+MySQL) | **32** |
-| **Subtotal** | | | | **82** |
+| **Subtotal** | | | | **124** |
 
 ### Legacy Versions
 
@@ -118,7 +118,7 @@ Provides a dashboard summary showing:
 | CentOS 7 (Legacy) | 5 (5.6, 7.0-7.3) | 2 | 6 (Legacy) | **60** |
 | **Subtotal** | | | | **90** |
 
-### **GRAND TOTAL: 172 Configuration Combinations**
+### **GRAND TOTAL: 214 Configuration Combinations**
 
 ---
 
